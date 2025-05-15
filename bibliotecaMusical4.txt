@@ -1,63 +1,196 @@
 use bibliotecaMusical4;
 
-db.usuarios.find({});
+db.generos.find({});
+db.personas.find({});
 db.artistas.find({});
 db.albumes.find({});
+db.canciones.find({});
+db.usuarios.find({});
 
-db.usuarios.insertOne({
-    _id: new ObjectId(),
-    nombre: "Usuario",
-    correo: "usuario@email.com",
-    contraseña: "user123",
-    imagenPath: "/usuarios/usuario.png",
-    favoritos: {
-        artistas: [
-            ObjectId("btr_id")
-        ],
-        albumes: [
-            ObjectId("674aa2ea96f4525593072f8b")
-        ],
-        canciones: [
-            {
-                titulo: "Worldwide",
-                albumId: ObjectId("674aa2ea96f4525593072f8b")
-            }
-        ]
-    },
-    bloqueados: {
-	generos: [
-            "Nu Metal",
-            "Reggaeton"
-        ]
-    }
+db.canciones.find().limit(4).forEach(doc => {
+    db.canciones.deleteOne({ _id: doc._id });
 });
+
+db.personas.insertMany([
+    {
+        _id: new ObjectId(),
+        nombre: "Kendall",
+        apellido: "Schmidt"
+    },
+    {
+        _id: new ObjectId(),
+        nombre: "James",
+        apellido: "Maslow"
+    },
+    {
+        _id: new ObjectId(),
+        nombre: "Carlos",
+        apellido: "Pena Jr."
+    },
+    {
+        _id: new ObjectId(),
+        nombre: "Logan",
+        apellido: "Henderson"
+    }
+]);
+
+db.personas.insertMany([
+    {
+        _id: new ObjectId(),
+        nombre: "Wiz",
+        apellido: "Khalifa"
+    },
+    {
+        _id: new ObjectId(),
+        nombre: "Charlie",
+        apellido: "Puth"
+    }
+]);
+
+db.generos.insertMany([
+    { _id: new ObjectId(), nombre: "Pop" },
+    { _id: new ObjectId(), nombre: "Nu Metal" },
+    { _id: new ObjectId(), nombre: "Reggaeton" },
+    { _id: new ObjectId(), nombre: "Hip Hop" },
+    { _id: new ObjectId(), nombre: "Rap" }
+]);
 
 db.artistas.insertOne({
     _id: new ObjectId(),
     nombre: "Big Time Rush",
     tipo: "Banda",
     imagenPath: "/portadas/btr.png",
-    genero: "Pop",
+    generosId: [
+        ObjectId("682595e6c3ff7206d844154f"),
+    ],
     integrantes: [
-        { nombre: "Kendall", apellido: "Schmidt", rol: "Vocalista", fechaIngreso: ISODate("2009-01-01"), estadoActivo: true },
-        { nombre: "James", apellido: "Maslow", rol: "Vocalista", fechaIngreso: ISODate("2009-01-01"), estadoActivo: true },
-        { nombre: "Carlos", apellido: "Pena Jr.", rol: "Vocalista", fechaIngreso: ISODate("2009-01-01"), estadoActivo: true },
-        { nombre: "Logan", apellido: "Henderson", rol: "Vocalista", fechaIngreso: ISODate("2009-01-01"), estadoActivo: true }
+        {
+            personaId: ObjectId("682595ccc3ff7206d8441549"),
+            rol: "Vocalista",
+            fechaIngreso: ISODate("2009-01-01"),
+            fechaSalida: null
+        },
+        {
+            personaId: ObjectId("682595ccc3ff7206d844154a"),
+            rol: "Vocalista",
+            fechaIngreso: ISODate("2009-01-01"),
+            fechaSalida: null
+        },
+        {
+            personaId: ObjectId("682595ccc3ff7206d844154b"),
+            rol: "Vocalista",
+            fechaIngreso: ISODate("2009-01-01"),
+            fechaSalida: null
+        },
+        {
+            personaId: ObjectId("682595ccc3ff7206d844154c"),
+            rol: "Vocalista",
+            fechaIngreso: ISODate("2009-01-01"),
+            fechaSalida: null
+        }
     ]
 });
+
+db.artistas.insertMany([
+    {
+        _id: new ObjectId(),
+        nombre: "Wiz Khalifa",
+        tipo: "Solista",
+        imagenPath: "/portadas/wizkhalifa.png",
+        generosId: [
+            ObjectId("682595e6c3ff7206d8441552"),
+            ObjectId("682595e6c3ff7206d8441553"),
+        ],
+        integrantesId: [
+            ObjectId("682595d1c3ff7206d844154d")
+        ]
+    },
+    {
+        _id: new ObjectId(),
+        nombre: "Charlie Puth",
+        tipo: "Solista",
+        imagenPath: "/portadas/charlieputh.png",
+        generosId: [
+            ObjectId("682595e6c3ff7206d844154f")
+        ],
+        integrantesId: [
+            ObjectId("682595d1c3ff7206d844154e")
+        ]
+    }
+]);
 
 db.albumes.insertOne({
     _id: new ObjectId(),
     nombre: "BTR",
     fechaLanzamiento: ISODate("2010-10-11"),
-    genero: "Pop",
-    portadaPath: "/portadas/btr.png",
-    canciones: [
-        "Big Time Rush",
-        "Boyfriend",
-        "Til I Forget About You",
-        "Worldwide"
+    generos: [
+        ObjectId("682595e6c3ff7206d844154f"),
     ],
-    artista: ObjectId("btr_id")
+    portadaPath: "/portadas/btr.png",
+    artistasId: [
+        ObjectId("682596b5c3ff7206d8441554"),
+    ]
 });
 
+db.canciones.insertMany([
+    {
+        _id: new ObjectId(),
+        nombre: "Big Time Rush",
+        albumId: ObjectId("682599e3c3ff7206d844155e")
+    },
+    {
+        _id: new ObjectId(),
+        nombre: "Boyfriend",
+        albumId: ObjectId("682599e3c3ff7206d844155e")
+    },
+    {
+        _id: new ObjectId(),
+        nombre: "Til I Forget About You",
+        albumId: ObjectId("682599e3c3ff7206d844155e")
+    },
+    {
+        _id: new ObjectId(),
+        nombre: "Worldwide",
+        albumId: ObjectId("682599e3c3ff7206d844155e")
+    }
+]);
+
+db.canciones.insertOne({
+    _id: new ObjectId(),
+    nombre: "See You Again",
+    generosId: [
+        ObjectId("682595e6c3ff7206d844154f"),
+        ObjectId("682595e6c3ff7206d8441552"),
+    ],
+    artistasId: [
+        ObjectId("68259709c3ff7206d8441555"),
+        ObjectId("68259709c3ff7206d8441556"),
+    ]
+})
+
+db.usuarios.insertOne({
+    _id: new ObjectId(),
+    nombre: "Usuario",
+    correo: "usuario@email.com",
+    contraseña: "user123",
+    imagenPath: "/usuarios/usuario123.png",
+    favoritos: {
+        artistasId: [
+            ObjectId("682596b5c3ff7206d8441554"),
+            ObjectId("68259709c3ff7206d8441555"),
+        ],
+        albumesId: [
+            ObjectId("682599e3c3ff7206d844155e"),
+        ],
+        cancionesId: [
+            ObjectId("68259815c3ff7206d844155c"),
+            ObjectId("68259a80c3ff7206d844155f"),
+        ]
+    },
+    bloqueados: {
+        generos: [
+            ObjectId("682595e6c3ff7206d8441550"),
+            ObjectId("682595e6c3ff7206d8441551"),
+        ]
+    }
+});
