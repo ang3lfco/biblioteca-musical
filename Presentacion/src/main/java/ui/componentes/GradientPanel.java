@@ -6,7 +6,6 @@ package ui.componentes;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -17,9 +16,10 @@ import javax.swing.JPanel;
  * @author ang3lfco
  */
 public class GradientPanel extends JPanel {
-    private final Color barColor = new Color(180, 30, 90);
-    private final Color gradientStart = new Color(180, 30, 90, 100);
-    private final Color gradientEnd = new Color(180, 30, 90, 0);
+    private final Color barColor = new Color(0, 200, 200);
+    private final Color gradientStart = new Color(0, 200, 200, 100);
+    private final Color gradientEnd = new Color(0, 200, 200, 0);
+
 
     public GradientPanel() {
         setOpaque(false); 
