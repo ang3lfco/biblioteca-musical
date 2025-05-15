@@ -1,15 +1,12 @@
 use bibliotecaMusical4;
 
-db.generos.find({});
+
 db.personas.find({});
+db.generos.find({});
 db.artistas.find({});
 db.albumes.find({});
 db.canciones.find({});
 db.usuarios.find({});
-
-db.canciones.find().limit(4).forEach(doc => {
-    db.canciones.deleteOne({ _id: doc._id });
-});
 
 db.personas.insertMany([
     {
@@ -59,31 +56,31 @@ db.artistas.insertOne({
     _id: new ObjectId(),
     nombre: "Big Time Rush",
     tipo: "Banda",
-    imagenPath: "/portadas/btr.png",
+    rutaImagen: "/portadas/btr.png",
     generosId: [
-        ObjectId("682595e6c3ff7206d844154f"),
+        ObjectId("6825b54ac3ff7206d844156a"),
     ],
     integrantes: [
         {
-            personaId: ObjectId("682595ccc3ff7206d8441549"),
+            personaId: ObjectId("6825b543c3ff7206d8441564"),
             rol: "Vocalista",
             fechaIngreso: ISODate("2009-01-01"),
             fechaSalida: null
         },
         {
-            personaId: ObjectId("682595ccc3ff7206d844154a"),
+            personaId: ObjectId("6825b543c3ff7206d8441565"),
             rol: "Vocalista",
             fechaIngreso: ISODate("2009-01-01"),
             fechaSalida: null
         },
         {
-            personaId: ObjectId("682595ccc3ff7206d844154b"),
+            personaId: ObjectId("6825b543c3ff7206d8441566"),
             rol: "Vocalista",
             fechaIngreso: ISODate("2009-01-01"),
             fechaSalida: null
         },
         {
-            personaId: ObjectId("682595ccc3ff7206d844154c"),
+            personaId: ObjectId("6825b543c3ff7206d8441567"),
             rol: "Vocalista",
             fechaIngreso: ISODate("2009-01-01"),
             fechaSalida: null
@@ -96,25 +93,35 @@ db.artistas.insertMany([
         _id: new ObjectId(),
         nombre: "Wiz Khalifa",
         tipo: "Solista",
-        imagenPath: "/portadas/wizkhalifa.png",
+        rutaImagen: "/portadas/wizkhalifa.png",
         generosId: [
-            ObjectId("682595e6c3ff7206d8441552"),
-            ObjectId("682595e6c3ff7206d8441553"),
+            ObjectId("6825b54ac3ff7206d844156d"),
+            ObjectId("6825b54ac3ff7206d844156e"),
         ],
-        integrantesId: [
-            ObjectId("682595d1c3ff7206d844154d")
+        integrantes: [
+            {
+                personaId: ObjectId("6825b547c3ff7206d8441568"),
+                rol: "Rapper/Solista",
+                fechaIngreso: ISODate("2006-01-01"),
+                fechaSalida: null
+            }
         ]
     },
     {
         _id: new ObjectId(),
         nombre: "Charlie Puth",
         tipo: "Solista",
-        imagenPath: "/portadas/charlieputh.png",
+        rutaImagen: "/portadas/charlieputh.png",
         generosId: [
-            ObjectId("682595e6c3ff7206d844154f")
+            ObjectId("6825b54ac3ff7206d844156a")
         ],
-        integrantesId: [
-            ObjectId("682595d1c3ff7206d844154e")
+        integrantes: [
+            {
+                personaId: ObjectId("6825b547c3ff7206d8441569"),
+                rol: "Solista",
+                fechaIngreso: ISODate("2015-01-01"),
+                fechaSalida: null
+            }
         ]
     }
 ]);
@@ -122,13 +129,13 @@ db.artistas.insertMany([
 db.albumes.insertOne({
     _id: new ObjectId(),
     nombre: "BTR",
-    fechaLanzamiento: ISODate("2010-10-11"),
-    generos: [
-        ObjectId("682595e6c3ff7206d844154f"),
+    lanzamiento: ISODate("2010-10-11"),
+    generosId: [
+        ObjectId("6825b54ac3ff7206d844156a"),
     ],
-    portadaPath: "/portadas/btr.png",
+    rutaImagen: "/portadas/btr.png",
     artistasId: [
-        ObjectId("682596b5c3ff7206d8441554"),
+        ObjectId("6825b584c3ff7206d844156f"),
     ]
 });
 
@@ -136,22 +143,22 @@ db.canciones.insertMany([
     {
         _id: new ObjectId(),
         nombre: "Big Time Rush",
-        albumId: ObjectId("682599e3c3ff7206d844155e")
+        albumId: ObjectId("6825b5f8c3ff7206d8441572")
     },
     {
         _id: new ObjectId(),
         nombre: "Boyfriend",
-        albumId: ObjectId("682599e3c3ff7206d844155e")
+        albumId: ObjectId("6825b5f8c3ff7206d8441572")
     },
     {
         _id: new ObjectId(),
         nombre: "Til I Forget About You",
-        albumId: ObjectId("682599e3c3ff7206d844155e")
+        albumId: ObjectId("6825b5f8c3ff7206d8441572")
     },
     {
         _id: new ObjectId(),
         nombre: "Worldwide",
-        albumId: ObjectId("682599e3c3ff7206d844155e")
+        albumId: ObjectId("6825b5f8c3ff7206d8441572")
     }
 ]);
 
@@ -159,38 +166,40 @@ db.canciones.insertOne({
     _id: new ObjectId(),
     nombre: "See You Again",
     generosId: [
-        ObjectId("682595e6c3ff7206d844154f"),
-        ObjectId("682595e6c3ff7206d8441552"),
+        ObjectId("6825b54ac3ff7206d844156d"),
+        ObjectId("6825b54ac3ff7206d844156a"),
     ],
     artistasId: [
-        ObjectId("68259709c3ff7206d8441555"),
-        ObjectId("68259709c3ff7206d8441556"),
+        ObjectId("6825b5cbc3ff7206d8441570"),
+        ObjectId("6825b5cbc3ff7206d8441571"),
     ]
 })
 
 db.usuarios.insertOne({
     _id: new ObjectId(),
     nombre: "Usuario",
+    apellido: "Usuario",
+    usuario: "usuario",
+    contraseña: "usuario123",
     correo: "usuario@email.com",
-    contraseña: "user123",
-    imagenPath: "/usuarios/usuario123.png",
+    rutaImagen: "/usuarios/usuario123.png",
     favoritos: {
         artistasId: [
-            ObjectId("682596b5c3ff7206d8441554"),
-            ObjectId("68259709c3ff7206d8441555"),
+            ObjectId("6825b584c3ff7206d844156f"),
+            ObjectId("6825b5cbc3ff7206d8441570"),
         ],
         albumesId: [
-            ObjectId("682599e3c3ff7206d844155e"),
+            ObjectId("6825b5f8c3ff7206d8441572"),
         ],
         cancionesId: [
-            ObjectId("68259815c3ff7206d844155c"),
-            ObjectId("68259a80c3ff7206d844155f"),
+            ObjectId("6825b630c3ff7206d8441573"),
+            ObjectId("6825b69bc3ff7206d8441577"),
         ]
     },
-    bloqueados: {
+    NoDeseados: {
         generos: [
-            ObjectId("682595e6c3ff7206d8441550"),
-            ObjectId("682595e6c3ff7206d8441551"),
+            ObjectId("6825b54ac3ff7206d844156b"),
+            ObjectId("6825b54ac3ff7206d844156c"),
         ]
     }
 });
