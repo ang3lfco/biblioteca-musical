@@ -10,4 +10,17 @@
         <maven.compiler.release>24</maven.compiler.release>
         <exec.mainClass>com.mycompany.persistencia.Persistencia</exec.mainClass>
     </properties>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>5.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>Modelos</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>
