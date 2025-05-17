@@ -5,7 +5,9 @@
 package interfaces;
 
 import dtos.ArtistasDTO;
+import entidades.Artista;
 import java.util.List;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -16,4 +18,10 @@ public interface IArtistasNegocio {
     List<ArtistasDTO> obtenerTodos();
     
     List<ArtistasDTO> buscarPorNombre(String nombre);
+    
+    List<ObjectId> buscarArtistasPorNombre(String nombre);
+    
+    List<ObjectId> buscarArtistasPorGenero(String nombreGenero);
+    
+    Artista buscarArtistaporId(Object id);
 }

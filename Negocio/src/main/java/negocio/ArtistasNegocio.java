@@ -5,9 +5,11 @@
 package negocio;
 
 import dtos.ArtistasDTO;
+import entidades.Artista;
 import interfaces.IArtistasDAO;
 import interfaces.IArtistasNegocio;
 import java.util.List;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -30,5 +32,23 @@ public class ArtistasNegocio implements IArtistasNegocio{
     public  List<ArtistasDTO> buscarPorNombre(String nombre){
         
             return artistasDAO.buscarPorNombre(nombre);  
+    }
+    
+    @Override 
+    public List<ObjectId> buscarArtistasPorNombre(String nombre){
+        
+        return artistasDAO.buscarArtistasPorNombre(nombre);
+    }
+    
+    @Override 
+    public List<ObjectId> buscarArtistasPorGenero(String nombreGenero){
+        
+        return artistasDAO.buscarArtistasPorGenero(nombreGenero);
+        
+    }
+    @Override 
+    public Artista buscarArtistaporId(Object id){
+        
+        return artistasDAO.buscarArtistaporId(id);
     }
 }
