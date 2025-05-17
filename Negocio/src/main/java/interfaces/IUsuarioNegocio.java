@@ -4,10 +4,13 @@
  */
 package interfaces;
 
+import dtos.UsuarioDTO;
+
 /**
  *
  * @author ang3lfco
  */
 public interface IUsuarioNegocio {
-    
+    void registrarUsuario(UsuarioDTO usuarioDTO);
+    boolean validarSesion(String usuario, String contrasena);
 }
