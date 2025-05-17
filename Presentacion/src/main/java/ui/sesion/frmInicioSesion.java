@@ -38,6 +38,9 @@ public class frmInicioSesion extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         
+        System.out.println(usuarioNegocio.getFavoritos("ang3lfco"));
+        System.out.println(usuarioNegocio.getNoDeseados("ang3lfco"));
+        
         RoundedPanel panelPrincipal = new RoundedPanel(50, new Color(18,25,44));
         panelPrincipal.setOpaque(false);
         setContentPane(panelPrincipal);

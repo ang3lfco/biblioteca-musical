@@ -180,5 +180,10 @@ public class UsuarioDTO {
         public void setGeneros(List<String> generos) {
             this.generos = generos;
         }
+
+        @Override
+        public String toString() {
+            return "NoDeseadosDTO{" + "generos=" + generos + '}';
+        }
     }
 }

@@ -14,4 +14,5 @@ public interface IUsuarioNegocio {
     void registrarUsuario(UsuarioDTO usuarioDTO);
     boolean validarSesion(String usuario, String contrasena);
     UsuarioDTO.FavoritosDTO getFavoritos(String usuario);
+    UsuarioDTO.NoDeseadosDTO getNoDeseados(String usuario);
 }

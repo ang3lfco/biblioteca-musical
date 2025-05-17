@@ -49,7 +49,14 @@ public class UsuarioDAO implements IUsuarioDAO{
         return null;
     }
     
-    public void getNoDeseados(String usuario){
-        
+    @Override
+    public Usuario.NoDeseados getNoDeseados(String usuario){
+        Usuario u = coleccion.find(Filters.eq("usuario", usuario))
+                             .projection(Projections.include("noDeseados"))
+                             .first();
+        if (u != null) {
+            return u.getNoDeseados();
+        }
+        return null;
     }
 }

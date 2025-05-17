@@ -68,4 +68,18 @@ public class UsuarioNegocio implements IUsuarioNegocio {
         
         return FavoritosDTO;
     }
+    
+    @Override
+    public UsuarioDTO.NoDeseadosDTO getNoDeseados(String usuario){
+        Usuario.NoDeseados noDeseados = usuarioDAO.getNoDeseados(usuario);
+        UsuarioDTO.NoDeseadosDTO noDeseadosDTO = new UsuarioDTO.NoDeseadosDTO();
+        
+        List<String> generosId = new ArrayList<>();
+        for(ObjectId id : noDeseados.getGeneros()){
+            generosId.add(String.valueOf(id));
+        }
+        noDeseadosDTO.setGeneros(generosId);
+        
+        return noDeseadosDTO;
+    }
 }
