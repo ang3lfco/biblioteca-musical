@@ -4,10 +4,13 @@
  */
 package interfaces;
 
+import entidades.Usuario;
+
 /**
  *
  * @author ang3lfco
  */
 public interface IUsuarioDAO {
-    
+    void insertar(Usuario usuario);
+    Usuario validar(String usuario, String contrasena);
 }
