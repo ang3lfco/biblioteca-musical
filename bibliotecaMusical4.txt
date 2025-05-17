@@ -196,7 +196,7 @@ db.usuarios.insertOne({
             ObjectId("6825b69bc3ff7206d8441577"),
         ]
     },
-    NoDeseados: {
+    noDeseados: {
         generos: [
             ObjectId("6825b54ac3ff7206d844156b"),
             ObjectId("6825b54ac3ff7206d844156c"),
