@@ -17,4 +17,5 @@ public interface IAlbumNegocio {
     List<AlbumDTO> buscarAlbumesPorFecha(LocalDate fecha, ObjectId idUsuario);
     List<AlbumDTO> buscarAlbumesPorGenero(String genero, ObjectId idUsuario);
     List<AlbumDTO> buscarAlbumesPorNombre(String nombre, ObjectId idUsuario);
+    List<AlbumDTO> getAlbumes(ObjectId idUsuario);
 }

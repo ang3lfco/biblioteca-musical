@@ -17,5 +17,5 @@ public interface IAlbumDAO {
     List<Album> buscarAlbumesPorNombre(String nombre, ObjectId idUsuario);
     List<Album> buscarAlbumesPorGenero(String genero, ObjectId idUsuario);
     List<Album> buscarAlbumesPorFecha(LocalDate fecha, ObjectId idUsuario);
-    
+    List<Album> getAlbumes(ObjectId idUsuario);
 }

@@ -54,6 +54,16 @@ public class AlbumNegocio implements IAlbumNegocio{
         
         return resultados;
     }
+    
+    @Override
+    public List<AlbumDTO> getAlbumes(ObjectId idUsuario){
+        List<AlbumDTO> resultados = new ArrayList<>();
+        List<Album> dtos = albumDAO.getAlbumes(idUsuario);
+        
+        resultados = this.ConvertirListaEntidadAListaDTO(dtos);
+        
+        return resultados;
+    }
 
     private List<AlbumDTO> ConvertirListaEntidadAListaDTO(List<Album> listaDAO) {
         List<AlbumDTO> resultados = new ArrayList<>();

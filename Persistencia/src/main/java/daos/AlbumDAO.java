@@ -30,6 +30,25 @@ public class AlbumDAO implements IAlbumDAO{
     }
 
     @Override
+    public List<Album> getAlbumes(ObjectId idUsuario) {
+        MongoCollection<Album> coleccion;
+        List<Album> resultados = new ArrayList<>();
+
+        coleccion = MongoConexion.getAlbumCollection();
+        Bson filtro =
+                Filters.not(Filters.in("generosId", generosNoDeseadosDelUsuario(idUsuario))
+        );
+
+        try (MongoCursor<Album> cursor = coleccion.find(filtro).iterator()) {
+            while (cursor.hasNext()) {
+                Album album = cursor.next();
+                resultados.add(album);
+            }
+        }
+        return resultados;
+    }
+    
+    @Override
     public List<Album> buscarAlbumesPorNombre(String nombre, ObjectId idUsuario) {
         MongoCollection<Album> coleccion;
         List<Album> resultados = new ArrayList<>();
