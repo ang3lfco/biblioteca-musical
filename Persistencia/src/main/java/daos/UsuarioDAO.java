@@ -6,9 +6,11 @@ package daos;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import conexion.MongoConexion;
 import entidades.Usuario;
 import interfaces.IUsuarioDAO;
+import java.util.List;
 import org.bson.conversions.Bson;
 
 /**
@@ -34,5 +36,20 @@ public class UsuarioDAO implements IUsuarioDAO{
                 Filters.eq("contraseña", contrasena)
         );
         return coleccion.find(filtro).first();
+    }
+    
+    @Override
+    public Usuario.Favoritos getFavoritos(String usuario) {
+        Usuario u = coleccion.find(Filters.eq("usuario", usuario))
+                             .projection(Projections.include("favoritos"))
+                             .first();
+        if (u != null) {
+            return u.getFavoritos();
+        }
+        return null;
+    }
+    
+    public void getNoDeseados(String usuario){
+        
     }
 }

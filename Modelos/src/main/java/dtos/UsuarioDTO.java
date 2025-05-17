@@ -119,7 +119,7 @@ public class UsuarioDTO {
         this.noDeseados = noDeseados;
     }
     
-    public class FavoritosDTO {
+    public static class FavoritosDTO {
         private List<String> artistasId;
         private List<String> albumesId;
         private List<String> cancionesId;
@@ -155,6 +155,11 @@ public class UsuarioDTO {
 
         public void setCancionesId(List<String> cancionesId) {
             this.cancionesId = cancionesId;
+        }
+
+        @Override
+        public String toString() {
+            return "FavoritosDTO{" + "artistasId=" + artistasId + ", albumesId=" + albumesId + ", cancionesId=" + cancionesId + '}';
         }
     }
     

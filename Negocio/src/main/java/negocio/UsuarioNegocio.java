@@ -8,6 +8,9 @@ import dtos.UsuarioDTO;
 import entidades.Usuario;
 import interfaces.IUsuarioDAO;
 import interfaces.IUsuarioNegocio;
+import java.util.ArrayList;
+import java.util.List;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -38,5 +41,31 @@ public class UsuarioNegocio implements IUsuarioNegocio {
     @Override
     public boolean validarSesion(String usuario, String contrasena){
         return usuarioDAO.validar(usuario, contrasena) != null;
+    }
+    
+    @Override
+    public UsuarioDTO.FavoritosDTO getFavoritos(String usuario){
+        Usuario.Favoritos Favoritos = usuarioDAO.getFavoritos(usuario);
+        UsuarioDTO.FavoritosDTO FavoritosDTO = new UsuarioDTO.FavoritosDTO();
+        
+        List<String> artistasId = new ArrayList<>();
+        for(ObjectId id : Favoritos.getArtistasId()){
+            artistasId.add(String.valueOf(id));
+        }
+        FavoritosDTO.setArtistasId(artistasId);
+        
+        List<String> albumesId = new ArrayList<>();
+        for(ObjectId id : Favoritos.getAlbumesId()){
+            albumesId.add(String.valueOf(id));
+        }
+        FavoritosDTO.setAlbumesId(albumesId);
+        
+        List<String> cancionesId = new ArrayList<>();
+        for(ObjectId id : Favoritos.getCancionesId()){
+            cancionesId.add(String.valueOf(id));
+        }
+        FavoritosDTO.setCancionesId(cancionesId);
+        
+        return FavoritosDTO;
     }
 }
