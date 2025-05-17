@@ -18,4 +18,6 @@ public interface IAlbumNegocio {
     List<AlbumDTO> buscarAlbumesPorGenero(String genero, ObjectId idUsuario);
     List<AlbumDTO> buscarAlbumesPorNombre(String nombre, ObjectId idUsuario);
     List<AlbumDTO> getAlbumes(ObjectId idUsuario);
+    AlbumDTO buscarAlbumPorId(Object id);
+    void agregarAlbum(AlbumDTO albumDTO);
 }

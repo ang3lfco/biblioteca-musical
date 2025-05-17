@@ -109,6 +109,27 @@ public class AlbumDAO implements IAlbumDAO{
         return resultados;
     }
     
+    @Override
+    public void agregarAlbum(Album album){
+        MongoCollection<Album> coleccion;
+
+        coleccion = MongoConexion.getAlbumCollection();
+        
+        coleccion.insertOne(album);
+    }
+    
+    @Override
+    public Album buscarAlbumPorId(Object id){
+        MongoCollection<Album> coleccion;
+
+        coleccion = MongoConexion.getAlbumCollection();
+        
+        if (!(id instanceof ObjectId)) {
+            return null;
+        }
+        return coleccion.find(Filters.eq("_id", id)).first();
+    }
+    
 
     private List<ObjectId> generosNoDeseadosDelUsuario(ObjectId idUsuario) {
         MongoCollection<Usuario> usuariosCollection = MongoConexion.getUsuarioCollection();

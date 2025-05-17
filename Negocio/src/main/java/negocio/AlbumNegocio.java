@@ -64,6 +64,28 @@ public class AlbumNegocio implements IAlbumNegocio{
         
         return resultados;
     }
+    
+    @Override
+    public AlbumDTO buscarAlbumPorId(Object id){
+        if (!(id instanceof ObjectId)) {
+            return null;
+        }
+        
+        AlbumDTO resultado;
+        Album dao = albumDAO.buscarAlbumPorId(id);
+        
+        return this.convertirADTO(dao);
+        
+    }
+    
+    @Override
+    public void agregarAlbum(AlbumDTO albumDTO){
+        Album album;
+        
+        album = this.convertirAEntidad(albumDTO);
+        
+        albumDAO.agregarAlbum(album);
+    }
 
     private List<AlbumDTO> ConvertirListaEntidadAListaDTO(List<Album> listaDAO) {
         List<AlbumDTO> resultados = new ArrayList<>();
@@ -82,5 +104,39 @@ public class AlbumNegocio implements IAlbumNegocio{
             }
         }
         return resultados;
+    }
+    
+    private AlbumDTO convertirADTO(Album album){
+        if (album==null) {
+            return null;
+        }
+        
+        AlbumDTO dto = new AlbumDTO(
+        album.getId(),
+                album.getNombre(),
+                album.getLanzamiento(),
+                album.getGenerosId(),
+                album.getRutaImagen(),
+                album.getArtistasId()
+        );
+        
+        return dto;
+    }
+    
+    private Album convertirAEntidad(AlbumDTO albumDTO){
+        if (albumDTO==null) {
+            return null;
+        }
+        
+        Album entidad = new Album(
+        albumDTO.getId(),
+                albumDTO.getNombre(),
+                albumDTO.getLanzamiento(),
+                albumDTO.getGenerosId(),
+                albumDTO.getRutaImagen(),
+                albumDTO.getArtistasId()
+        );
+        
+        return entidad;
     }
 }
