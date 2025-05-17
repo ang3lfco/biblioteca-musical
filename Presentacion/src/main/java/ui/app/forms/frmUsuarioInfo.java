@@ -4,6 +4,8 @@
  */
 package ui.app.forms;
 
+import dtos.UsuarioDTO;
+import interfaces.IUsuarioNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -11,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import ui.app.frmInicio;
 import ui.componentes.CustomRoundedButton;
+import ui.componentes.CustomRoundedPasswordField;
 import ui.componentes.CustomRoundedTextField;
 import ui.componentes.RoundedPanel;
 
@@ -20,13 +23,15 @@ import ui.componentes.RoundedPanel;
  */
 public class frmUsuarioInfo extends javax.swing.JFrame {
     private int xMouse, yMouse;
+    private IUsuarioNegocio usuarioNegocio;
     /**
      * Creates new form frmEditarInfo
      */
-    public frmUsuarioInfo() {
+    public frmUsuarioInfo(IUsuarioNegocio usuarioNegocio) {
         setUndecorated(true);
         setBackground(new Color(0,0,0,0));
         initComponents();
+        this.usuarioNegocio = usuarioNegocio;
         setLocationRelativeTo(null);
         
         RoundedPanel panelPrincipal = new RoundedPanel(50, new Color(18,25,44));
@@ -97,7 +102,7 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
         pnl_usuario.setBackground(new Color(0,0,0,0));
         pnl_usuario.add(usuario, BorderLayout.CENTER);
         
-        CustomRoundedTextField contrasena = new CustomRoundedTextField("Contraseña", "");
+        CustomRoundedPasswordField contrasena = new CustomRoundedPasswordField("Contraseña", "");
         contrasena.setBackgroundColor(new Color(23,30,49));
         contrasena.setPreferredSize(new Dimension(308,40));
         contrasena.setTextColor(Color.WHITE);
@@ -113,21 +118,31 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
         pnl_correo.setBackground(new Color(0,0,0,0));
         pnl_correo.add(correo, BorderLayout.CENTER);
         
-        CustomRoundedButton iniciar = new CustomRoundedButton("Confirmar", new Color(180, 30, 90));
-        iniciar.setTextColor(Color.WHITE);
-        iniciar.setPreferredSize(new Dimension(308, 40));
-        iniciar.setOpaque(false);
-        iniciar.addMouseListener(new java.awt.event.MouseAdapter() {
+        CustomRoundedButton confirmar = new CustomRoundedButton("Confirmar", new Color(180, 30, 90));
+        confirmar.setTextColor(Color.WHITE);
+        confirmar.setPreferredSize(new Dimension(308, 40));
+        confirmar.setOpaque(false);
+        
+        confirmar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                frmInicio inicio = new frmInicio();
-                inicio.setVisible(true);
-                dispose();
+                UsuarioDTO usuarioDTO = new UsuarioDTO(
+                        nombre.getText(),
+                        apellido.getText(),
+                        usuario.getText(),
+                        contrasena.getText(),
+                        correo.getText(),
+                        "/iconos/usuario.png",
+                        null,
+                        null
+                );
+                usuarioNegocio.registrarUsuario(usuarioDTO);
             }
         });
+        
         pnl_editar.setBackground(new Color(0,0,0,0));
         pnl_editar.removeAll();
         pnl_editar.setLayout(new BorderLayout());
-        pnl_editar.add(iniciar);
+        pnl_editar.add(confirmar);
         pnl_editar.revalidate();
         pnl_editar.repaint();
     }
@@ -230,6 +245,7 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
         jLabel2.setText("Cambiar");
 
         pnl_editar.setBackground(new java.awt.Color(255, 255, 255));
+        pnl_editar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         javax.swing.GroupLayout pnl_editarLayout = new javax.swing.GroupLayout(pnl_editar);
         pnl_editar.setLayout(pnl_editarLayout);
@@ -334,41 +350,41 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
         setState(JFrame.ICONIFIED);
     }//GEN-LAST:event_lbl_minimizarMouseClicked
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(frmUsuarioInfo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(frmUsuarioInfo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(frmUsuarioInfo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(frmUsuarioInfo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new frmUsuarioInfo().setVisible(true);
-            }
-        });
-    }
+//    /**
+//     * @param args the command line arguments
+//     */
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(frmUsuarioInfo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(frmUsuarioInfo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(frmUsuarioInfo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(frmUsuarioInfo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new frmUsuarioInfo().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;

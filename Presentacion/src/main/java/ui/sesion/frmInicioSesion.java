@@ -4,11 +4,18 @@
  */
 package ui.sesion;
 
+import daos.UsuarioDAO;
+import interfaces.IUsuarioDAO;
+import interfaces.IUsuarioNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import javax.swing.JOptionPane;
+import negocio.UsuarioNegocio;
+import ui.app.forms.frmUsuarioInfo;
 import ui.app.frmInicio;
 import ui.componentes.CustomRoundedButton;
+import ui.componentes.CustomRoundedPasswordField;
 import ui.componentes.CustomRoundedTextField;
 import ui.componentes.GradientPanel;
 import ui.componentes.RoundedPanel;
@@ -19,6 +26,9 @@ import ui.componentes.RoundedPanel;
  */
 public class frmInicioSesion extends javax.swing.JFrame {
     private int xMouse, yMouse;
+    private IUsuarioDAO usuarioDAO = new UsuarioDAO();
+    private IUsuarioNegocio usuarioNegocio = new UsuarioNegocio(usuarioDAO);
+    
     /**
      * Creates new form frmInicioSesion
      */
@@ -79,7 +89,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
         pnl_usuario.setBackground(new Color(0,0,0,0));
         pnl_usuario.add(usuario, BorderLayout.CENTER);
         
-        CustomRoundedTextField contrasena = new CustomRoundedTextField("Contraseña","");
+        CustomRoundedPasswordField contrasena = new CustomRoundedPasswordField("Contraseña","");
         contrasena.setBackgroundColor(new Color(23,30,49));
         contrasena.setPreferredSize(new Dimension(308,40));
         contrasena.setTextColor(Color.WHITE);
@@ -87,17 +97,24 @@ public class frmInicioSesion extends javax.swing.JFrame {
         pnl_contrasena.setBackground(new Color(0,0,0,0));
         pnl_contrasena.add(contrasena, BorderLayout.CENTER);
         
-        CustomRoundedButton iniciar = new CustomRoundedButton("Iniciar Sesion", new Color(180, 30, 90));
+        CustomRoundedButton iniciar = new CustomRoundedButton("Iniciar sesión ", new Color(180, 30, 90));
         iniciar.setTextColor(Color.WHITE);
         iniciar.setPreferredSize(new Dimension(308, 40));
         iniciar.setOpaque(false);
+        
         iniciar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                frmInicio inicio = new frmInicio();
-                inicio.setVisible(true);
-                dispose();
+                if(usuarioNegocio.validarSesion(usuario.getText(), contrasena.getText())){
+                    frmInicio inicio = new frmInicio(usuarioNegocio);
+                    inicio.setVisible(true);
+                    dispose();
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "Error, verifique sus datos.");
+                }
             }
         });
+        
         pnl_iniciar.setBackground(new Color(0,0,0,0));
         pnl_iniciar.removeAll();
         pnl_iniciar.setLayout(new BorderLayout());
@@ -191,6 +208,12 @@ public class frmInicioSesion extends javax.swing.JFrame {
 
         jLabel7.setForeground(new java.awt.Color(180, 30, 90));
         jLabel7.setText("Registrate aqui");
+        jLabel7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel7MouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnl_contenedorLayout = new javax.swing.GroupLayout(pnl_contenedor);
         pnl_contenedor.setLayout(pnl_contenedorLayout);
@@ -265,10 +288,14 @@ public class frmInicioSesion extends javax.swing.JFrame {
 
     private void pnl_iniciarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnl_iniciarMouseClicked
         // TODO add your handling code here:
-        frmInicio inicio = new frmInicio();
-        inicio.setVisible(true);
-        this.dispose();
+        
     }//GEN-LAST:event_pnl_iniciarMouseClicked
+
+    private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
+        // TODO add your handling code here:
+        frmUsuarioInfo registrar = new frmUsuarioInfo(usuarioNegocio);
+        registrar.setVisible(true);
+    }//GEN-LAST:event_jLabel7MouseClicked
 
     /**
      * @param args the command line arguments

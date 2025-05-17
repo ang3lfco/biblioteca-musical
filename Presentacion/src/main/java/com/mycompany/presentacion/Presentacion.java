@@ -4,13 +4,13 @@
 
 package com.mycompany.presentacion;
 
+import ui.sesion.frmInicioSesion;
+
 /**
  *
  * @author ang3lfco
  */
 public class Presentacion {
-
     public static void main(String[] args) {
-        System.out.println("Hello World!");
     }
 }
