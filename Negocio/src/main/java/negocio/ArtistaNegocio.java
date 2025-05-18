@@ -4,32 +4,32 @@
  */
 package negocio;
 
-import dtos.ArtistasDTO;
+import dtos.ArtistaDTO;
 import entidades.Artista;
-import interfaces.IArtistasDAO;
-import interfaces.IArtistasNegocio;
 import java.util.List;
 import org.bson.types.ObjectId;
+import interfaces.IArtistaDAO;
+import interfaces.IArtistaNegocio;
 
 /**
  *
  * @author Oribiel
  */
-public class ArtistasNegocio implements IArtistasNegocio{
-       private IArtistasDAO artistasDAO;
+public class ArtistaNegocio implements IArtistaNegocio{
+       private IArtistaDAO artistasDAO;
 
-    public ArtistasNegocio(IArtistasDAO artistasDAO) {
+    public ArtistaNegocio(IArtistaDAO artistasDAO) {
         this.artistasDAO = artistasDAO;
     }
 
   @Override
-    public  List<ArtistasDTO> obtenerTodos(){
+    public  List<ArtistaDTO> obtenerTodos(){
         
             return artistasDAO.obtenerTodos();  
     }
     
     @Override
-    public  List<ArtistasDTO> buscarPorNombre(String nombre){
+    public  List<ArtistaDTO> buscarPorNombre(String nombre){
         
             return artistasDAO.buscarPorNombre(nombre);  
     }

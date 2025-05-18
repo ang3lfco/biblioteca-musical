@@ -4,31 +4,31 @@
  */
 package negocio;
 
-import dtos.CancionesDTO;
+import dtos.CancionDTO;
 import entidades.Cancion;
-import interfaces.ICancionesDAO;
-import interfaces.ICancionesNegocio;
 import java.util.List;
 import org.bson.types.ObjectId;
+import interfaces.ICancionDAO;
+import interfaces.ICancionNegocio;
 
 /**
  *
  * @author Oribiel
  */
-public class CancionesNegocio implements ICancionesNegocio {
-    private ICancionesDAO cancionesDAO;
+public class CancionNegocio implements ICancionNegocio {
+    private ICancionDAO cancionesDAO;
     
-    public CancionesNegocio(ICancionesDAO cancionesDAO){
+    public CancionNegocio(ICancionDAO cancionesDAO){
        this.cancionesDAO= cancionesDAO;
     }
     
-    public List<CancionesDTO> obtenerTodas() {
+    public List<CancionDTO> obtenerTodas() {
         
         return cancionesDAO.obtenerTodas();
     }
     
    @Override
-   public  List<CancionesDTO> buscarPorNombre(String nombre) {
+   public  List<CancionDTO> buscarPorNombre(String nombre) {
        
        return cancionesDAO.buscarPorNombre(nombre);
    }
