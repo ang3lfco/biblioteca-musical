@@ -26,9 +26,9 @@ public class AlbumNegocio implements IAlbumNegocio{
     }
 
     @Override
-    public List<AlbumDTO> buscarAlbumesPorNombre(String nombre, ObjectId idUsuario) {
+    public List<AlbumDTO> buscarAlbumesPorNombre(String nombre, String idUsuario) {
         List<AlbumDTO> resultados = new ArrayList<>();
-        List<Album> dtos = albumDAO.buscarAlbumesPorNombre(nombre, idUsuario);
+        List<Album> dtos = albumDAO.buscarAlbumesPorNombre(nombre, new ObjectId(idUsuario));
         
         resultados = this.ConvertirListaEntidadAListaDTO(dtos);
         
@@ -36,9 +36,9 @@ public class AlbumNegocio implements IAlbumNegocio{
     }
     
     @Override
-    public List<AlbumDTO> buscarAlbumesPorGenero(String genero, ObjectId idUsuario){
+    public List<AlbumDTO> buscarAlbumesPorGenero(String genero, String idUsuario){
         List<AlbumDTO> resultados = new ArrayList<>();
-        List<Album> dtos = albumDAO.buscarAlbumesPorGenero(genero, idUsuario);
+        List<Album> dtos = albumDAO.buscarAlbumesPorGenero(genero, new ObjectId(idUsuario));
         
         resultados = this.ConvertirListaEntidadAListaDTO(dtos);
         
@@ -46,9 +46,9 @@ public class AlbumNegocio implements IAlbumNegocio{
     }
     
     @Override
-    public List<AlbumDTO> buscarAlbumesPorFecha(LocalDate fecha, ObjectId idUsuario){
+    public List<AlbumDTO> buscarAlbumesPorFecha(LocalDate fecha, String idUsuario){
         List<AlbumDTO> resultados = new ArrayList<>();
-        List<Album> dtos = albumDAO.buscarAlbumesPorFecha(fecha, idUsuario);
+        List<Album> dtos = albumDAO.buscarAlbumesPorFecha(fecha, new ObjectId(idUsuario));
         
         resultados = this.ConvertirListaEntidadAListaDTO(dtos);
         
@@ -56,9 +56,10 @@ public class AlbumNegocio implements IAlbumNegocio{
     }
     
     @Override
-    public List<AlbumDTO> getAlbumes(ObjectId idUsuario){
+    public List<AlbumDTO> getAlbumes(String idUsuario){
         List<AlbumDTO> resultados = new ArrayList<>();
-        List<Album> dtos = albumDAO.getAlbumes(idUsuario);
+        
+        List<Album> dtos = albumDAO.getAlbumes(new ObjectId(idUsuario));
         
         resultados = this.ConvertirListaEntidadAListaDTO(dtos);
         
@@ -66,13 +67,13 @@ public class AlbumNegocio implements IAlbumNegocio{
     }
     
     @Override
-    public AlbumDTO buscarAlbumPorId(Object id){
-        if (!(id instanceof ObjectId)) {
+    public AlbumDTO buscarAlbumPorId(String id){
+        if (!(id instanceof String)) {
             return null;
         }
         
         AlbumDTO resultado;
-        Album dao = albumDAO.buscarAlbumPorId(id);
+        Album dao = albumDAO.buscarAlbumPorId(new ObjectId(id));
         
         return this.convertirADTO(dao);
         

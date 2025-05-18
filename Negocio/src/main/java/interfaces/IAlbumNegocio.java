@@ -14,11 +14,11 @@ import org.bson.types.ObjectId;
  * @author ReneEzequiel23
  */
 public interface IAlbumNegocio {
-    List<AlbumDTO> buscarAlbumesPorFecha(LocalDate fecha, ObjectId idUsuario);
-    List<AlbumDTO> buscarAlbumesPorGenero(String genero, ObjectId idUsuario);
-    List<AlbumDTO> buscarAlbumesPorNombre(String nombre, ObjectId idUsuario);
-    List<AlbumDTO> getAlbumes(ObjectId idUsuario);
-    AlbumDTO buscarAlbumPorId(Object id);
+    List<AlbumDTO> buscarAlbumesPorFecha(LocalDate fecha, String idUsuario);
+    List<AlbumDTO> buscarAlbumesPorGenero(String genero, String idUsuario);
+    List<AlbumDTO> buscarAlbumesPorNombre(String nombre, String idUsuario);
+    List<AlbumDTO> getAlbumes(String idUsuario);
+    AlbumDTO buscarAlbumPorId(String id);
     void agregarAlbum(AlbumDTO albumDTO);
     List<AlbumDTO> obtenerTodos();
 }
