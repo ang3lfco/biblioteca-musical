@@ -4,6 +4,7 @@
  */
 package ui.app.aplicacion;
 
+import dtos.ArtistaDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -12,7 +13,6 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -29,18 +29,20 @@ import javax.swing.SwingConstants;
 import ui.app.forms.frmIntegrantesInfo;
 import ui.componentes.CustomRoundedTextField;
 import ui.componentes.RoundedComboBox;
+import interfaces.IArtistaNegocio;
 
 /**
  *
  * @author ang3lfco
  */
 public class pnlArtistas extends javax.swing.JPanel {
-
+    private IArtistaNegocio artistaNegocio;
     /**
      * Creates new form pnlCanciones
      */
-    public pnlArtistas() {
+    public pnlArtistas(IArtistaNegocio artistaNegocio) {
         initComponents();
+        this.artistaNegocio = artistaNegocio;
         iniciarFlechasScroll();
         jScrollPane_artistas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane_artistas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -84,19 +86,19 @@ public class pnlArtistas extends javax.swing.JPanel {
     }
     
     private void cargarCanciones() {
-        List<Artista> canciones = new ArrayList<>();
-        canciones.add(new Artista("C-Kan", "Rap Mexicano", "ckan.png"));
-        canciones.add(new Artista("Mc Davo", "Rap Mexicano", "mcdavo.png"));
-        canciones.add(new Artista("Dharius", "Rap Mexicano", "dharius.png"));
-        canciones.add(new Artista("Gera MX", "Rap Mexicano", "geramx.png"));
-        canciones.add(new Artista("Eme Malafe", "Rap Mexicano", "ememalafe.png"));
-        canciones.add(new Artista("Lefty SM", "Rap Mexicano", "leftysm.png"));
-        canciones.add(new Artista("Neto Peña", "Rap Mexicano", "netopena.png"));
+        List<ArtistaDTO> artistas = artistaNegocio.obtenerTodos();
+//        artistas.add(new Artista("C-Kan", "Rap Mexicano", "ckan.png"));
+//        artistas.add(new Artista("Mc Davo", "Rap Mexicano", "mcdavo.png"));
+//        artistas.add(new Artista("Dharius", "Rap Mexicano", "dharius.png"));
+//        artistas.add(new Artista("Gera MX", "Rap Mexicano", "geramx.png"));
+//        artistas.add(new Artista("Eme Malafe", "Rap Mexicano", "ememalafe.png"));
+//        artistas.add(new Artista("Lefty SM", "Rap Mexicano", "leftysm.png"));
+//        artistas.add(new Artista("Neto Peña", "Rap Mexicano", "netopena.png"));
 
         panelArtistas.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
 
-        for (Artista cancion : canciones) {
-            JPanel panel = crearPanelCancion(cancion);
+        for (ArtistaDTO artista : artistas) {
+            JPanel panel = crearPanelCancion(artista);
             panelArtistas.add(panel);
         }
 
@@ -104,13 +106,13 @@ public class pnlArtistas extends javax.swing.JPanel {
         panelArtistas.repaint();
     }
 
-    private JPanel crearPanelCancion(Artista cancion) {
+    private JPanel crearPanelCancion(ArtistaDTO artista) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.setBackground(new java.awt.Color(23,30,49));
 
         try {
-            ImageIcon icono = new ImageIcon(getClass().getResource("/portadas/" + cancion.getPortada()));
+            ImageIcon icono = new ImageIcon(getClass().getResource(artista.getRutaImagen()));
             Image imagen = icono.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
             JLabel lblImagen = new JLabel(new ImageIcon(imagen));
             lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
@@ -123,13 +125,13 @@ public class pnlArtistas extends javax.swing.JPanel {
         contenedorTexto.setLayout(new BoxLayout(contenedorTexto, BoxLayout.Y_AXIS));
         contenedorTexto.setOpaque(false);
 
-        JLabel lblNombre = new JLabel(cancion.getNombre(), SwingConstants.CENTER);
+        JLabel lblNombre = new JLabel(artista.getNombre(), SwingConstants.CENTER);
         lblNombre.setForeground(Color.WHITE);
         lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblNombre.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblNombre.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
-
-        JLabel lblGenero = new JLabel(cancion.getGenero(), SwingConstants.CENTER);
+        
+        JLabel lblGenero = new JLabel(artista.getTipo(), SwingConstants.CENTER);
         lblGenero.setForeground(Color.LIGHT_GRAY);
         lblGenero.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         lblGenero.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -171,7 +173,7 @@ public class pnlArtistas extends javax.swing.JPanel {
                 else if (e.getButton() == MouseEvent.BUTTON1){
                     //Click Derecho
                     JOptionPane.showMessageDialog(null, "Mostrar Información.");
-                    frmIntegrantesInfo info = new frmIntegrantesInfo();
+                    frmIntegrantesInfo info = new frmIntegrantesInfo(artista);
                     info.setVisible(true);
                 }
             }

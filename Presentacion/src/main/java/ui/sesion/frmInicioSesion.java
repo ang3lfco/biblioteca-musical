@@ -4,13 +4,21 @@
  */
 package ui.sesion;
 
+import daos.AlbumDAO;
+import daos.ArtistaDAO;
+import daos.CancionDAO;
 import daos.UsuarioDAO;
+import interfaces.IAlbumDAO;
+import interfaces.IAlbumNegocio;
 import interfaces.IUsuarioDAO;
 import interfaces.IUsuarioNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JOptionPane;
+import negocio.AlbumNegocio;
+import negocio.ArtistaNegocio;
+import negocio.CancionNegocio;
 import negocio.UsuarioNegocio;
 import ui.app.forms.frmUsuarioInfo;
 import ui.app.frmInicio;
@@ -19,6 +27,10 @@ import ui.componentes.CustomRoundedPasswordField;
 import ui.componentes.CustomRoundedTextField;
 import ui.componentes.GradientPanel;
 import ui.componentes.RoundedPanel;
+import interfaces.IArtistaDAO;
+import interfaces.ICancionDAO;
+import interfaces.IArtistaNegocio;
+import interfaces.ICancionNegocio;
 
 /**
  *
@@ -27,7 +39,13 @@ import ui.componentes.RoundedPanel;
 public class frmInicioSesion extends javax.swing.JFrame {
     private int xMouse, yMouse;
     private IUsuarioDAO usuarioDAO = new UsuarioDAO();
+    private ICancionDAO cancionDAO = new CancionDAO();
+    private IAlbumDAO albumDAO = new AlbumDAO();
+    private IArtistaDAO artistaDAO = new ArtistaDAO();
+    private ICancionNegocio cancionNegocio = new CancionNegocio(cancionDAO);
     private IUsuarioNegocio usuarioNegocio = new UsuarioNegocio(usuarioDAO);
+    private IAlbumNegocio albumNegocio = new AlbumNegocio(albumDAO);
+    private IArtistaNegocio artistaNegocio = new ArtistaNegocio(artistaDAO);
     
     /**
      * Creates new form frmInicioSesion
@@ -108,7 +126,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
         iniciar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 if(usuarioNegocio.validarSesion(usuario.getText(), contrasena.getText())){
-                    frmInicio inicio = new frmInicio(usuarioNegocio);
+                    frmInicio inicio = new frmInicio(usuarioNegocio, cancionNegocio, albumNegocio, artistaNegocio);
                     inicio.setVisible(true);
                     dispose();
                 }

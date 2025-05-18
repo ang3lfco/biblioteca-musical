@@ -4,6 +4,7 @@
  */
 package ui.app.aplicacion;
 
+import dtos.CancionDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -28,18 +29,20 @@ import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import ui.componentes.CustomRoundedTextField;
 import ui.componentes.RoundedComboBox;
+import interfaces.ICancionNegocio;
 
 /**
  *
  * @author ang3lfco
  */
 public class pnlCanciones extends javax.swing.JPanel {
-
+    private ICancionNegocio cancionesNegocio;
     /**
      * Creates new form pnlCanciones
      */
-    public pnlCanciones() {
+    public pnlCanciones(ICancionNegocio cancionesNegocio) {
         initComponents();
+        this.cancionesNegocio = cancionesNegocio;
         iniciarFlechasScroll();
         jScrollPane_canciones.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane_canciones.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -76,21 +79,21 @@ public class pnlCanciones extends javax.swing.JPanel {
     }
     
     private void cargarCanciones() {
-        List<Cancion> canciones = new ArrayList<>();
-        canciones.add(new Cancion("Amapola", "Album", "Amapola.png"));
-        canciones.add(new Cancion("Madonna", "Album", "Madonna.png"));
-        canciones.add(new Cancion("Rosones", "Album", "Rosones.png"));
-        canciones.add(new Cancion("Si no quieres no", "Album", "Si no quieres no.png"));
-        canciones.add(new Cancion("Te queria ver", "Album", "Te queria ver.png"));
-        canciones.add(new Cancion("Triple lavada", "Album", "Triple lavada.png"));
-        canciones.add(new Cancion("Corazon de piedra", "Album", "Corazon de piedra.png"));
-        canciones.add(new Cancion("El hijo mayor", "Album", "El hijo mayor.png"));
-        canciones.add(new Cancion("El gavilan", "Album", "El gavilan.png"));
+        List<CancionDTO> canciones = cancionesNegocio.obtenerTodas();
+//        canciones.add(new Cancion("Amapola", "Album", "Amapola.png"));
+//        canciones.add(new Cancion("Madonna", "Album", "Madonna.png"));
+//        canciones.add(new Cancion("Rosones", "Album", "Rosones.png"));
+//        canciones.add(new Cancion("Si no quieres no", "Album", "Si no quieres no.png"));
+//        canciones.add(new Cancion("Te queria ver", "Album", "Te queria ver.png"));
+//        canciones.add(new Cancion("Triple lavada", "Album", "Triple lavada.png"));
+//        canciones.add(new Cancion("Corazon de piedra", "Album", "Corazon de piedra.png"));
+//        canciones.add(new Cancion("El hijo mayor", "Album", "El hijo mayor.png"));
+//        canciones.add(new Cancion("El gavilan", "Album", "El gavilan.png"));
         
 
         panelCanciones.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
 
-        for (Cancion cancion : canciones) {
+        for (CancionDTO cancion : canciones) {
             JPanel panel = crearPanelCancion(cancion);
             panelCanciones.add(panel);
         }
@@ -99,13 +102,13 @@ public class pnlCanciones extends javax.swing.JPanel {
         panelCanciones.repaint();
     }
 
-    private JPanel crearPanelCancion(Cancion cancion) {
+    private JPanel crearPanelCancion(CancionDTO cancion) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.setBackground(new java.awt.Color(23,30,49));
 
         try {
-            ImageIcon icono = new ImageIcon(getClass().getResource("/portadas/" + cancion.getPortada()));
+            ImageIcon icono = new ImageIcon(getClass().getResource("/portadas/" + "cancion.png"));
             Image imagen = icono.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
             JLabel lblImagen = new JLabel(new ImageIcon(imagen));
             lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
@@ -124,7 +127,7 @@ public class pnlCanciones extends javax.swing.JPanel {
         lblNombre.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblNombre.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
 
-        JLabel lblAlbum = new JLabel(cancion.getAlbum(), SwingConstants.CENTER);
+        JLabel lblAlbum = new JLabel("Album", SwingConstants.CENTER);
         lblAlbum.setForeground(Color.LIGHT_GRAY);
         lblAlbum.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         lblAlbum.setAlignmentX(Component.CENTER_ALIGNMENT);

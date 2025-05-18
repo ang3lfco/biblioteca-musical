@@ -14,10 +14,5 @@ import ui.sesion.frmInicioSesion;
  */
 public class Presentacion {
     public static void main(String[] args) {
-        IUsuarioNegocio usuarionegocio = null;
-        frmInicio f= new frmInicio(usuarionegocio);
-        
-        f.setVisible(true);
-        
     }
 }

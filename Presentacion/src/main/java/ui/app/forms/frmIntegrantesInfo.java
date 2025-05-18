@@ -4,6 +4,7 @@
  */
 package ui.app.forms;
 
+import dtos.ArtistaDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -30,13 +31,15 @@ import ui.componentes.RoundedPanel;
 public class frmIntegrantesInfo extends javax.swing.JFrame {
     private int xMouse, yMouse;
     private List<Integrante> integrantes = new ArrayList<>();
+    private ArtistaDTO artista;
     /**
      * Creates new form frmBandaInfo
      */
-    public frmIntegrantesInfo() {
+    public frmIntegrantesInfo(ArtistaDTO artista) {
         setUndecorated(true);
         setBackground(new Color(0,0,0,0));
         initComponents();
+        this.artista = artista;
         jScrollPane1.setBorder(null);
         
         setLocationRelativeTo(null);

@@ -4,6 +4,7 @@
  */
 package ui.app.aplicacion;
 
+import interfaces.IAlbumNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -29,12 +30,13 @@ import ui.componentes.RoundedComboBox;
  * @author ang3lfco
  */
 public class pnlAlbumes extends javax.swing.JPanel {
-
+    private IAlbumNegocio albumNegocio;
     /**
      * Creates new form pnlCanciones
      */
-    public pnlAlbumes() {
+    public pnlAlbumes(IAlbumNegocio albumNegocio) {
         initComponents();
+        this.albumNegocio = albumNegocio;
         iniciarFlechasScroll();
         jScrollPane_albumes.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane_albumes.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
