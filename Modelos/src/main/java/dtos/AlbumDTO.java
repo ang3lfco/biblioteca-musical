@@ -13,25 +13,17 @@ import org.bson.types.ObjectId;
  * @author ReneEzequiel23
  */
 public class AlbumDTO {
-    private ObjectId id;
+    private String id;
     private String nombre;
     private LocalDate lanzamiento;
-    private List<ObjectId> generosId;
+    private List<String> generosId;
     private String rutaImagen;
-    private List<ObjectId> artistasId;
+    private List<String> artistasId;
 
     public AlbumDTO() {
     }
 
-    public AlbumDTO(String nombre, LocalDate lanzamiento, List<ObjectId> generosId, String rutaImagen, List<ObjectId> artistasId) {
-        this.nombre = nombre;
-        this.lanzamiento = lanzamiento;
-        this.generosId = generosId;
-        this.rutaImagen = rutaImagen;
-        this.artistasId = artistasId;
-    }
-
-    public AlbumDTO(ObjectId id, String nombre, LocalDate lanzamiento, List<ObjectId> generosId, String rutaImagen, List<ObjectId> artistasId) {
+    public AlbumDTO(String id, String nombre, LocalDate lanzamiento, List<String> generosId, String rutaImagen, List<String> artistasId) {
         this.id = id;
         this.nombre = nombre;
         this.lanzamiento = lanzamiento;
@@ -40,11 +32,19 @@ public class AlbumDTO {
         this.artistasId = artistasId;
     }
 
-    public ObjectId getId() {
+    public AlbumDTO(String nombre, LocalDate lanzamiento, List<String> generosId, String rutaImagen, List<String> artistasId) {
+        this.nombre = nombre;
+        this.lanzamiento = lanzamiento;
+        this.generosId = generosId;
+        this.rutaImagen = rutaImagen;
+        this.artistasId = artistasId;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -64,11 +64,11 @@ public class AlbumDTO {
         this.lanzamiento = lanzamiento;
     }
 
-    public List<ObjectId> getGenerosId() {
+    public List<String> getGenerosId() {
         return generosId;
     }
 
-    public void setGenerosId(List<ObjectId> generosId) {
+    public void setGenerosId(List<String> generosId) {
         this.generosId = generosId;
     }
 
@@ -80,11 +80,11 @@ public class AlbumDTO {
         this.rutaImagen = rutaImagen;
     }
 
-    public List<ObjectId> getArtistasId() {
+    public List<String> getArtistasId() {
         return artistasId;
     }
 
-    public void setArtistasId(List<ObjectId> artistasId) {
+    public void setArtistasId(List<String> artistasId) {
         this.artistasId = artistasId;
     }
 
@@ -92,6 +92,6 @@ public class AlbumDTO {
     public String toString() {
         return "AlbumDTO{" + "id=" + id + ", nombre=" + nombre + ", lanzamiento=" + lanzamiento + ", generosId=" + generosId + ", rutaImagen=" + rutaImagen + ", artistasId=" + artistasId + '}';
     }
-    
+   
     
 }

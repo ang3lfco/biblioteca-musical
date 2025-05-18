@@ -130,6 +130,20 @@ public class AlbumDAO implements IAlbumDAO{
         return coleccion.find(Filters.eq("_id", id)).first();
     }
     
+    @Override
+    public List<Album> obtenerTodos(){
+        MongoCollection<Album> coleccion;
+
+        coleccion = MongoConexion.getAlbumCollection();
+        List<Album> resultados = new ArrayList<>();
+        try (MongoCursor<Album> cursor = coleccion.find().iterator()) {
+            while (cursor.hasNext()) {
+                Album album = cursor.next();
+                resultados.add(album);
+            }
+        }
+        return resultados;
+    }
 
     private List<ObjectId> generosNoDeseadosDelUsuario(ObjectId idUsuario) {
         MongoCollection<Usuario> usuariosCollection = MongoConexion.getUsuarioCollection();

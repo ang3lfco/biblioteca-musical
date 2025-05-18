@@ -86,6 +86,15 @@ public class AlbumNegocio implements IAlbumNegocio{
         
         albumDAO.agregarAlbum(album);
     }
+    
+    public List<AlbumDTO> obtenerTodos(){
+        List<AlbumDTO> resultados = new ArrayList<>();
+        List<Album> dtos = albumDAO.obtenerTodos();
+        
+        resultados = this.ConvertirListaEntidadAListaDTO(dtos);
+        
+        return resultados;
+    }
 
     private List<AlbumDTO> ConvertirListaEntidadAListaDTO(List<Album> listaDAO) {
         List<AlbumDTO> resultados = new ArrayList<>();
@@ -93,14 +102,9 @@ public class AlbumNegocio implements IAlbumNegocio{
         if (listaDAO != null) {
 
             for (Album album : listaDAO) {
-                resultados.add(new AlbumDTO(
-                        album.getId(),
-                        album.getNombre(),
-                        album.getLanzamiento(),
-                        album.getGenerosId(),
-                        album.getRutaImagen(),
-                        album.getArtistasId()
-                ));
+                resultados.add(
+                        this.convertirADTO(album)
+                );
             }
         }
         return resultados;
@@ -111,16 +115,27 @@ public class AlbumNegocio implements IAlbumNegocio{
             return null;
         }
         
+        List<String> generos = new ArrayList<>();
+        for (ObjectId id : album.getGenerosId()) {
+            generos.add(id.toHexString());
+        }
+        
+        List<String> artistas = new ArrayList<>();
+        for (ObjectId id : album.getArtistasId()) {
+            artistas.add(id.toHexString());
+        }
+        
         AlbumDTO dto = new AlbumDTO(
-        album.getId(),
+        album.getId().toHexString(),
                 album.getNombre(),
                 album.getLanzamiento(),
-                album.getGenerosId(),
+                generos,
                 album.getRutaImagen(),
-                album.getArtistasId()
+                artistas
         );
         
         return dto;
+        
     }
     
     private Album convertirAEntidad(AlbumDTO albumDTO){
@@ -128,13 +143,23 @@ public class AlbumNegocio implements IAlbumNegocio{
             return null;
         }
         
+        List<ObjectId> generos = new ArrayList<>();
+        for (String id : albumDTO.getGenerosId()) {
+            generos.add(new ObjectId(id));
+        }
+        
+        List<ObjectId> artistas = new ArrayList<>();
+        for (String id : albumDTO.getArtistasId()) {
+            artistas.add(new ObjectId(id));
+        }
+        
         Album entidad = new Album(
-        albumDTO.getId(),
+        new ObjectId(albumDTO.getId()),
                 albumDTO.getNombre(),
                 albumDTO.getLanzamiento(),
-                albumDTO.getGenerosId(),
+                generos,
                 albumDTO.getRutaImagen(),
-                albumDTO.getArtistasId()
+                artistas
         );
         
         return entidad;

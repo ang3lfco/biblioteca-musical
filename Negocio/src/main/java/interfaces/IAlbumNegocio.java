@@ -20,4 +20,5 @@ public interface IAlbumNegocio {
     List<AlbumDTO> getAlbumes(ObjectId idUsuario);
     AlbumDTO buscarAlbumPorId(Object id);
     void agregarAlbum(AlbumDTO albumDTO);
+    List<AlbumDTO> obtenerTodos();
 }
