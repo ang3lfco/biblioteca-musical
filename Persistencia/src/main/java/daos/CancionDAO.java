@@ -83,15 +83,19 @@ public class CancionDAO implements ICancionDAO {
         }
 
         List<String> generos = new ArrayList<>();
-        for (ObjectId id : cancion.getGenerosId()) {
-            generos.add(id.toHexString());
+        if (cancion.getGenerosId() != null) {
+            for (ObjectId id : cancion.getGenerosId()) {
+                generos.add(id.toHexString());
+            }
         }
 
         List<String> artistas = new ArrayList<>();
-        for (ObjectId id : cancion.getArtistasId()) {
-            artistas.add(id.toHexString());
+        if (cancion.getArtistasId() != null) {
+            for (ObjectId id : cancion.getArtistasId()) {
+                artistas.add(id.toHexString());
+            }
         }
-
+ 
         String albumId = null;
         if (cancion.getAlbumId() != null) {
             albumId = cancion.getAlbumId().toHexString();
