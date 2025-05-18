@@ -80,11 +80,13 @@ public class ArtistaDAO implements IArtistaDAO {
         return ids;
     }
 
-    public Artista buscarArtistaporId(Object id) {
-        if (!(id instanceof ObjectId)) {
+    public Artista buscarArtistaporId(String id) {
+        try {
+            ObjectId objectId = new ObjectId(id);
+            return coleccion.find(Filters.eq("_id", objectId)).first();
+        } catch (IllegalArgumentException e) {
             return null;
         }
-        return coleccion.find(Filters.eq("_id", id)).first();
     }
 
     private ArtistaDTO convertirADTO(Artista artista) {

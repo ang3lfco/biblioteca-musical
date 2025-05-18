@@ -22,10 +22,10 @@ public class TestArtistasDAO {
 
 
 // Prueba metodo obtener todos
-        List<ArtistaDTO> todosLosArtistas = artistasDAO.obtenerTodos();
-        for (ArtistaDTO artista : todosLosArtistas) {
-            mostrarArtista(artista);
-        }
+//        List<ArtistaDTO> todosLosArtistas = artistasDAO.obtenerTodos();
+//        for (ArtistaDTO artista : todosLosArtistas) {
+//            mostrarArtista(artista);
+//        }
 
 //prueba buscar por nombre
 //        List<ArtistasDTO> artistasEncontrados = artistasDAO.buscarPorNombre("The Beatles");
@@ -33,6 +33,8 @@ public class TestArtistasDAO {
 //            mostrarArtista(artista);
 //        }
   }
+    
+    
 
 
     private static void mostrarArtista(ArtistaDTO artista) {

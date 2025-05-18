@@ -23,6 +23,6 @@ public interface IArtistaDAO {
     
     List<ObjectId> buscarArtistasPorGenero(String nombreGenero);
     
-    Artista buscarArtistaporId(Object id);
+    Artista buscarArtistaporId(String id);
     
 }
