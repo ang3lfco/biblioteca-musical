@@ -8,31 +8,31 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import conexion.MongoConexion;
-import dtos.ArtistasDTO;
+import dtos.ArtistaDTO;
 import entidades.Artista;
 import entidades.Genero;
-import interfaces.IArtistasDAO;
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import interfaces.IArtistaDAO;
 
 /**
  *
  * @author Oribiel
  */
-public class ArtistasDAO implements IArtistasDAO {
+public class ArtistaDAO implements IArtistaDAO {
 
     private final MongoCollection<Artista> coleccion;
     private final MongoCollection<Genero> generoCollection;
 
-    public ArtistasDAO() {
+    public ArtistaDAO() {
         this.coleccion = MongoConexion.getArtistaCollection();
         this.generoCollection = MongoConexion.getGeneroCollection();
     }
 
-    public List<ArtistasDTO> obtenerTodos() {
-        List<ArtistasDTO> lista = new ArrayList<>();
+    public List<ArtistaDTO> obtenerTodos() {
+        List<ArtistaDTO> lista = new ArrayList<>();
         try (MongoCursor<Artista> cursor = coleccion.find().iterator()) {
             while (cursor.hasNext()) {
                 Artista artista = cursor.next();
@@ -42,8 +42,8 @@ public class ArtistasDAO implements IArtistasDAO {
         return lista;
     }
 
-    public List<ArtistasDTO> buscarPorNombre(String nombre) {
-        List<ArtistasDTO> lista = new ArrayList<>();
+    public List<ArtistaDTO> buscarPorNombre(String nombre) {
+        List<ArtistaDTO> lista = new ArrayList<>();
         Bson filtro = Filters.eq("nombre", nombre);
         try (MongoCursor<Artista> cursor = coleccion.find(filtro).iterator()) {
             while (cursor.hasNext()) {
@@ -85,8 +85,8 @@ public class ArtistasDAO implements IArtistasDAO {
         return coleccion.find(Filters.eq("_id", id)).first();
     }
 
-    private ArtistasDTO convertirADTO(Artista artista) {
-        return new ArtistasDTO(
+    private ArtistaDTO convertirADTO(Artista artista) {
+        return new ArtistaDTO(
                 artista.getId(),
                 artista.getNombre(),
                 artista.getTipo(),

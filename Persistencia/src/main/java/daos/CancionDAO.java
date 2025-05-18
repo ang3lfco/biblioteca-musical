@@ -8,29 +8,29 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import conexion.MongoConexion;
-import dtos.CancionesDTO;
+import dtos.CancionDTO;
 import entidades.Cancion;
-import interfaces.ICancionesDAO;
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import interfaces.ICancionDAO;
 
 /**
  *
  * @author Oribiel
  */
-public class CancionesDAO implements ICancionesDAO {
+public class CancionDAO implements ICancionDAO {
 
     private final MongoCollection<Cancion> coleccion;
 
-    public CancionesDAO() {
+    public CancionDAO() {
         this.coleccion = MongoConexion.getCancionCollection();
 
     }
 
-    public List<CancionesDTO> obtenerTodas() {
-        List<CancionesDTO> lista = new ArrayList<>();
+    public List<CancionDTO> obtenerTodas() {
+        List<CancionDTO> lista = new ArrayList<>();
         try (MongoCursor<Cancion> cursor = coleccion.find().iterator()) {
             while (cursor.hasNext()) {
                 Cancion cancion = cursor.next();
@@ -42,8 +42,8 @@ public class CancionesDAO implements ICancionesDAO {
     
     //Regresa una lista
     @Override
-    public List<CancionesDTO> buscarPorNombre(String nombre) {
-        List<CancionesDTO> lista = new ArrayList<>();
+    public List<CancionDTO> buscarPorNombre(String nombre) {
+        List<CancionDTO> lista = new ArrayList<>();
         Bson filtro = Filters.eq("nombre", nombre);
         try (MongoCursor<Cancion> cursor = coleccion.find(filtro).iterator()) {
             while (cursor.hasNext()) {
@@ -76,8 +76,8 @@ public class CancionesDAO implements ICancionesDAO {
         return canciones;
     }
     
-    private CancionesDTO convertirADTO(Cancion cancion) {
-        return new CancionesDTO(
+    private CancionDTO convertirADTO(Cancion cancion) {
+        return new CancionDTO(
                 cancion.getId(),
                 cancion.getNombre(),
                 cancion.getAlbumId(),

@@ -4,7 +4,7 @@
  */
 package interfaces;
 
-import dtos.ArtistasDTO;
+import dtos.ArtistaDTO;
 import entidades.Artista;
 import java.util.List;
 import org.bson.types.ObjectId;
@@ -13,11 +13,11 @@ import org.bson.types.ObjectId;
  *
  * @author Oribiel
  */
-public interface IArtistasDAO {
+public interface IArtistaDAO {
     
     
-    List<ArtistasDTO> obtenerTodos();
-    List<ArtistasDTO> buscarPorNombre(String nombre);
+    List<ArtistaDTO> obtenerTodos();
+    List<ArtistaDTO> buscarPorNombre(String nombre);
     
     List<ObjectId> buscarArtistasPorNombre(String nombre);
     

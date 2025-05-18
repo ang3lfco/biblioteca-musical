@@ -4,7 +4,7 @@
  */
 package interfaces;
 
-import dtos.CancionesDTO;
+import dtos.CancionDTO;
 import entidades.Cancion;
 import java.util.List;
 import org.bson.types.ObjectId;
@@ -13,11 +13,11 @@ import org.bson.types.ObjectId;
  *
  * @author Oribiel
  */
-public interface ICancionesDAO {
+public interface ICancionDAO {
     //Regresa una Lista
-    List<CancionesDTO> obtenerTodas();
+    List<CancionDTO> obtenerTodas();
     //Regresa una lista
-    List<CancionesDTO> buscarPorNombre(String nombre);
+    List<CancionDTO> buscarPorNombre(String nombre);
     //Regresa el id
     List<ObjectId> buscarCancionesPorNombre(String nombre);
     //Obtiene todas y las regresa como en entidad

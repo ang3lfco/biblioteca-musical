@@ -4,8 +4,8 @@
  */
 package com.mycompany.persistencia;
 
-import daos.ArtistasDAO;
-import dtos.ArtistasDTO;
+import daos.ArtistaDAO;
+import dtos.ArtistaDTO;
 import java.util.List;
 
 /**
@@ -18,24 +18,24 @@ public class TestArtistasDAO {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-      ArtistasDAO artistasDAO = new ArtistasDAO();
+      ArtistaDAO artistasDAO = new ArtistaDAO();
 
 
 // Prueba metodo obtener todos
-        List<ArtistasDTO> todosLosArtistas = artistasDAO.obtenerTodos();
-        for (ArtistasDTO artista : todosLosArtistas) {
+        List<ArtistaDTO> todosLosArtistas = artistasDAO.obtenerTodos();
+        for (ArtistaDTO artista : todosLosArtistas) {
             mostrarArtista(artista);
         }
 
 //prueba buscar por nombre
 //        List<ArtistasDTO> artistasEncontrados = artistasDAO.buscarPorNombre("The Beatles");
-//        for (ArtistasDTO artista : artistasEncontrados) {
+//        for (ArtistaDTO artista : artistasEncontrados) {
 //            mostrarArtista(artista);
 //        }
   }
 
 
-    private static void mostrarArtista(ArtistasDTO artista) {
+    private static void mostrarArtista(ArtistaDTO artista) {
         System.out.println("ID: " + artista.getId());
         System.out.println("Nombre: " + artista.getNombre());
         System.out.println("Tipo: " + artista.getTipo());
