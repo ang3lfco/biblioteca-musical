@@ -13,16 +13,16 @@ import org.bson.types.ObjectId;
  */
 public class CancionDTO {
 
-    private ObjectId id;
+    private String id;
     private String nombre;
-    private ObjectId albumId;
-    private List<ObjectId> generosId;
-    private List<ObjectId> artistasId;
+    private String albumId;
+    private List<String> generosId;
+    private List<String> artistasId;
 
     public CancionDTO() {
     }
 
-    public CancionDTO(ObjectId id, String nombre, ObjectId albumId, List<ObjectId> generosId, List<ObjectId> artistasId) {
+    public CancionDTO(String id, String nombre, String albumId, List<String> generosId, List<String> artistasId) {
         this.id = id;
         this.nombre = nombre;
         this.albumId = albumId;
@@ -30,18 +30,18 @@ public class CancionDTO {
         this.artistasId = artistasId;
     }
 
-    public CancionDTO(String nombre, ObjectId albumId, List<ObjectId> generosId, List<ObjectId> artistasId) {
+    public CancionDTO(String nombre, String albumId, List<String> generosId, List<String> artistasId) {
         this.nombre = nombre;
         this.albumId = albumId;
         this.generosId = generosId;
         this.artistasId = artistasId;
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -53,29 +53,33 @@ public class CancionDTO {
         this.nombre = nombre;
     }
 
-    public ObjectId getAlbumId() {
+    public String getAlbumId() {
         return albumId;
     }
 
-    public void setAlbumId(ObjectId albumId) {
+    public void setAlbumId(String albumId) {
         this.albumId = albumId;
     }
 
-    public List<ObjectId> getGenerosId() {
+    public List<String> getGenerosId() {
         return generosId;
     }
 
-    public void setGenerosId(List<ObjectId> generosId) {
+    public void setGenerosId(List<String> generosId) {
         this.generosId = generosId;
     }
 
-    public List<ObjectId> getArtistasId() {
+    public List<String> getArtistasId() {
         return artistasId;
     }
 
-    public void setArtistasId(List<ObjectId> artistasId) {
+    public void setArtistasId(List<String> artistasId) {
         this.artistasId = artistasId;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "CancionDTO{" + "id=" + id + ", nombre=" + nombre + ", albumId=" + albumId + ", generosId=" + generosId + ", artistasId=" + artistasId + '}';
+    }
+
 }

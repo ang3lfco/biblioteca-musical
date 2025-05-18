@@ -39,7 +39,7 @@ public class CancionDAO implements ICancionDAO {
         }
         return lista;
     }
-    
+
     //Regresa una lista
     @Override
     public List<CancionDTO> buscarPorNombre(String nombre) {
@@ -64,7 +64,8 @@ public class CancionDAO implements ICancionDAO {
         }
         return ids;
     }
-  //Las regresa en entidad
+    //Las regresa en entidad
+
     @Override
     public List<Cancion> obtenerTodasEnEntidad() {
         List<Cancion> canciones = new ArrayList<>();
@@ -75,14 +76,36 @@ public class CancionDAO implements ICancionDAO {
         }
         return canciones;
     }
-    
+
     private CancionDTO convertirADTO(Cancion cancion) {
-        return new CancionDTO(
-                cancion.getId(),
+        if (cancion == null) {
+            return null;
+        }
+
+        List<String> generos = new ArrayList<>();
+        for (ObjectId id : cancion.getGenerosId()) {
+            generos.add(id.toHexString());
+        }
+
+        List<String> artistas = new ArrayList<>();
+        for (ObjectId id : cancion.getArtistasId()) {
+            artistas.add(id.toHexString());
+        }
+
+        String albumId = null;
+        if (cancion.getAlbumId() != null) {
+            albumId = cancion.getAlbumId().toHexString();
+        }
+
+        CancionDTO dto = new CancionDTO(
+                cancion.getId().toHexString(),
                 cancion.getNombre(),
-                cancion.getAlbumId(),
-                cancion.getGenerosId(),
-                cancion.getArtistasId()
+                albumId,
+                generos,
+                artistas
         );
+
+        return dto;
     }
+
 }

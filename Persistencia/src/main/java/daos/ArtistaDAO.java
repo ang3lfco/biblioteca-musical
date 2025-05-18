@@ -9,7 +9,9 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import conexion.MongoConexion;
 import dtos.ArtistaDTO;
+import dtos.ArtistaDTO.integranteDTO;
 import entidades.Artista;
+import entidades.Artista.Integrante;
 import entidades.Genero;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,13 +88,77 @@ public class ArtistaDAO implements IArtistaDAO {
     }
 
     private ArtistaDTO convertirADTO(Artista artista) {
-        return new ArtistaDTO(
-                artista.getId(),
+        if (artista == null) {
+            return null;
+        }
+
+        List<String> generos = new ArrayList<>();
+        for (ObjectId id : artista.getGenerosId()) {
+            generos.add(id.toHexString());
+        }
+
+        List<ArtistaDTO.integranteDTO> integrantes = new ArrayList<>();
+        if (artista.getIntegrantes() != null) {
+            for (Integrante integrante : artista.getIntegrantes()) {
+                ArtistaDTO.integranteDTO dtoIntegrante = new ArtistaDTO.integranteDTO(
+                        integrante.getPersonaId().toHexString(),
+                        integrante.getRol(),
+                        integrante.getFechaIngreso(),
+                        integrante.getFechaSalida()
+                );
+                integrantes.add(dtoIntegrante);
+            }
+        }
+
+        ArtistaDTO dto = new ArtistaDTO(
+                artista.getId().toHexString(),
                 artista.getNombre(),
                 artista.getTipo(),
                 artista.getRutaImagen(),
-                artista.getGenerosId(),
-                artista.getIntegrantes()
+                generos,
+                integrantes
         );
+
+        return dto;
     }
+    
+    private Artista convertirAEntidad(ArtistaDTO dto) {
+    if (dto == null) {
+        return null;
+    }
+
+    List<ObjectId> generosId = new ArrayList<>();
+    for (String id : dto.getGenerosId()) {
+        generosId.add(new ObjectId(id));
+    }
+
+    List<Integrante> integrantes = new ArrayList<>();
+    if (dto.getIntegrantes() != null) {
+        for (ArtistaDTO.integranteDTO integranteDTO : dto.getIntegrantes()) {
+            Integrante integrante = new Integrante(
+                new ObjectId(integranteDTO.getPersonaId()),
+                integranteDTO.getRol(),
+                integranteDTO.getFechaIngreso(),
+                integranteDTO.getFechaSalida()
+            );
+            integrantes.add(integrante);
+        }
+    }
+
+    Artista artista = new Artista(
+        dto.getNombre(),
+        dto.getTipo(),
+        dto.getRutaImagen(),
+        generosId,
+        integrantes
+    );
+
+    if (dto.getId() != null && !dto.getId().isBlank()) {
+        artista.setId(new ObjectId(dto.getId()));
+    }
+
+    return artista;
+}
+
+
 }

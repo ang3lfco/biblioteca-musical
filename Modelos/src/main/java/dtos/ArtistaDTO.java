@@ -5,6 +5,8 @@
 package dtos;
 
 import entidades.Artista;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import org.bson.types.ObjectId;
 
@@ -14,17 +16,17 @@ import org.bson.types.ObjectId;
  */
 public class ArtistaDTO {
 
-    private ObjectId id;
+    private String id;
     private String nombre;
     private String tipo;
     private String rutaImagen;
-    private List<ObjectId> generosId;
-    private List<Artista.Integrante> integrantes;
+    private List<String> generosId;
+    private List<integranteDTO> integrantes;
 
     public ArtistaDTO() {
     }
 
-    public ArtistaDTO(ObjectId id, String nombre, String tipo, String rutaImagen, List<ObjectId> generosId, List<Artista.Integrante> integrantes) {
+    public ArtistaDTO(String id, String nombre, String tipo, String rutaImagen, List<String> generosId, List<integranteDTO> integrantes) {
         this.id = id;
         this.nombre = nombre;
         this.tipo = tipo;
@@ -33,7 +35,7 @@ public class ArtistaDTO {
         this.integrantes = integrantes;
     }
 
-    public ArtistaDTO(String nombre, String tipo, String rutaImagen, List<ObjectId> generosId, List<Artista.Integrante> integrantes) {
+    public ArtistaDTO(String nombre, String tipo, String rutaImagen, List<String> generosId, List<integranteDTO> integrantes) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.rutaImagen = rutaImagen;
@@ -41,11 +43,11 @@ public class ArtistaDTO {
         this.integrantes = integrantes;
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -73,22 +75,81 @@ public class ArtistaDTO {
         this.rutaImagen = rutaImagen;
     }
 
-    public List<ObjectId> getGenerosId() {
+    public List<String> getGenerosId() {
         return generosId;
     }
 
-    public void setGenerosId(List<ObjectId> generosId) {
+    public void setGenerosId(List<String> generosId) {
         this.generosId = generosId;
     }
 
-    public List<Artista.Integrante> getIntegrantes() {
+    public List<integranteDTO> getIntegrantes() {
         return integrantes;
     }
 
-    public void setIntegrantes(List<Artista.Integrante> integrantes) {
+    public void setIntegrantes(List<integranteDTO> integrantes) {
         this.integrantes = integrantes;
     }
-    
-    
-    
+
+    @Override
+    public String toString() {
+        return "ArtistaDTO{" + "id=" + id + ", nombre=" + nombre + ", tipo=" + tipo + ", rutaImagen=" + rutaImagen + ", generosId=" + generosId + ", integrantes=" + integrantes + '}';
+    }
+
+    public static class integranteDTO {
+
+        private String personaId;
+        private String rol;
+        private LocalDate fechaIngreso;
+        private LocalDate fechaSalida;
+
+        public integranteDTO() {
+        }
+
+        public integranteDTO(String personaId, String rol, LocalDate fechaIngreso, LocalDate fechaSalida) {
+            this.personaId = personaId;
+            this.rol = rol;
+            this.fechaIngreso = fechaIngreso;
+            this.fechaSalida = fechaSalida;
+        }
+
+        public String getPersonaId() {
+            return personaId;
+        }
+
+        public void setPersonaId(String personaId) {
+            this.personaId = personaId;
+        }
+
+        public String getRol() {
+            return rol;
+        }
+
+        public void setRol(String rol) {
+            this.rol = rol;
+        }
+
+        public LocalDate getFechaIngreso() {
+            return fechaIngreso;
+        }
+
+        public void setFechaIngreso(LocalDate fechaIngreso) {
+            this.fechaIngreso = fechaIngreso;
+        }
+
+        public LocalDate getFechaSalida() {
+            return fechaSalida;
+        }
+
+        public void setFechaSalida(LocalDate fechaSalida) {
+            this.fechaSalida = fechaSalida;
+        }
+
+        @Override
+        public String toString() {
+            return "integranteDTO{" + "personaId=" + personaId + ", rol=" + rol + ", fechaIngreso=" + fechaIngreso + ", fechaSalida=" + fechaSalida + '}';
+        }
+
+    }
+
 }
