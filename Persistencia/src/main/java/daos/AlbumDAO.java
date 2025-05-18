@@ -96,7 +96,7 @@ public class AlbumDAO implements IAlbumDAO{
 
         coleccion = MongoConexion.getAlbumCollection();
         Bson filtro = Filters.and(
-                Filters.gte("lanzamiento", fecha),
+                Filters.eq("lanzamiento", fecha),
                 Filters.not(Filters.in("generosId", generosNoDeseadosDelUsuario(idUsuario)))
         );
 
