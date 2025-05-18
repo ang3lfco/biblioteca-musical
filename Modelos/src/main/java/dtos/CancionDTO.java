@@ -11,7 +11,7 @@ import org.bson.types.ObjectId;
  *
  * @author Oribiel
  */
-public class CancionesDTO {
+public class CancionDTO {
 
     private ObjectId id;
     private String nombre;
@@ -19,10 +19,10 @@ public class CancionesDTO {
     private List<ObjectId> generosId;
     private List<ObjectId> artistasId;
 
-    public CancionesDTO() {
+    public CancionDTO() {
     }
 
-    public CancionesDTO(ObjectId id, String nombre, ObjectId albumId, List<ObjectId> generosId, List<ObjectId> artistasId) {
+    public CancionDTO(ObjectId id, String nombre, ObjectId albumId, List<ObjectId> generosId, List<ObjectId> artistasId) {
         this.id = id;
         this.nombre = nombre;
         this.albumId = albumId;
@@ -30,7 +30,7 @@ public class CancionesDTO {
         this.artistasId = artistasId;
     }
 
-    public CancionesDTO(String nombre, ObjectId albumId, List<ObjectId> generosId, List<ObjectId> artistasId) {
+    public CancionDTO(String nombre, ObjectId albumId, List<ObjectId> generosId, List<ObjectId> artistasId) {
         this.nombre = nombre;
         this.albumId = albumId;
         this.generosId = generosId;

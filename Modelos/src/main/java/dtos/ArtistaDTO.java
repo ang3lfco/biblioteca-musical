@@ -12,7 +12,7 @@ import org.bson.types.ObjectId;
  *
  * @author Oribiel
  */
-public class ArtistasDTO {
+public class ArtistaDTO {
 
     private ObjectId id;
     private String nombre;
@@ -21,10 +21,10 @@ public class ArtistasDTO {
     private List<ObjectId> generosId;
     private List<Artista.Integrante> integrantes;
 
-    public ArtistasDTO() {
+    public ArtistaDTO() {
     }
 
-    public ArtistasDTO(ObjectId id, String nombre, String tipo, String rutaImagen, List<ObjectId> generosId, List<Artista.Integrante> integrantes) {
+    public ArtistaDTO(ObjectId id, String nombre, String tipo, String rutaImagen, List<ObjectId> generosId, List<Artista.Integrante> integrantes) {
         this.id = id;
         this.nombre = nombre;
         this.tipo = tipo;
@@ -33,7 +33,7 @@ public class ArtistasDTO {
         this.integrantes = integrantes;
     }
 
-    public ArtistasDTO(String nombre, String tipo, String rutaImagen, List<ObjectId> generosId, List<Artista.Integrante> integrantes) {
+    public ArtistaDTO(String nombre, String tipo, String rutaImagen, List<ObjectId> generosId, List<Artista.Integrante> integrantes) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.rutaImagen = rutaImagen;
