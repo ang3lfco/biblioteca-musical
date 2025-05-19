@@ -39,14 +39,46 @@ public class UsuarioNegocio implements IUsuarioNegocio {
     }
     
     @Override
-    public boolean validarSesion(String usuario, String contrasena){
-        return usuarioDAO.validar(usuario, contrasena) != null;
+    public void editarUsuario(UsuarioDTO usuarioDTO){
+        Usuario usuario = new Usuario(
+                new ObjectId(usuarioDTO.getId()),
+                usuarioDTO.getNombre(),
+                usuarioDTO.getApellido(),
+                usuarioDTO.getUsuario(),
+                usuarioDTO.getContraseña(),
+                usuarioDTO.getCorreo(),
+                usuarioDTO.getRutaImagen(),
+                null,
+                null
+        );
+        usuarioDAO.editar(usuario);
+    }
+    
+    @Override
+    public UsuarioDTO validarSesion(String usuario, String contrasena){
+        Usuario usuarioValidado = usuarioDAO.validar(usuario, contrasena);
+        UsuarioDTO usuarioEncontrado = new UsuarioDTO(
+                String.valueOf(usuarioValidado.getId()),
+                usuarioValidado.getNombre(),
+                usuarioValidado.getApellido(),
+                usuarioValidado.getUsuario(),
+                usuarioValidado.getContraseña(),
+                usuarioValidado.getCorreo(),
+                usuarioValidado.getRutaImagen(),
+                null,
+                null
+        );
+        return usuarioEncontrado;
     }
     
     @Override
     public UsuarioDTO.FavoritosDTO getFavoritos(String idUsuario){
         Usuario.Favoritos Favoritos = usuarioDAO.getFavoritos(new ObjectId(idUsuario));
         UsuarioDTO.FavoritosDTO FavoritosDTO = new UsuarioDTO.FavoritosDTO();
+        
+        if (Favoritos == null) {
+            return null;
+        }
         
         List<String> artistasId = new ArrayList<>();
         for(ObjectId id : Favoritos.getArtistasId()){
@@ -73,6 +105,10 @@ public class UsuarioNegocio implements IUsuarioNegocio {
     public UsuarioDTO.NoDeseadosDTO getNoDeseados(String idUsuario){
         Usuario.NoDeseados noDeseados = usuarioDAO.getNoDeseados(new ObjectId(idUsuario));
         UsuarioDTO.NoDeseadosDTO noDeseadosDTO = new UsuarioDTO.NoDeseadosDTO();
+        
+        if (noDeseados == null) {
+            return null;
+        }
         
         List<String> generosId = new ArrayList<>();
         for(ObjectId id : noDeseados.getGeneros()){

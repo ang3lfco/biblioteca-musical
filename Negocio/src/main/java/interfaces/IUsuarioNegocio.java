@@ -12,7 +12,8 @@ import dtos.UsuarioDTO;
  */
 public interface IUsuarioNegocio {
     void registrarUsuario(UsuarioDTO usuarioDTO);
-    boolean validarSesion(String usuario, String contrasena);
+    UsuarioDTO validarSesion(String usuario, String contrasena);
     UsuarioDTO.FavoritosDTO getFavoritos(String idUsuario);
     UsuarioDTO.NoDeseadosDTO getNoDeseados(String idUsuario);
+    void editarUsuario(UsuarioDTO usuarioDTO);
 }

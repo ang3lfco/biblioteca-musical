@@ -16,4 +16,5 @@ public interface IUsuarioDAO {
     Usuario validar(String usuario, String contrasena);
     Usuario.Favoritos getFavoritos(ObjectId id);
     Usuario.NoDeseados getNoDeseados(ObjectId id);
+    void editar(Usuario usuario);
 }

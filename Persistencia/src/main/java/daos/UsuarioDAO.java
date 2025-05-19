@@ -7,6 +7,7 @@ package daos;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Updates;
 import conexion.MongoConexion;
 import entidades.Usuario;
 import interfaces.IUsuarioDAO;
@@ -28,6 +29,20 @@ public class UsuarioDAO implements IUsuarioDAO{
     @Override
     public void insertar(Usuario usuario){
         coleccion.insertOne(usuario);
+    }
+    
+    @Override
+    public void editar(Usuario usuario) {
+        Bson filtro = Filters.eq("_id", usuario.getId());
+            Bson actualizacion = Updates.combine(
+            Updates.set("nombre", usuario.getNombre()),
+            Updates.set("apellido", usuario.getApellido()),
+            Updates.set("usuario", usuario.getUsuario()),
+            Updates.set("contraseña", usuario.getContraseña()),
+            Updates.set("correo", usuario.getCorreo()),
+            Updates.set("rutaImagen", usuario.getRutaImagen())
+        );
+        coleccion.updateOne(filtro, actualizacion);
     }
     
     @Override
