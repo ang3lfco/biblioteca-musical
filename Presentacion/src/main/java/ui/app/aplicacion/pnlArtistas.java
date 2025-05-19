@@ -30,6 +30,8 @@ import ui.app.forms.frmIntegrantesInfo;
 import ui.componentes.CustomRoundedTextField;
 import ui.componentes.RoundedComboBox;
 import interfaces.IArtistaNegocio;
+import interfaces.IUsuarioNegocio;
+import ui.sesion.Sesion;
 
 /**
  *
@@ -37,12 +39,14 @@ import interfaces.IArtistaNegocio;
  */
 public class pnlArtistas extends javax.swing.JPanel {
     private IArtistaNegocio artistaNegocio;
+    private IUsuarioNegocio usuarioNegocio;
     /**
      * Creates new form pnlCanciones
      */
-    public pnlArtistas(IArtistaNegocio artistaNegocio) {
+    public pnlArtistas(IArtistaNegocio artistaNegocio, IUsuarioNegocio usuarioNegocio) {
         initComponents();
         this.artistaNegocio = artistaNegocio;
+        this.usuarioNegocio = usuarioNegocio;
         iniciarFlechasScroll();
         jScrollPane_artistas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane_artistas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -161,10 +165,11 @@ public class pnlArtistas extends javax.swing.JPanel {
         
 
         itemFavoritos.addActionListener(e -> {
-            JOptionPane.showMessageDialog(null, "Agregado a Favoritos.");
+            usuarioNegocio.insertarFavoritoArtista(Sesion.getUsuarioActual().getId(), artista.getId());
+            JOptionPane.showMessageDialog(null, "Artista agregado a favoritos.");
         });
         itemNoDeseados.addActionListener(e -> {
-            JOptionPane.showMessageDialog(null, "Agregado a No Deseados.");
+            JOptionPane.showMessageDialog(null, "Función no disponible.");
         });
         
         panel.addMouseListener(new MouseAdapter(){

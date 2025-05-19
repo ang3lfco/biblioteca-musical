@@ -81,7 +81,7 @@ public class pnlPrincipal extends javax.swing.JPanel {
 
         Component[] albumes = crearItemsAlbumes(albumesdtos);
         agregarSeccion("Álbumes", albumes, () -> {
-            pnlAlbumes albumesPanel = new pnlAlbumes(albumNegocio, artistaNegocio);
+            pnlAlbumes albumesPanel = new pnlAlbumes(albumNegocio, artistaNegocio, usuarioNegocio);
             this.removeAll();
             this.setLayout(new BorderLayout());
             this.add(albumesPanel, BorderLayout.CENTER);

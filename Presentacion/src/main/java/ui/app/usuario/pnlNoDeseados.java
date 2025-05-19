@@ -18,6 +18,8 @@ import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
+import ui.componentes.RoundedComboBox;
 import ui.sesion.Sesion;
 
 /**
@@ -73,7 +76,7 @@ public class pnlNoDeseados extends javax.swing.JPanel {
             jPanel1_noDeseados.add(panelMensaje, BorderLayout.CENTER);
             jPanel1_noDeseados.revalidate();
             jPanel1_noDeseados.repaint();
-            return;
+            generosNoDeseadosIds = new UsuarioDTO.NoDeseadosDTO(new ArrayList<>());
         }
         
         for(String s : generosNoDeseadosIds.getGeneros()){
@@ -81,6 +84,39 @@ public class pnlNoDeseados extends javax.swing.JPanel {
         }
         
         cargarNoDeseados();
+        
+        List<GeneroDTO> generosDisponibles = generoNegocio.obtenerTodas();
+        List<String> generosBloqueados = generosNoDeseadosIds.getGeneros();
+        List<GeneroDTO> generosCombo;
+        if(generosBloqueados != null){
+            generosCombo = generosDisponibles.stream().filter(g -> !generosBloqueados.contains(g.getId())).toList();
+        }
+        else{
+            generosCombo = generosDisponibles;
+        }
+        String[] items = generosCombo.stream().map(GeneroDTO::getNombre).toArray(String[]::new);
+        RoundedComboBox<String> combo = new RoundedComboBox<>(items);
+        combo.setPreferredSize(new Dimension(200, 40));
+        pnl_TipoBusqueda.setBackground(new Color(0,0,0,0));
+        pnl_TipoBusqueda.setLayout(new BorderLayout());
+        pnl_TipoBusqueda.add(combo, BorderLayout.CENTER);
+        pnl_TipoBusqueda.revalidate();
+        pnl_TipoBusqueda.repaint(); 
+        
+        btnAgregarNoDeseado.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent e){
+                int indiceSeleccionado = combo.getSelectedIndex();
+                if (indiceSeleccionado >= 0) {
+                    GeneroDTO generoSeleccionado = generosCombo.get(indiceSeleccionado);
+                    String id = generoSeleccionado.getId();
+                    usuarioNegocio.insertarGeneroNoDeseado(Sesion.getUsuarioActual().getId(), id);
+                    System.out.println("ID del género seleccionado: " + id);
+                    System.out.println("Nombre del género seleccionado: " + generoSeleccionado.getNombre());
+                }
+            }
+        });
+        
         
         jScrollPane_NoDeseados.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane_NoDeseados.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -276,6 +312,8 @@ public class pnlNoDeseados extends javax.swing.JPanel {
         jPanel1_noDeseados = new javax.swing.JPanel();
         lblFlechaArriba = new javax.swing.JLabel();
         lblFlechaAbajo = new javax.swing.JLabel();
+        pnl_TipoBusqueda = new javax.swing.JPanel();
+        btnAgregarNoDeseado = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(23, 30, 49));
 
@@ -302,27 +340,53 @@ public class pnlNoDeseados extends javax.swing.JPanel {
 
         lblFlechaAbajo.setText("jLabel2");
 
+        javax.swing.GroupLayout pnl_TipoBusquedaLayout = new javax.swing.GroupLayout(pnl_TipoBusqueda);
+        pnl_TipoBusqueda.setLayout(pnl_TipoBusquedaLayout);
+        pnl_TipoBusquedaLayout.setHorizontalGroup(
+            pnl_TipoBusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 200, Short.MAX_VALUE)
+        );
+        pnl_TipoBusquedaLayout.setVerticalGroup(
+            pnl_TipoBusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 40, Short.MAX_VALUE)
+        );
+
+        btnAgregarNoDeseado.setText("Agregar");
+        btnAgregarNoDeseado.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnAgregarNoDeseadoMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(57, 57, 57)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane_NoDeseados, javax.swing.GroupLayout.PREFERRED_SIZE, 606, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblFlechaArriba, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
-                            .addComponent(lblFlechaAbajo, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))))
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnAgregarNoDeseado)
+                        .addGap(18, 18, 18)
+                        .addComponent(pnl_TipoBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane_NoDeseados, javax.swing.GroupLayout.PREFERRED_SIZE, 606, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblFlechaArriba, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+                    .addComponent(lblFlechaAbajo, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(46, 46, 46)
-                .addComponent(jLabel1)
+                .addGap(31, 31, 31)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(btnAgregarNoDeseado))
+                    .addComponent(pnl_TipoBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane_NoDeseados, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -334,12 +398,18 @@ public class pnlNoDeseados extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnAgregarNoDeseadoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAgregarNoDeseadoMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAgregarNoDeseadoMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAgregarNoDeseado;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1_noDeseados;
     private javax.swing.JScrollPane jScrollPane_NoDeseados;
     private javax.swing.JLabel lblFlechaAbajo;
     private javax.swing.JLabel lblFlechaArriba;
+    private javax.swing.JPanel pnl_TipoBusqueda;
     // End of variables declaration//GEN-END:variables
 }

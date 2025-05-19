@@ -8,24 +8,31 @@ import dtos.AlbumDTO;
 import dtos.ArtistaDTO;
 import interfaces.IAlbumNegocio;
 import interfaces.IArtistaNegocio;
+import interfaces.IUsuarioNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import ui.componentes.CustomRoundedTextField;
 import ui.componentes.RoundedComboBox;
+import ui.sesion.Sesion;
 
 /**
  *
@@ -34,13 +41,15 @@ import ui.componentes.RoundedComboBox;
 public class pnlAlbumes extends javax.swing.JPanel {
     private IAlbumNegocio albumNegocio;
     private IArtistaNegocio artistaNegocio;
+    private IUsuarioNegocio usuarioNegocio;
     /**
      * Creates new form pnlCanciones
      */
-    public pnlAlbumes(IAlbumNegocio albumNegocio, IArtistaNegocio artistaNegocio) {
+    public pnlAlbumes(IAlbumNegocio albumNegocio, IArtistaNegocio artistaNegocio, IUsuarioNegocio usuarioNegocio) {
         initComponents();
         this.albumNegocio = albumNegocio;
         this.artistaNegocio = artistaNegocio;
+        this.usuarioNegocio = usuarioNegocio;
         iniciarFlechasScroll();
         jScrollPane_albumes.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane_albumes.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -49,7 +58,7 @@ public class pnlAlbumes extends javax.swing.JPanel {
 
         jScrollPane_albumes.setViewportBorder(null);
         jScrollPane_albumes.setBorder(null);
-        cargarCanciones();
+        cargarAlbumes();
         
         String[] items = { "Nombre", "Género", "Fecha de Lanzamiento" };
         RoundedComboBox<String> combo = new RoundedComboBox<>(items);
@@ -83,20 +92,8 @@ public class pnlAlbumes extends javax.swing.JPanel {
         });
     }
     
-    private void cargarCanciones() {
+    private void cargarAlbumes() {
         List<AlbumDTO> albumes = albumNegocio.obtenerTodos();
-//        albumes.add(new Album("BTR", "Big Time Rush", "btr.png"));
-//        albumes.add(new Album("The Album", "BLACKPINK", "the_album.png"));
-//        albumes.add(new Album("All Eyez on Me", "2Pac", "all_eyez_on_me.png"));
-//        albumes.add(new Album("Rolling Papers", "Wiz Khalifa", "rolling_papers.png"));
-//        albumes.add(new Album("Careless World: Rise of the Last King", "Tyga", "careless_world.png"));
-//        albumes.add(new Album("Take Care", "Drake", "take_care.png"));
-//        albumes.add(new Album("After Hours", "The Weeknd", "after_hours.png"));
-//        albumes.add(new Album("Good Kid, M.A.A.D City", "Kendrick Lamar", "good_kid_maad_city.png"));
-//        albumes.add(new Album("1989", "Taylor Swift", "1989.png"));
-//        albumes.add(new Album("Born This Way", "Lady Gaga", "born_this_way.png"));
-        
-
         panelAlbumes.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
 
         for (AlbumDTO album : albumes) {
@@ -157,8 +154,51 @@ public class pnlAlbumes extends javax.swing.JPanel {
         contenedorTexto.add(lblArtista);
 
         panel.add(contenedorTexto, BorderLayout.SOUTH);
+        
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.setBackground(new Color(30, 30, 30));
+        popupMenu.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100)));
+        popupMenu.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        
+        JMenuItem itemFavoritos = new JMenuItem("Agregar a Favoritos");
+        JMenuItem itemNoDeseados = new JMenuItem("Agregar a No Deseados");
+        
+        personalizarMenuItem(itemFavoritos, new Color(18,25,44), Color.WHITE);
+        personalizarMenuItem(itemNoDeseados, new Color(18,25,44), Color.WHITE);
+        
+        popupMenu.add(itemFavoritos);
+        popupMenu.add(itemNoDeseados);
+
+        itemFavoritos.addActionListener(e -> {
+            usuarioNegocio.insertarFavoritoAlbum(Sesion.getUsuarioActual().getId(), album.getId());
+            JOptionPane.showMessageDialog(null, "Album agregado a favoritos.");
+        });
+        itemNoDeseados.addActionListener(e -> {
+            JOptionPane.showMessageDialog(null, "Función no disponible.");
+        });
+        
+        panel.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3){
+                    popupMenu.show(panel, e.getX(), e.getY());
+                } 
+                else if (e.getButton() == MouseEvent.BUTTON1){
+                    //Click Derecho
+                    JOptionPane.showMessageDialog(null, "Mostrar Informacion.");
+                }
+            }
+        });
 
         return panel;
+    }
+    
+    private void personalizarMenuItem(JMenuItem item, Color background, Color foreground) {
+        item.setOpaque(true);
+        item.setBackground(background);
+        item.setForeground(foreground);
+        item.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        item.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
     }
     
     
@@ -285,41 +325,6 @@ public class pnlAlbumes extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-public static class Album {
-    private String nombre;
-    private String artista;
-    private String portada;
-
-    public Album(String nombre, String artista, String portada) {
-        this.nombre = nombre;
-        this.artista = artista;
-        this.portada = portada;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getArtista() {
-        return artista;
-    }
-
-    public void setArtista(String artista) {
-        this.artista = artista;
-    }
-    
-    public String getPortada() {
-        return portada;
-    }
-
-    public void setPortada(String portada) {
-        this.portada = portada;
-    }
-}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane_albumes;
     private javax.swing.JLabel lblFlechaAbajo;
