@@ -26,9 +26,9 @@ public class AlbumNegocio implements IAlbumNegocio{
     }
 
     @Override
-    public List<AlbumDTO> buscarAlbumesPorNombre(String nombre, String idUsuario) {
+    public List<AlbumDTO> buscarAlbumesPorNombre(String nombre) {
         List<AlbumDTO> resultados = new ArrayList<>();
-        List<Album> dtos = albumDAO.buscarAlbumesPorNombre(nombre, new ObjectId(idUsuario));
+        List<Album> dtos = albumDAO.buscarAlbumesPorNombre(nombre);
         
         resultados = this.ConvertirListaEntidadAListaDTO(dtos);
         
@@ -36,9 +36,9 @@ public class AlbumNegocio implements IAlbumNegocio{
     }
     
     @Override
-    public List<AlbumDTO> buscarAlbumesPorGenero(String genero, String idUsuario){
+    public List<AlbumDTO> buscarAlbumesPorGenero(String genero){
         List<AlbumDTO> resultados = new ArrayList<>();
-        List<Album> dtos = albumDAO.buscarAlbumesPorGenero(genero, new ObjectId(idUsuario));
+        List<Album> dtos = albumDAO.buscarAlbumesPorGenero(genero);
         
         resultados = this.ConvertirListaEntidadAListaDTO(dtos);
         
@@ -46,9 +46,9 @@ public class AlbumNegocio implements IAlbumNegocio{
     }
     
     @Override
-    public List<AlbumDTO> buscarAlbumesPorFecha(LocalDate fecha, String idUsuario){
+    public List<AlbumDTO> buscarAlbumesPorFecha(LocalDate fecha){
         List<AlbumDTO> resultados = new ArrayList<>();
-        List<Album> dtos = albumDAO.buscarAlbumesPorFecha(fecha, new ObjectId(idUsuario));
+        List<Album> dtos = albumDAO.buscarAlbumesPorFecha(fecha);
         
         resultados = this.ConvertirListaEntidadAListaDTO(dtos);
         
@@ -56,10 +56,10 @@ public class AlbumNegocio implements IAlbumNegocio{
     }
     
     @Override
-    public List<AlbumDTO> getAlbumes(String idUsuario){
+    public List<AlbumDTO> getAlbumes(){
         List<AlbumDTO> resultados = new ArrayList<>();
         
-        List<Album> dtos = albumDAO.getAlbumes(new ObjectId(idUsuario));
+        List<Album> dtos = albumDAO.getAlbumes();
         
         resultados = this.ConvertirListaEntidadAListaDTO(dtos);
         

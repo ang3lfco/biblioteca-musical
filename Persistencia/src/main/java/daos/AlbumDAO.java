@@ -30,16 +30,12 @@ public class AlbumDAO implements IAlbumDAO{
     }
 
     @Override
-    public List<Album> getAlbumes(ObjectId idUsuario) {
+    public List<Album> getAlbumes() {
         MongoCollection<Album> coleccion;
         List<Album> resultados = new ArrayList<>();
 
         coleccion = MongoConexion.getAlbumCollection();
-        Bson filtro =
-                Filters.not(Filters.in("generosId", generosNoDeseadosDelUsuario(idUsuario))
-        );
-
-        try (MongoCursor<Album> cursor = coleccion.find(filtro).iterator()) {
+        try (MongoCursor<Album> cursor = coleccion.find().iterator()) {
             while (cursor.hasNext()) {
                 Album album = cursor.next();
                 resultados.add(album);
@@ -49,14 +45,13 @@ public class AlbumDAO implements IAlbumDAO{
     }
     
     @Override
-    public List<Album> buscarAlbumesPorNombre(String nombre, ObjectId idUsuario) {
+    public List<Album> buscarAlbumesPorNombre(String nombre) {
         MongoCollection<Album> coleccion;
         List<Album> resultados = new ArrayList<>();
 
         coleccion = MongoConexion.getAlbumCollection();
         Bson filtro = Filters.and(
-                Filters.regex("nombre", nombre, "i"),
-                Filters.not(Filters.in("generosId", generosNoDeseadosDelUsuario(idUsuario)))
+                Filters.regex("nombre", nombre, "i")
         );
 
         try (MongoCursor<Album> cursor = coleccion.find(filtro).iterator()) {
@@ -69,14 +64,14 @@ public class AlbumDAO implements IAlbumDAO{
     }
 
     @Override
-    public List<Album> buscarAlbumesPorGenero(String genero, ObjectId idUsuario) {
+    public List<Album> buscarAlbumesPorGenero(String genero) {
         MongoCollection<Album> coleccion;
         List<Album> resultados = new ArrayList<>();
 
         coleccion = MongoConexion.getAlbumCollection();
         Bson filtro = Filters.and(
-                Filters.in("generosId", this.buscarIdGeneroPorNombre(genero)),
-                Filters.not(Filters.in("generosId", generosNoDeseadosDelUsuario(idUsuario)))
+                Filters.in("generosId", this.buscarIdGeneroPorNombre(genero))
+                
         );
 
         try (MongoCursor<Album> cursor = coleccion.find(filtro).iterator()) {
@@ -90,14 +85,13 @@ public class AlbumDAO implements IAlbumDAO{
     }
     
     @Override
-    public List<Album> buscarAlbumesPorFecha(LocalDate fecha, ObjectId idUsuario) {
+    public List<Album> buscarAlbumesPorFecha(LocalDate fecha) {
         MongoCollection<Album> coleccion;
         List<Album> resultados = new ArrayList<>();
 
         coleccion = MongoConexion.getAlbumCollection();
         Bson filtro = Filters.and(
-                Filters.eq("lanzamiento", fecha),
-                Filters.not(Filters.in("generosId", generosNoDeseadosDelUsuario(idUsuario)))
+                Filters.eq("lanzamiento", fecha)
         );
 
         try (MongoCursor<Album> cursor = coleccion.find(filtro).iterator()) {
@@ -157,23 +151,6 @@ public class AlbumDAO implements IAlbumDAO{
         } else {
             System.out.println("No se inserto ningun album.");
         }
-    }
-
-    private List<ObjectId> generosNoDeseadosDelUsuario(ObjectId idUsuario) {
-        MongoCollection<Usuario> usuariosCollection = MongoConexion.getUsuarioCollection();
-
-        Usuario usuario = usuariosCollection.find(Filters.eq("_id", idUsuario)).first();
-        if (usuario == null) {
-            return List.of();
-        }
-
-        if (null == usuario.getNoDeseados()) {
-            return List.of();
-        }
-
-        List<ObjectId> generosNoDeseados = usuario.getNoDeseados().getGeneros();
-
-        return generosNoDeseados;
     }
     
     private ObjectId buscarIdGeneroPorNombre(String nombre){
