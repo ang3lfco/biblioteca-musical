@@ -23,4 +23,5 @@ public interface ICancionNegocio {
     List<ObjectId> buscarCancionesPorNombre(String nombre);
     //Obtiene todas y las regresa como en entidad
     List<Cancion> obtenerTodasEnEntidad();
+    CancionDTO obtenerCancionPorId(String id);
 }

@@ -44,8 +44,8 @@ public class UsuarioNegocio implements IUsuarioNegocio {
     }
     
     @Override
-    public UsuarioDTO.FavoritosDTO getFavoritos(String usuario){
-        Usuario.Favoritos Favoritos = usuarioDAO.getFavoritos(usuario);
+    public UsuarioDTO.FavoritosDTO getFavoritos(String idUsuario){
+        Usuario.Favoritos Favoritos = usuarioDAO.getFavoritos(new ObjectId(idUsuario));
         UsuarioDTO.FavoritosDTO FavoritosDTO = new UsuarioDTO.FavoritosDTO();
         
         List<String> artistasId = new ArrayList<>();
@@ -70,8 +70,8 @@ public class UsuarioNegocio implements IUsuarioNegocio {
     }
     
     @Override
-    public UsuarioDTO.NoDeseadosDTO getNoDeseados(String usuario){
-        Usuario.NoDeseados noDeseados = usuarioDAO.getNoDeseados(usuario);
+    public UsuarioDTO.NoDeseadosDTO getNoDeseados(String idUsuario){
+        Usuario.NoDeseados noDeseados = usuarioDAO.getNoDeseados(new ObjectId(idUsuario));
         UsuarioDTO.NoDeseadosDTO noDeseadosDTO = new UsuarioDTO.NoDeseadosDTO();
         
         List<String> generosId = new ArrayList<>();

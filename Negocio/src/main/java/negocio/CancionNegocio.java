@@ -22,6 +22,11 @@ public class CancionNegocio implements ICancionNegocio {
        this.cancionesDAO= cancionesDAO;
     }
     
+    @Override
+    public CancionDTO obtenerCancionPorId(String id) {
+        return cancionesDAO.getCancionPorId(id);
+    }
+    
     public List<CancionDTO> obtenerTodas() {
         
         return cancionesDAO.obtenerTodas();
