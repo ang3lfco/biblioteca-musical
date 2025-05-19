@@ -29,12 +29,15 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import ui.sesion.Sesion;
 
 /**
  *
@@ -64,7 +67,28 @@ public class pnlFavoritos extends javax.swing.JPanel {
         this.albumNegocio = albumNegocio;
         this.artistaNegocio = artistaNegocio;
         
-        this.favoritos = usuarioNegocio.getFavoritos("682856dbe09c84ef98441541");
+        this.favoritos = usuarioNegocio.getFavoritos(Sesion.getUsuarioActual().getId());
+        if(favoritos == null){
+            JOptionPane.showMessageDialog(null, "Sin favoritos.");
+            lblFlechaArriba.setText("");
+            lblFlechaAbajo.setText("");
+            JLabel lblMensaje = new JLabel("Aquí no hay nada");
+            lblMensaje.setForeground(Color.LIGHT_GRAY);
+            lblMensaje.setFont(new Font("Segoe UI", Font.ITALIC, 16));
+            lblMensaje.setHorizontalAlignment(SwingConstants.CENTER);
+            lblMensaje.setAlignmentX(CENTER_ALIGNMENT);
+
+            JPanel panelMensaje = new JPanel();
+            panelMensaje.setBackground(new Color(23, 30, 49));
+            panelMensaje.setLayout(new GridBagLayout());
+            panelMensaje.add(lblMensaje);
+
+            jPanel1_favoritos.setLayout(new BorderLayout());
+            jPanel1_favoritos.add(panelMensaje, BorderLayout.CENTER);
+            jPanel1_favoritos.revalidate();
+            jPanel1_favoritos.repaint();
+            return;
+        }
         artistasFavsId = favoritos.getArtistasId();
         albumbesFavsId = favoritos.getAlbumesId();
         cancionesFavsId = favoritos.getCancionesId();

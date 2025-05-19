@@ -10,6 +10,7 @@ import interfaces.IGeneroNegocio;
 import interfaces.IUsuarioNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import static java.awt.Component.CENTER_ALIGNMENT;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -25,12 +26,14 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
+import ui.sesion.Sesion;
 
 /**
  *
@@ -50,7 +53,28 @@ public class pnlNoDeseados extends javax.swing.JPanel {
         iniciarFlechasScroll();
         this.usuarioNegocio = usuarioNegocio;
         this.generoNegocio = generoNegocio;
-        this.generosNoDeseadosIds = usuarioNegocio.getNoDeseados("682856dbe09c84ef98441541");
+        this.generosNoDeseadosIds = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
+        if(generosNoDeseadosIds == null){
+            JOptionPane.showMessageDialog(null, "Sin no deseados.");
+            lblFlechaArriba.setText("");
+            lblFlechaAbajo.setText("");
+            JLabel lblMensaje = new JLabel("Aquí no hay nada");
+            lblMensaje.setForeground(Color.LIGHT_GRAY);
+            lblMensaje.setFont(new Font("Segoe UI", Font.ITALIC, 16));
+            lblMensaje.setHorizontalAlignment(SwingConstants.CENTER);
+            lblMensaje.setAlignmentX(CENTER_ALIGNMENT);
+
+            JPanel panelMensaje = new JPanel();
+            panelMensaje.setBackground(new Color(23, 30, 49));
+            panelMensaje.setLayout(new GridBagLayout());
+            panelMensaje.add(lblMensaje);
+
+            jPanel1_noDeseados.setLayout(new BorderLayout());
+            jPanel1_noDeseados.add(panelMensaje, BorderLayout.CENTER);
+            jPanel1_noDeseados.revalidate();
+            jPanel1_noDeseados.repaint();
+            return;
+        }
         
         for(String s : generosNoDeseadosIds.getGeneros()){
             generosNoDeseados.add(generoNegocio.buscarGeneroPorId(s));
