@@ -19,6 +19,7 @@ import org.bson.types.ObjectId;
  * @author ReneEzequiel23
  */
 public class GeneroNegocio implements IGeneroNegocio {
+
     private IGeneroDAO generoDAO;
 
     public GeneroNegocio(IGeneroDAO generoDAO) {
@@ -32,7 +33,7 @@ public class GeneroNegocio implements IGeneroNegocio {
 
     @Override
     public GeneroDTO buscarGeneroPorId(String id) {
-        Genero genero =  generoDAO.buscarGeneroPorId(new ObjectId(id));
+        Genero genero = generoDAO.buscarGeneroPorId(new ObjectId(id));
         GeneroDTO dto = this.convertirADTO(genero);
         return dto;
     }
@@ -41,13 +42,13 @@ public class GeneroNegocio implements IGeneroNegocio {
     public void guardarGenero(String genero) {
         generoDAO.guardarGenero(genero);
     }
-    
+
     @Override
-    public void insertarGeneros(List<GeneroDTO> generos){
+    public void insertarGeneros(List<GeneroDTO> generos) {
         List<Genero> lista = this.ConvertirListaDTOAListaEntidad(generos);
         this.generoDAO.insertarGeneros(lista);
     }
-    
+
     private GeneroDTO convertirADTO(Genero genero) {
         if (genero == null) {
             return null;
@@ -59,7 +60,7 @@ public class GeneroNegocio implements IGeneroNegocio {
         );
         return dto;
     }
-    
+
     private List<Genero> ConvertirListaDTOAListaEntidad(List<GeneroDTO> GeneroDTO) {
         List<Genero> resultados = new ArrayList<>();
 
@@ -78,11 +79,18 @@ public class GeneroNegocio implements IGeneroNegocio {
         if (genero == null) {
             return null;
         }
-
-        Genero entidad = new Genero(
-                new ObjectId(genero.getId()),
-                genero.getNombre()
-        );
+        Genero entidad;
+        if (genero.getId() == null) {
+            entidad = new Genero(
+                    new ObjectId(),
+                    genero.getNombre()
+            );
+        } else {
+            entidad = new Genero(
+                    new ObjectId(genero.getId()),
+                    genero.getNombre()
+            );
+        }
         return entidad;
     }
 }
