@@ -215,14 +215,14 @@ public class InsercionMasiva {
         
         //-13
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "daft punk","banda","/portadas/pilots.png", List.of(generos.get(8).getId()), List.of(
+        artista = new ArtistaDTO(id, "daft punk","banda","/portadas/punk.png", List.of(generos.get(8).getId()), List.of(
                 new ArtistaDTO.integranteDTO(personas.get(18).getId(), "Compositor", LocalDate.of(1993, Month.JULY, 13), LocalDate.of(2021, Month.FEBRUARY, 18)),
                 new ArtistaDTO.integranteDTO(personas.get(19).getId(), "Compositor", LocalDate.of(1993, Month.JULY, 13), LocalDate.of(2021, Month.FEBRUARY, 18))));
         
         artistas.add(artista);
         //-14
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "Rex Orange County","Solista","/portadas/pilots.png", List.of(generos.get(1).getId(),generos.get(7).getId()), List.of(
+        artista = new ArtistaDTO(id, "Rex Orange County","Solista","/portadas/orange.png", List.of(generos.get(1).getId(),generos.get(7).getId()), List.of(
                 new ArtistaDTO.integranteDTO(personas.get(20).getId(), "Cantante", LocalDate.of(2016, Month.JULY, 29), null)));
         
         artistas.add(artista);
@@ -231,63 +231,63 @@ public class InsercionMasiva {
         List<AlbumDTO> albumes = new ArrayList<>();
         //-0
         AlbumDTO album = new AlbumDTO(new ObjectId().toHexString(), "Unreal Unearth", LocalDate.of(2023, Month.AUGUST, 18),
-                List.of(generos.get(0).getId()), "ruta", List.of(artistas.get(0).getId()));
+                List.of(generos.get(0).getId()), "/portadas/unreal.png", List.of(artistas.get(0).getId()));
         albumes.add(album);
         //---1
         album = new AlbumDTO(new ObjectId().toHexString(), "Everything I Know About Love", LocalDate.of(2022, Month.AUGUST, 26),
-                List.of(generos.get(1).getId()), "ruta", List.of(artistas.get(1).getId()));
+                List.of(generos.get(1).getId()), "/portadas/everything.png", List.of(artistas.get(1).getId()));
         albumes.add(album);
         //-2
         album = new AlbumDTO(new ObjectId().toHexString(), "the perfect pair", LocalDate.of(2022, Month.JULY, 11),
-                List.of(generos.get(1).getId()), "ruta", List.of(artistas.get(2).getId()));
+                List.of(generos.get(1).getId()), "/portadas/perfectpair.png", List.of(artistas.get(2).getId()));
         albumes.add(album);
         //-3
         album = new AlbumDTO(new ObjectId().toHexString(), "VANITY", LocalDate.of(2023, Month.JULY, 23),
-                List.of(generos.get(2).getId()), "ruta", List.of(artistas.get(3).getId()));
+                List.of(generos.get(2).getId()), "/portadas/vanity.png", List.of(artistas.get(3).getId()));
         albumes.add(album);
         //-4
         album = new AlbumDTO(new ObjectId().toHexString(), "COZY", LocalDate.of(1998, Month.SEPTEMBER, 17),
-                List.of(generos.get(1).getId()), "ruta", List.of(artistas.get(4).getId()));
+                List.of(generos.get(1).getId()), "/portadas/cozy.png", List.of(artistas.get(4).getId()));
         albumes.add(album);
         //-5
         album = new AlbumDTO(new ObjectId().toHexString(), "4 only", LocalDate.of(2021, Month.SEPTEMBER, 9),
-                List.of(generos.get(5).getId()), "ruta", List.of(artistas.get(5).getId()));
+                List.of(generos.get(5).getId()), "/portadas/only.png", List.of(artistas.get(5).getId()));
         albumes.add(album);
         //-6
         album = new AlbumDTO(new ObjectId().toHexString(), "Loba", LocalDate.of(2009, Month.OCTOBER, 9),
-                List.of(generos.get(1).getId()), "ruta", List.of(artistas.get(6).getId()));
+                List.of(generos.get(1).getId()), "/portadas/loba.png", List.of(artistas.get(6).getId()));
         albumes.add(album);
          //-7
         album = new AlbumDTO(new ObjectId().toHexString(), "Loud", LocalDate.of(2010, Month.NOVEMBER, 12),
-                List.of(generos.get(1).getId()), "ruta", List.of(artistas.get(7).getId()));
+                List.of(generos.get(1).getId()), "/portadas/loud.png", List.of(artistas.get(7).getId()));
         albumes.add(album);
         //-8
         album = new AlbumDTO(new ObjectId().toHexString(), "Tha Carter III", LocalDate.of(2008, Month.JUNE, 10),
-                List.of(generos.get(6).getId()), "ruta", List.of(artistas.get(8).getId()));
+                List.of(generos.get(6).getId()), "/portadas/carter.png", List.of(artistas.get(8).getId()));
         albumes.add(album);
         //-9
         album = new AlbumDTO(new ObjectId().toHexString(), "Suspiros", LocalDate.of(2019, Month.MAY, 10),
-                List.of(generos.get(1).getId()), "ruta", List.of(artistas.get(9).getId()));
+                List.of(generos.get(1).getId()), "/portadas/suspiros.png", List.of(artistas.get(9).getId()));
         albumes.add(album);
         //-10
         album = new AlbumDTO(new ObjectId().toHexString(), "¿Con quién se queda el perro?", LocalDate.of(2011, Month.DECEMBER, 6),
-                List.of(generos.get(1).getId(),generos.get(0).getId()), "ruta", List.of(artistas.get(10).getId()));
+                List.of(generos.get(1).getId(),generos.get(0).getId()), "/portadas/perro.png", List.of(artistas.get(10).getId()));
         albumes.add(album);
         //-11
         album = new AlbumDTO(new ObjectId().toHexString(), "Obsession", LocalDate.of(2025, Month.APRIL, 11),
-                List.of(generos.get(1).getId(),generos.get(7).getId()), "ruta", List.of(artistas.get(11).getId()));
+                List.of(generos.get(1).getId(),generos.get(7).getId()), "/portadas/obsession.png", List.of(artistas.get(11).getId()));
         albumes.add(album);
         //-12
         album = new AlbumDTO(new ObjectId().toHexString(), "Stressed Out", LocalDate.of(2015, Month.APRIL, 11),
-                List.of(generos.get(6).getId(),generos.get(7).getId()), "ruta", List.of(artistas.get(12).getId()));
+                List.of(generos.get(6).getId(),generos.get(7).getId()), "/portadas/stressed.png", List.of(artistas.get(12).getId()));
         albumes.add(album);
         //-13
         album = new AlbumDTO(new ObjectId().toHexString(), "Discovery", LocalDate.of(2001, Month.MARCH, 12),
-                List.of(generos.get(6).getId(),generos.get(8).getId()), "ruta", List.of(artistas.get(13).getId()));
+                List.of(generos.get(6).getId(),generos.get(8).getId()), "/portadas/discovery.png", List.of(artistas.get(13).getId()));
         albumes.add(album);
         //-14
         album = new AlbumDTO(new ObjectId().toHexString(), "Television", LocalDate.of(2001, Month.MARCH, 12),
-                List.of(generos.get(1).getId(),generos.get(7).getId()), "ruta", List.of(artistas.get(14).getId()));
+                List.of(generos.get(1).getId(),generos.get(7).getId()), "/portadas/tv.png", List.of(artistas.get(14).getId()));
         albumes.add(album);
         albumNegocio.insertarAlbumes(albumes);
 
