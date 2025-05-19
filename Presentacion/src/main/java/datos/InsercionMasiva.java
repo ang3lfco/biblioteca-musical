@@ -140,73 +140,73 @@ public class InsercionMasiva {
         );
 
         String id = new ObjectId().toHexString();
-        ArtistaDTO artista = new ArtistaDTO(id, "Hozier", "Solista", "/perfiles/.png", List.of(generos.get(0).getId()), List.of(integrante));
+        ArtistaDTO artista = new ArtistaDTO(id, "Hozier", "Solista", "/portadas/hozier.png", List.of(generos.get(0).getId()), List.of(integrante));
         artistas.add(artista);
         //---1
         integrante = new ArtistaDTO.integranteDTO(personas.get(1).getId(), "vocalista", LocalDate.of(2020, Month.APRIL, 22), null);
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "Laufey", "Solista", "/perfiles/.png", List.of(generos.get(1).getId()), List.of(integrante));
+        artista = new ArtistaDTO(id, "Laufey", "Solista", "/portadas/laufey.png", List.of(generos.get(1).getId()), List.of(integrante));
         artistas.add(artista);
         //---2
         integrante = new ArtistaDTO.integranteDTO(personas.get(2).getId(), "vocalista", LocalDate.of(2017, Month.MARCH, 14), null);
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "beabadoobee", "Solista", "/perfiles/.png", List.of(generos.get(1).getId()), List.of(integrante));
+        artista = new ArtistaDTO(id, "beabadoobee", "Solista", "/portadas/beabadoobee.png", List.of(generos.get(1).getId()), List.of(integrante));
         artistas.add(artista);
         //-3
         integrante = new ArtistaDTO.integranteDTO(personas.get(3).getId(), "vocalista", LocalDate.of(2023, Month.FEBRUARY, 14), null);
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "bryant barnes", "Solista", "/perfiles/.png", List.of(generos.get(3).getId()), List.of(integrante));
+        artista = new ArtistaDTO(id, "bryant barnes", "Solista", "/portadas/bryant.png", List.of(generos.get(3).getId()), List.of(integrante));
         artistas.add(artista);
         //-4
         integrante = new ArtistaDTO.integranteDTO(personas.get(4).getId(), "vocalista", LocalDate.of(1976, Month.JUNE, 12), null);
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "tatsuro yamashita", "Solista", "/perfiles/.png", List.of(generos.get(1).getId()), List.of(integrante));
+        artista = new ArtistaDTO(id, "tatsuro yamashita", "Solista", "/portadas/tatsuro.png", List.of(generos.get(1).getId()), List.of(integrante));
         artistas.add(artista);
         
         //-5
         integrante = new ArtistaDTO.integranteDTO(personas.get(5).getId(), "vocalista", LocalDate.of(2012, Month.MARCH, 7), null);
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "Lee Hi", "Solista", "/perfiles/.png", List.of(generos.get(5).getId()), List.of(integrante));
+        artista = new ArtistaDTO(id, "Lee Hi", "Solista", "/portadas/lee.png", List.of(generos.get(5).getId()), List.of(integrante));
         artistas.add(artista);
         //-6
         integrante = new ArtistaDTO.integranteDTO(personas.get(6).getId(), "vocalista", LocalDate.of(1991, Month.JUNE, 24), null);
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "Shakira", "Solista", "/perfiles/.png", List.of(generos.get(1).getId()), List.of(integrante));
+        artista = new ArtistaDTO(id, "Shakira", "Solista", "/portadas/shakira.png", List.of(generos.get(1).getId()), List.of(integrante));
         artistas.add(artista);
         //-7
         integrante = new ArtistaDTO.integranteDTO(personas.get(7).getId(), "vocalista", LocalDate.of(2003, Month.MAY, 17), null);
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "Rihanna", "Solista", "/perfiles/.png", List.of(generos.get(1).getId()), List.of(integrante));
+        artista = new ArtistaDTO(id, "Rihanna", "Solista", "/portadas/rihanna.png", List.of(generos.get(1).getId()), List.of(integrante));
         artistas.add(artista);
         //-8
         integrante = new ArtistaDTO.integranteDTO(personas.get(8).getId(), "rapero", LocalDate.of(1999, Month.MAY, 25), null);
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "lil wayne", "Solista", "/perfiles/.png", List.of(generos.get(1).getId()), List.of(integrante));
+        artista = new ArtistaDTO(id, "lil wayne", "Solista", "/portadas/lil.png", List.of(generos.get(1).getId()), List.of(integrante));
         artistas.add(artista);
         //-9
         integrante = new ArtistaDTO.integranteDTO(personas.get(9).getId(), "Vocalista", LocalDate.of(1999, Month.DECEMBER, 11), null);
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "Daniel, me estás matando", "banda", "/perfiles/.png", List.of(generos.get(1).getId()), List.of(integrante,
+        artista = new ArtistaDTO(id, "Daniel, me estás matando", "banda", "/portadas/daniel.png", List.of(generos.get(1).getId()), List.of(integrante,
                 new ArtistaDTO.integranteDTO(personas.get(10).getId(), "Vocalista", LocalDate.of(2001, Month.AUGUST, 23), null)));
         
         artistas.add(artista);
         //-10
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "jesse y joy","banda","/perfiles/.png", List.of(generos.get(1).getId()), List.of(
+        artista = new ArtistaDTO(id, "jesse y joy","banda","/portadas/jesse.png", List.of(generos.get(1).getId()), List.of(
                 new ArtistaDTO.integranteDTO(personas.get(11).getId(), "Vocalista", LocalDate.of(2005, Month.APRIL, 23), null),
                 new ArtistaDTO.integranteDTO(personas.get(12).getId(), "Vocalista", LocalDate.of(2005, Month.APRIL, 23), null)));
         
         artistas.add(artista);
         //-11
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "The Driver Era","banda","/perfiles/.png", List.of(generos.get(7).getId()), List.of(
+        artista = new ArtistaDTO(id, "The Driver Era","banda","/portadas/driver.png", List.of(generos.get(7).getId()), List.of(
                 new ArtistaDTO.integranteDTO(personas.get(13).getId(), "Vocalista", LocalDate.of(2018, Month.MARCH, 16), null),
                 new ArtistaDTO.integranteDTO(personas.get(14).getId(), "Guitarra", LocalDate.of(2018, Month.MARCH, 16), null)));
         
         artistas.add(artista);
         //-12
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "twenty one pilots","banda","/perfiles/.png", List.of(generos.get(7).getId(),generos.get(6).getId()), List.of(
+        artista = new ArtistaDTO(id, "twenty one pilots","banda","/portadas/pilots.png", List.of(generos.get(7).getId(),generos.get(6).getId()), List.of(
                 new ArtistaDTO.integranteDTO(personas.get(15).getId(), "Vocalista", LocalDate.of(2009, Month.JANUARY, 16), null),
                 new ArtistaDTO.integranteDTO(personas.get(16).getId(), "Bateria", LocalDate.of(2011, Month.MAY, 12), null),
                 new ArtistaDTO.integranteDTO(personas.get(17).getId(), "Guitarra", LocalDate.of(2009, Month.JANUARY, 16), LocalDate.of(2011, Month.FEBRUARY, 24))));
@@ -215,14 +215,14 @@ public class InsercionMasiva {
         
         //-13
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "daft punk","banda","ruta", List.of(generos.get(8).getId()), List.of(
+        artista = new ArtistaDTO(id, "daft punk","banda","/portadas/pilots.png", List.of(generos.get(8).getId()), List.of(
                 new ArtistaDTO.integranteDTO(personas.get(18).getId(), "Compositor", LocalDate.of(1993, Month.JULY, 13), LocalDate.of(2021, Month.FEBRUARY, 18)),
                 new ArtistaDTO.integranteDTO(personas.get(19).getId(), "Compositor", LocalDate.of(1993, Month.JULY, 13), LocalDate.of(2021, Month.FEBRUARY, 18))));
         
         artistas.add(artista);
         //-14
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "Rex Orange County","Solista","ruta", List.of(generos.get(1).getId(),generos.get(7).getId()), List.of(
+        artista = new ArtistaDTO(id, "Rex Orange County","Solista","/portadas/pilots.png", List.of(generos.get(1).getId(),generos.get(7).getId()), List.of(
                 new ArtistaDTO.integranteDTO(personas.get(20).getId(), "Cantante", LocalDate.of(2016, Month.JULY, 29), null)));
         
         artistas.add(artista);
