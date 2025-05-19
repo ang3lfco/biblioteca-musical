@@ -5,6 +5,7 @@
 package ui.app.aplicacion;
 
 import interfaces.IAlbumNegocio;
+import interfaces.IArtistaNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -36,12 +37,14 @@ import ui.componentes.CustomRoundedTextField;
  */
 public class pnlPrincipal extends javax.swing.JPanel {
     private IAlbumNegocio albumNegocio;
+    private IArtistaNegocio artistaNegocio;
     /**
      * Creates new form pnlPrincipal
      */
-    public pnlPrincipal(IAlbumNegocio albumNegocio) {
+    public pnlPrincipal(IAlbumNegocio albumNegocio, IArtistaNegocio artistaNegocio) {
         initComponents();
         this.albumNegocio = albumNegocio;
+        this.artistaNegocio = artistaNegocio;
         jScrollPane1_contenido.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane1_contenido.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1_contenido.getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
@@ -87,7 +90,7 @@ public class pnlPrincipal extends javax.swing.JPanel {
 
         Component[] albumes = crearItems(elementos, "album");
         agregarSeccion("Álbumes", albumes, () -> {
-            pnlAlbumes albumesPanel = new pnlAlbumes(albumNegocio);
+            pnlAlbumes albumesPanel = new pnlAlbumes(albumNegocio, artistaNegocio);
             this.removeAll();
             this.setLayout(new BorderLayout());
             this.add(albumesPanel, BorderLayout.CENTER);

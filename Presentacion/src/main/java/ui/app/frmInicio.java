@@ -120,7 +120,7 @@ public class frmInicio extends javax.swing.JFrame {
             }
         });
         
-        pnlPrincipal inicio = new pnlPrincipal(albumNegocio);
+        pnlPrincipal inicio = new pnlPrincipal(albumNegocio, artistaNegocio);
         pnlSeccion.removeAll();
         pnlSeccion.setLayout(new BorderLayout());
         pnlSeccion.add(inicio, BorderLayout.CENTER);
@@ -162,7 +162,7 @@ public class frmInicio extends javax.swing.JFrame {
         opcion_inicio.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 aplicarGradient(opcion_inicio, lblOpcion_inicio);
-                pnlPrincipal inicio = new pnlPrincipal(albumNegocio);
+                pnlPrincipal inicio = new pnlPrincipal(albumNegocio, artistaNegocio);
                 pnlSeccion.removeAll();
                 pnlSeccion.setLayout(new BorderLayout());
                 pnlSeccion.add(inicio, BorderLayout.CENTER);
@@ -210,7 +210,7 @@ public class frmInicio extends javax.swing.JFrame {
         opcion_albumes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 aplicarGradient(opcion_albumes, lblOpcion_albumes);
-                pnlAlbumes albumes = new pnlAlbumes(albumNegocio);
+                pnlAlbumes albumes = new pnlAlbumes(albumNegocio, artistaNegocio);
                 pnlSeccion.removeAll();
                 pnlSeccion.setLayout(new BorderLayout());
                 pnlSeccion.add(albumes, BorderLayout.CENTER);
@@ -222,7 +222,7 @@ public class frmInicio extends javax.swing.JFrame {
         opcion_canciones.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 aplicarGradient(opcion_canciones, lblOpcion_canciones);
-                pnlCanciones canciones = new pnlCanciones(cancionesNegocio);
+                pnlCanciones canciones = new pnlCanciones(cancionesNegocio, artistaNegocio, albumNegocio);
                 pnlSeccion.removeAll();
                 pnlSeccion.setLayout(new BorderLayout());
                 pnlSeccion.add(canciones, BorderLayout.CENTER);

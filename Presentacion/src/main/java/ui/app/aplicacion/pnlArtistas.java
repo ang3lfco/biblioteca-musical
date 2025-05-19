@@ -98,7 +98,7 @@ public class pnlArtistas extends javax.swing.JPanel {
         panelArtistas.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
 
         for (ArtistaDTO artista : artistas) {
-            JPanel panel = crearPanelCancion(artista);
+            JPanel panel = crearPanelArtista(artista);
             panelArtistas.add(panel);
         }
 
@@ -106,17 +106,19 @@ public class pnlArtistas extends javax.swing.JPanel {
         panelArtistas.repaint();
     }
 
-    private JPanel crearPanelCancion(ArtistaDTO artista) {
+    private JPanel crearPanelArtista(ArtistaDTO artista) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.setBackground(new java.awt.Color(23,30,49));
 
+        int imagenAncho = 0;
         try {
             ImageIcon icono = new ImageIcon(getClass().getResource(artista.getRutaImagen()));
             Image imagen = icono.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
             JLabel lblImagen = new JLabel(new ImageIcon(imagen));
             lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
             panel.add(lblImagen, BorderLayout.CENTER);
+            imagenAncho = lblImagen.getPreferredSize().width;
         } catch (Exception e) {
             panel.add(new JLabel("Sin imagen"), BorderLayout.CENTER);
         }
@@ -129,6 +131,7 @@ public class pnlArtistas extends javax.swing.JPanel {
         lblNombre.setForeground(Color.WHITE);
         lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblNombre.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblNombre.setPreferredSize(new Dimension(imagenAncho, lblNombre.getPreferredSize().height));
         lblNombre.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
         
         JLabel lblGenero = new JLabel(artista.getTipo(), SwingConstants.CENTER);

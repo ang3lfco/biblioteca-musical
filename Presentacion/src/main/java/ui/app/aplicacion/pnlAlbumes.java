@@ -4,14 +4,16 @@
  */
 package ui.app.aplicacion;
 
+import dtos.AlbumDTO;
+import dtos.ArtistaDTO;
 import interfaces.IAlbumNegocio;
+import interfaces.IArtistaNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -31,12 +33,14 @@ import ui.componentes.RoundedComboBox;
  */
 public class pnlAlbumes extends javax.swing.JPanel {
     private IAlbumNegocio albumNegocio;
+    private IArtistaNegocio artistaNegocio;
     /**
      * Creates new form pnlCanciones
      */
-    public pnlAlbumes(IAlbumNegocio albumNegocio) {
+    public pnlAlbumes(IAlbumNegocio albumNegocio, IArtistaNegocio artistaNegocio) {
         initComponents();
         this.albumNegocio = albumNegocio;
+        this.artistaNegocio = artistaNegocio;
         iniciarFlechasScroll();
         jScrollPane_albumes.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane_albumes.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -80,23 +84,23 @@ public class pnlAlbumes extends javax.swing.JPanel {
     }
     
     private void cargarCanciones() {
-        List<Album> albumes = new ArrayList<>();
-        albumes.add(new Album("BTR", "Big Time Rush", "btr.png"));
-        albumes.add(new Album("The Album", "BLACKPINK", "the_album.png"));
-        albumes.add(new Album("All Eyez on Me", "2Pac", "all_eyez_on_me.png"));
-        albumes.add(new Album("Rolling Papers", "Wiz Khalifa", "rolling_papers.png"));
-        albumes.add(new Album("Careless World: Rise of the Last King", "Tyga", "careless_world.png"));
-        albumes.add(new Album("Take Care", "Drake", "take_care.png"));
-        albumes.add(new Album("After Hours", "The Weeknd", "after_hours.png"));
-        albumes.add(new Album("Good Kid, M.A.A.D City", "Kendrick Lamar", "good_kid_maad_city.png"));
-        albumes.add(new Album("1989", "Taylor Swift", "1989.png"));
-        albumes.add(new Album("Born This Way", "Lady Gaga", "born_this_way.png"));
+        List<AlbumDTO> albumes = albumNegocio.obtenerTodos();
+//        albumes.add(new Album("BTR", "Big Time Rush", "btr.png"));
+//        albumes.add(new Album("The Album", "BLACKPINK", "the_album.png"));
+//        albumes.add(new Album("All Eyez on Me", "2Pac", "all_eyez_on_me.png"));
+//        albumes.add(new Album("Rolling Papers", "Wiz Khalifa", "rolling_papers.png"));
+//        albumes.add(new Album("Careless World: Rise of the Last King", "Tyga", "careless_world.png"));
+//        albumes.add(new Album("Take Care", "Drake", "take_care.png"));
+//        albumes.add(new Album("After Hours", "The Weeknd", "after_hours.png"));
+//        albumes.add(new Album("Good Kid, M.A.A.D City", "Kendrick Lamar", "good_kid_maad_city.png"));
+//        albumes.add(new Album("1989", "Taylor Swift", "1989.png"));
+//        albumes.add(new Album("Born This Way", "Lady Gaga", "born_this_way.png"));
         
 
         panelAlbumes.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
 
-        for (Album cancion : albumes) {
-            JPanel panel = crearPanelCancion(cancion);
+        for (AlbumDTO album : albumes) {
+            JPanel panel = crearPanelAlbum(album);
             panelAlbumes.add(panel);
         }
 
@@ -104,14 +108,14 @@ public class pnlAlbumes extends javax.swing.JPanel {
         panelAlbumes.repaint();
     }
 
-    private JPanel crearPanelCancion(Album cancion) {
+    private JPanel crearPanelAlbum(AlbumDTO album) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.setBackground(new java.awt.Color(23,30,49));
 
         int imagenAncho = 0;
         try {
-            ImageIcon icono = new ImageIcon(getClass().getResource("/portadas/" + cancion.getPortada()));
+            ImageIcon icono = new ImageIcon(getClass().getResource(album.getRutaImagen()));
             Image imagen = icono.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
             JLabel lblImagen = new JLabel(new ImageIcon(imagen));
             lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
@@ -125,14 +129,25 @@ public class pnlAlbumes extends javax.swing.JPanel {
         contenedorTexto.setLayout(new BoxLayout(contenedorTexto, BoxLayout.Y_AXIS));
         contenedorTexto.setOpaque(false);
 
-        JLabel lblNombre = new JLabel(cancion.getNombre(), SwingConstants.CENTER);
+        JLabel lblNombre = new JLabel(album.getNombre(), SwingConstants.CENTER);
         lblNombre.setForeground(Color.WHITE);
         lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblNombre.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblNombre.setPreferredSize(new Dimension(imagenAncho, lblNombre.getPreferredSize().height));
         lblNombre.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
-
-        JLabel lblArtista = new JLabel(cancion.getArtista(), SwingConstants.CENTER);
+        
+        StringBuilder artistasLabel = new StringBuilder();
+        List<String> artistasDelAlbum = album.getArtistasId();
+        for(String s : artistasDelAlbum){
+            ArtistaDTO adto = artistaNegocio.buscarArtistaporId(s);
+            artistasLabel.append(adto.getNombre());
+            if(artistasDelAlbum.size() > 1){
+                artistasLabel.append(", ");
+            }
+        }
+        String artistasTexto = artistasLabel.toString();
+        
+        JLabel lblArtista = new JLabel(artistasTexto, SwingConstants.CENTER);
         lblArtista.setForeground(Color.LIGHT_GRAY);
         lblArtista.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         lblArtista.setAlignmentX(Component.CENTER_ALIGNMENT);

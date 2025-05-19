@@ -4,7 +4,11 @@
  */
 package ui.app.aplicacion;
 
+import dtos.AlbumDTO;
+import dtos.ArtistaDTO;
 import dtos.CancionDTO;
+import interfaces.IAlbumNegocio;
+import interfaces.IArtistaNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -37,12 +41,16 @@ import interfaces.ICancionNegocio;
  */
 public class pnlCanciones extends javax.swing.JPanel {
     private ICancionNegocio cancionesNegocio;
+    private IArtistaNegocio artistaNegocio;
+    private IAlbumNegocio albumNegocio;
     /**
      * Creates new form pnlCanciones
      */
-    public pnlCanciones(ICancionNegocio cancionesNegocio) {
+    public pnlCanciones(ICancionNegocio cancionesNegocio, IArtistaNegocio artistaNegocio, IAlbumNegocio albumNegocio) {
         initComponents();
         this.cancionesNegocio = cancionesNegocio;
+        this.artistaNegocio = artistaNegocio;
+        this.albumNegocio = albumNegocio;
         iniciarFlechasScroll();
         jScrollPane_canciones.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane_canciones.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -106,13 +114,15 @@ public class pnlCanciones extends javax.swing.JPanel {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.setBackground(new java.awt.Color(23,30,49));
-
+        
+        int imagenAncho = 0;
         try {
             ImageIcon icono = new ImageIcon(getClass().getResource("/portadas/" + "cancion.png"));
             Image imagen = icono.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
             JLabel lblImagen = new JLabel(new ImageIcon(imagen));
             lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
             panel.add(lblImagen, BorderLayout.CENTER);
+            imagenAncho = lblImagen.getPreferredSize().width;
         } catch (Exception e) {
             panel.add(new JLabel("Sin imagen"), BorderLayout.CENTER);
         }
@@ -120,21 +130,35 @@ public class pnlCanciones extends javax.swing.JPanel {
         JPanel contenedorTexto = new JPanel();
         contenedorTexto.setLayout(new BoxLayout(contenedorTexto, BoxLayout.Y_AXIS));
         contenedorTexto.setOpaque(false);
-
+        
         JLabel lblNombre = new JLabel(cancion.getNombre(), SwingConstants.CENTER);
         lblNombre.setForeground(Color.WHITE);
         lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblNombre.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblNombre.setPreferredSize(new Dimension(imagenAncho, lblNombre.getPreferredSize().height));
         lblNombre.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
+        
+        String albumDeCancionId = cancion.getAlbumId();
+        AlbumDTO albumDeCancion = albumNegocio.buscarAlbumPorId(albumDeCancionId);
+        String artista = "";
+        StringBuilder artistasLabel = new StringBuilder();
+        List<String> artistasTotalesIds = albumDeCancion.getArtistasId();
+        for(String s : artistasTotalesIds){
+            artistasLabel.append(artistaNegocio.buscarArtistaporId(s).getNombre());
+            if(artistasTotalesIds.size() > 1){
+                artistasLabel.append(", ");
+            }
+        }
+        String artistasTexto = artistasLabel.toString();
 
-        JLabel lblAlbum = new JLabel("Album", SwingConstants.CENTER);
-        lblAlbum.setForeground(Color.LIGHT_GRAY);
-        lblAlbum.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblAlbum.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblAlbum.setBorder(BorderFactory.createEmptyBorder(0, 0, 4, 0));
+        JLabel lblArtista = new JLabel(artistasTexto, SwingConstants.CENTER);
+        lblArtista.setForeground(Color.LIGHT_GRAY);
+        lblArtista.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblArtista.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblArtista.setBorder(BorderFactory.createEmptyBorder(0, 0, 4, 0));
 
         contenedorTexto.add(lblNombre);
-        contenedorTexto.add(lblAlbum);
+        contenedorTexto.add(lblArtista);
 
         panel.add(contenedorTexto, BorderLayout.SOUTH);
         
