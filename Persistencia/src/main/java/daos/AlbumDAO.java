@@ -144,6 +144,20 @@ public class AlbumDAO implements IAlbumDAO{
         }
         return resultados;
     }
+    
+    @Override
+    public void insertarAlbumes(List<Album> albumes) {
+        MongoCollection<Album> coleccion;
+
+        coleccion = MongoConexion.getAlbumCollection();
+        
+        if (albumes != null && !albumes.isEmpty()) {
+            coleccion.insertMany(albumes);
+            System.out.println("Se insertaron " + albumes.size() + " albumes correctamente.");
+        } else {
+            System.out.println("No se inserto ningun album.");
+        }
+    }
 
     private List<ObjectId> generosNoDeseadosDelUsuario(ObjectId idUsuario) {
         MongoCollection<Usuario> usuariosCollection = MongoConexion.getUsuarioCollection();

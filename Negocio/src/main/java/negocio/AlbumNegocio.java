@@ -88,6 +88,7 @@ public class AlbumNegocio implements IAlbumNegocio{
         albumDAO.agregarAlbum(album);
     }
     
+    @Override
     public List<AlbumDTO> obtenerTodos(){
         List<AlbumDTO> resultados = new ArrayList<>();
         List<Album> dtos = albumDAO.obtenerTodos();
@@ -95,6 +96,12 @@ public class AlbumNegocio implements IAlbumNegocio{
         resultados = this.ConvertirListaEntidadAListaDTO(dtos);
         
         return resultados;
+    }
+    
+    @Override
+    public void insertarAlbumes(List<AlbumDTO> lista){
+        List<Album> albumes = this.ConvertirListaDTOAListaEntidad(lista);
+        albumDAO.insertarAlbumes(albumes);
     }
 
     private List<AlbumDTO> ConvertirListaEntidadAListaDTO(List<Album> listaDAO) {
@@ -105,6 +112,20 @@ public class AlbumNegocio implements IAlbumNegocio{
             for (Album album : listaDAO) {
                 resultados.add(
                         this.convertirADTO(album)
+                );
+            }
+        }
+        return resultados;
+    }
+    
+    private List<Album> ConvertirListaDTOAListaEntidad(List<AlbumDTO> listaDTO) {
+        List<Album> resultados = new ArrayList<>();
+
+        if (listaDTO != null) {
+
+            for (AlbumDTO album : listaDTO) {
+                resultados.add(
+                        this.convertirAEntidad(album)
                 );
             }
         }

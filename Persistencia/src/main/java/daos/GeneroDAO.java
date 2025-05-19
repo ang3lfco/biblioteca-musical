@@ -9,6 +9,7 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import conexion.MongoConexion;
 import dtos.GeneroDTO;
+import entidades.Album;
 import entidades.Artista;
 import entidades.Genero;
 import interfaces.IGeneroDAO;
@@ -52,6 +53,17 @@ public class GeneroDAO implements IGeneroDAO{
             return null;
         }
         return coleccion.find(Filters.eq("_id", id)).first();
+    }
+    
+    @Override
+    public void insertarGeneros(List<Genero> generos) {
+        
+        if (generos != null && !generos.isEmpty()) {
+            coleccion.insertMany(generos);
+            System.out.println("Se insertaron " + generos.size() + " generos correctamente.");
+        } else {
+            System.out.println("No se inserto ningun genero.");
+        }
     }
     
     private GeneroDTO convertirADTO(Genero genero) {

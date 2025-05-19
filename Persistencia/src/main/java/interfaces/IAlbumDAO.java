@@ -21,4 +21,5 @@ public interface IAlbumDAO {
     void agregarAlbum(Album album);
     Album buscarAlbumPorId(Object id);
     List<Album> obtenerTodos();
+    void insertarAlbumes(List<Album> albumes);
 }

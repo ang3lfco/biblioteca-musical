@@ -4,10 +4,13 @@
  */
 package negocio;
 
+import dtos.AlbumDTO;
 import dtos.GeneroDTO;
+import entidades.Album;
 import entidades.Genero;
 import interfaces.IGeneroDAO;
 import interfaces.IGeneroNegocio;
+import java.util.ArrayList;
 import java.util.List;
 import org.bson.types.ObjectId;
 
@@ -39,6 +42,12 @@ public class GeneroNegocio implements IGeneroNegocio {
         generoDAO.guardarGenero(genero);
     }
     
+    @Override
+    public void insertarGeneros(List<GeneroDTO> generos){
+        List<Genero> lista = this.ConvertirListaDTOAListaEntidad(generos);
+        this.generoDAO.insertarGeneros(lista);
+    }
+    
     private GeneroDTO convertirADTO(Genero genero) {
         if (genero == null) {
             return null;
@@ -49,5 +58,31 @@ public class GeneroNegocio implements IGeneroNegocio {
                 genero.getNombre()
         );
         return dto;
+    }
+    
+    private List<Genero> ConvertirListaDTOAListaEntidad(List<GeneroDTO> GeneroDTO) {
+        List<Genero> resultados = new ArrayList<>();
+
+        if (GeneroDTO != null) {
+
+            for (GeneroDTO dto : GeneroDTO) {
+                resultados.add(
+                        this.convertirAEntidad(dto)
+                );
+            }
+        }
+        return resultados;
+    }
+
+    private Genero convertirAEntidad(GeneroDTO genero) {
+        if (genero == null) {
+            return null;
+        }
+
+        Genero entidad = new Genero(
+                new ObjectId(genero.getId()),
+                genero.getNombre()
+        );
+        return entidad;
     }
 }
