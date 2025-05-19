@@ -12,6 +12,7 @@ import entidades.Usuario;
 import interfaces.IUsuarioDAO;
 import java.util.List;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -39,8 +40,8 @@ public class UsuarioDAO implements IUsuarioDAO{
     }
     
     @Override
-    public Usuario.Favoritos getFavoritos(String usuario) {
-        Usuario u = coleccion.find(Filters.eq("usuario", usuario))
+    public Usuario.Favoritos getFavoritos(ObjectId id) {
+        Usuario u = coleccion.find(Filters.eq("_id", id))
                              .projection(Projections.include("favoritos"))
                              .first();
         if (u != null) {
@@ -50,8 +51,8 @@ public class UsuarioDAO implements IUsuarioDAO{
     }
     
     @Override
-    public Usuario.NoDeseados getNoDeseados(String usuario){
-        Usuario u = coleccion.find(Filters.eq("usuario", usuario))
+    public Usuario.NoDeseados getNoDeseados(ObjectId id){
+        Usuario u = coleccion.find(Filters.eq("_id", id))
                              .projection(Projections.include("noDeseados"))
                              .first();
         if (u != null) {

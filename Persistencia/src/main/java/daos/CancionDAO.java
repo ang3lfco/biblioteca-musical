@@ -28,6 +28,18 @@ public class CancionDAO implements ICancionDAO {
         this.coleccion = MongoConexion.getCancionCollection();
 
     }
+    
+    @Override
+    public CancionDTO getCancionPorId(String id) {
+        try {
+            ObjectId objectId = new ObjectId(id);
+            Cancion cancion = coleccion.find(Filters.eq("_id", objectId)).first();
+            return convertirADTO(cancion);
+        } catch (IllegalArgumentException e) {
+            System.err.println("ID no válido: " + e.getMessage());
+            return null;
+        }
+    }
 
     public List<CancionDTO> obtenerTodas() {
         List<CancionDTO> lista = new ArrayList<>();

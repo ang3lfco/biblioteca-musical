@@ -15,6 +15,7 @@ import entidades.Genero;
 import entidades.Persona;
 import entidades.Usuario;
 import interfaces.IUsuarioDAO;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -82,7 +83,7 @@ public class TestMongoConexion {
         IUsuarioDAO usuarioDAO = new UsuarioDAO();
         String nombreUsuario = "ang3lfco";
         
-        Usuario.Favoritos favoritos = usuarioDAO.getFavoritos(nombreUsuario);
+        Usuario.Favoritos favoritos = usuarioDAO.getFavoritos(new ObjectId(""));
         if (favoritos != null) {
             System.out.println("Artistas ID favoritos: " + favoritos.getArtistasId());
             System.out.println("Álbumes ID favoritos: " + favoritos.getAlbumesId());

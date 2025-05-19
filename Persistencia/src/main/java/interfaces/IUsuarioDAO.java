@@ -5,6 +5,7 @@
 package interfaces;
 
 import entidades.Usuario;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -13,6 +14,6 @@ import entidades.Usuario;
 public interface IUsuarioDAO {
     void insertar(Usuario usuario);
     Usuario validar(String usuario, String contrasena);
-    Usuario.Favoritos getFavoritos(String usuario);
-    Usuario.NoDeseados getNoDeseados(String usuario);
+    Usuario.Favoritos getFavoritos(ObjectId id);
+    Usuario.NoDeseados getNoDeseados(ObjectId id);
 }
