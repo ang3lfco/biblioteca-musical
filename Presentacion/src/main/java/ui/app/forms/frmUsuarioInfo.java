@@ -16,6 +16,7 @@ import ui.componentes.CustomRoundedButton;
 import ui.componentes.CustomRoundedPasswordField;
 import ui.componentes.CustomRoundedTextField;
 import ui.componentes.RoundedPanel;
+import ui.sesion.Sesion;
 
 /**
  *
@@ -24,14 +25,16 @@ import ui.componentes.RoundedPanel;
 public class frmUsuarioInfo extends javax.swing.JFrame {
     private int xMouse, yMouse;
     private IUsuarioNegocio usuarioNegocio;
+    private String operacion = "";
     /**
      * Creates new form frmEditarInfo
      */
-    public frmUsuarioInfo(IUsuarioNegocio usuarioNegocio) {
+    public frmUsuarioInfo(IUsuarioNegocio usuarioNegocio, String operacion) {
         setUndecorated(true);
         setBackground(new Color(0,0,0,0));
         initComponents();
         this.usuarioNegocio = usuarioNegocio;
+        this.operacion = operacion;
         setLocationRelativeTo(null);
         
         RoundedPanel panelPrincipal = new RoundedPanel(50, new Color(18,25,44));
@@ -118,31 +121,60 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
         pnl_correo.setBackground(new Color(0,0,0,0));
         pnl_correo.add(correo, BorderLayout.CENTER);
         
-        CustomRoundedButton confirmar = new CustomRoundedButton("Confirmar", new Color(180, 30, 90));
-        confirmar.setTextColor(Color.WHITE);
-        confirmar.setPreferredSize(new Dimension(308, 40));
-        confirmar.setOpaque(false);
+        CustomRoundedButton btnAccion = null;
+        if(operacion.equals("editar")){
+            nombre.setText(Sesion.getUsuarioActual().getNombre());
+            apellido.setText(Sesion.getUsuarioActual().getApellido());
+            usuario.setText(Sesion.getUsuarioActual().getUsuario());
+            contrasena.setText(Sesion.getUsuarioActual().getContraseña());
+            correo.setText(Sesion.getUsuarioActual().getCorreo());
+            btnAccion = new CustomRoundedButton("Editar", new Color(180, 30, 90));
+                btnAccion.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    UsuarioDTO usuarioDTO = new UsuarioDTO(
+                            Sesion.getUsuarioActual().getId(),
+                            nombre.getText(),
+                            apellido.getText(),
+                            usuario.getText(),
+                            contrasena.getText(),
+                            correo.getText(),
+                            "/iconos/usuario.png",
+                            null,
+                            null
+                    );
+                    usuarioNegocio.editarUsuario(usuarioDTO);
+                }
+            });
+        }
+        else if(operacion.equals("registrar")){
+            btnAccion = new CustomRoundedButton("Registrar", new Color(180, 30, 90));
+                btnAccion.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    UsuarioDTO usuarioDTO = new UsuarioDTO(
+                            nombre.getText(),
+                            apellido.getText(),
+                            usuario.getText(),
+                            contrasena.getText(),
+                            correo.getText(),
+                            "/iconos/usuario.png",
+                            null,
+                            null
+                    );
+                    usuarioNegocio.registrarUsuario(usuarioDTO);
+                }
+            });
+        }
         
-        confirmar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                UsuarioDTO usuarioDTO = new UsuarioDTO(
-                        nombre.getText(),
-                        apellido.getText(),
-                        usuario.getText(),
-                        contrasena.getText(),
-                        correo.getText(),
-                        "/iconos/usuario.png",
-                        null,
-                        null
-                );
-                usuarioNegocio.registrarUsuario(usuarioDTO);
-            }
-        });
+        btnAccion.setTextColor(Color.WHITE);
+        btnAccion.setPreferredSize(new Dimension(308, 40));
+        btnAccion.setOpaque(false);
+        
+        
         
         pnl_editar.setBackground(new Color(0,0,0,0));
         pnl_editar.removeAll();
         pnl_editar.setLayout(new BorderLayout());
-        pnl_editar.add(confirmar);
+        pnl_editar.add(btnAccion);
         pnl_editar.revalidate();
         pnl_editar.repaint();
     }

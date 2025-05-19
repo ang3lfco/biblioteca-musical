@@ -13,8 +13,8 @@ import java.awt.*;
  */
 public class CustomRoundedTextField extends JPanel {
     private JTextField textField;
-    private JLabel iconLabel;
-    private String placeholder;
+    private final JLabel iconLabel;
+    private final String placeholder;
     private Color backgroundColor = new Color(18, 25, 44);
     private Color textColor = Color.WHITE;
 

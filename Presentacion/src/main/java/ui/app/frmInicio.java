@@ -565,7 +565,7 @@ public class frmInicio extends javax.swing.JFrame {
 
     private void lbl_perfilMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_perfilMouseClicked
         // TODO add your handling code here:
-        frmUsuarioInfo info = new frmUsuarioInfo(usuarioNegocio);
+        frmUsuarioInfo info = new frmUsuarioInfo(usuarioNegocio, "editar");
         info.setVisible(true);
     }//GEN-LAST:event_lbl_perfilMouseClicked
 

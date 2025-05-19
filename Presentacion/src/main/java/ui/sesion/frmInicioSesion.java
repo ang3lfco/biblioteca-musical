@@ -9,6 +9,7 @@ import daos.ArtistaDAO;
 import daos.CancionDAO;
 import daos.GeneroDAO;
 import daos.UsuarioDAO;
+import dtos.UsuarioDTO;
 import interfaces.IAlbumDAO;
 import interfaces.IAlbumNegocio;
 import interfaces.IUsuarioDAO;
@@ -129,7 +130,9 @@ public class frmInicioSesion extends javax.swing.JFrame {
         
         iniciar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                if(usuarioNegocio.validarSesion(usuario.getText(), contrasena.getText())){
+                UsuarioDTO usuarioEnSesion = usuarioNegocio.validarSesion(usuario.getText(), contrasena.getText());
+                if(usuarioEnSesion != null){
+                    Sesion.iniciarSesion(usuarioEnSesion);
                     frmInicio inicio = new frmInicio(usuarioNegocio, cancionNegocio, albumNegocio, artistaNegocio, generoNegocio);
                     inicio.setVisible(true);
                     dispose();
@@ -318,7 +321,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
 
     private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
         // TODO add your handling code here:
-        frmUsuarioInfo registrar = new frmUsuarioInfo(usuarioNegocio);
+        frmUsuarioInfo registrar = new frmUsuarioInfo(usuarioNegocio, "registrar");
         registrar.setVisible(true);
     }//GEN-LAST:event_jLabel7MouseClicked
 
