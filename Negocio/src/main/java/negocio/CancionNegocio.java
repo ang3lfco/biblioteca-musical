@@ -49,4 +49,9 @@ public class CancionNegocio implements ICancionNegocio {
        
        return cancionesDAO.obtenerTodasEnEntidad();
    }
+   
+   @Override
+   public void insertarCanciones(List<Cancion> canciones){
+       cancionesDAO.insertarCanciones(canciones);
+   }
 }

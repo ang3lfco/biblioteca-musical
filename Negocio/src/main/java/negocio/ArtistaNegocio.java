@@ -58,6 +58,11 @@ public class ArtistaNegocio implements IArtistaNegocio {
         }
         return convertirADTO(artista); // Convierte a DTO
     }
+    
+    @Override
+    public void insertarArtistas (List<Artista> artistas){
+         artistasDAO.insertarArtistas(artistas);
+    }
 
     private ArtistaDTO convertirADTO(Artista artista) {
     if (artista == null) {

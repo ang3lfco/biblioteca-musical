@@ -89,6 +89,15 @@ public class CancionDAO implements ICancionDAO {
         return canciones;
     }
 
+    public void insertarCanciones(List<Cancion> canciones) {
+        if (canciones != null && !canciones.isEmpty()) {
+            coleccion.insertMany(canciones);
+            System.out.println("Se insertaron " + canciones.size() + " canciones correctamente.");
+        } else {
+            System.out.println("No se inserto ningun cancion.");
+        }
+    }
+
     private CancionDTO convertirADTO(Cancion cancion) {
         if (cancion == null) {
             return null;
@@ -107,7 +116,7 @@ public class CancionDAO implements ICancionDAO {
                 artistas.add(id.toHexString());
             }
         }
- 
+
         String albumId = null;
         if (cancion.getAlbumId() != null) {
             albumId = cancion.getAlbumId().toHexString();

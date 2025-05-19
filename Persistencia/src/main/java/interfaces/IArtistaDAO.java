@@ -14,15 +14,17 @@ import org.bson.types.ObjectId;
  * @author Oribiel
  */
 public interface IArtistaDAO {
-    
-    
+
     List<ArtistaDTO> obtenerTodos();
+
     List<ArtistaDTO> buscarPorNombre(String nombre);
-    
+
     List<ObjectId> buscarArtistasPorNombre(String nombre);
-    
+
     List<ObjectId> buscarArtistasPorGenero(String nombreGenero);
-    
+
     Artista buscarArtistaporId(String id);
-    
+
+    void insertarArtistas(List<Artista> artistas);
+
 }
