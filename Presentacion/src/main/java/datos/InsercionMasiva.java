@@ -162,12 +162,79 @@ public class InsercionMasiva {
         //35
         persona = new PersonaDTO(new ObjectId().toHexString(), "George", "Harrison");
         personas.add(persona);
+        //36
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Dan", "Reynolds");
+        personas.add(persona);
+        //37
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Wayne", "Sermon");
+        personas.add(persona);
+        //38
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Ben", "McKee");
+        personas.add(persona);
+        //39
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Daniel", "Platzman");
+        personas.add(persona);
+        //40
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Chester", "Bennington");
+        personas.add(persona);
+        //41
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Mike", "Shinoda");
+        personas.add(persona);
+        //42
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Brad", "Delson");
+        personas.add(persona);
+        //43
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Rob", "Bourdon");
+        personas.add(persona);
+        //44
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Joe", "Hahn");
+        personas.add(persona);
+        //45
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Dave", "Farrell");
+        personas.add(persona);
+        //46
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Julian", "Casablancas");
+        personas.add(persona);
+        //47
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Nick", "Valensi");
+        personas.add(persona);
+        //48
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Albert", "Hammong Jr.");
+        personas.add(persona);
+        //49
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Nikolai", "Fraiture");
+        personas.add(persona);
+        //50
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Fabritzio", "Moretti");
+        personas.add(persona);
+        //51
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Hayley", "Williams");
+        personas.add(persona);
+        //52
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Taylor", "York");
+        personas.add(persona);
+        //53
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Zac", "Farro");
+        personas.add(persona);
+        //54
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Antony", "Kiedis");
+        personas.add(persona);
+        //55
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Flea", "F");
+        personas.add(persona);
+        //56
+        persona = new PersonaDTO(new ObjectId().toHexString(), "Chad", "Smith");
+        personas.add(persona);
+        //57
+        persona = new PersonaDTO(new ObjectId().toHexString(), "John", "Frusciante");
+        personas.add(persona);
 
         personaNegocio.insertarPersonas(personas);
 
         // 2. Insertar generos
         List<GeneroDTO> generos = new ArrayList<>();
-        for (String nombre : List.of("Rock", "Pop", "Jazz", "Metal", "Ska", "kpop", "rap", "indie", "electro", "Classic Rock", "Soul", "Hip Hop", "R&B", "Country", "Funk")) {
+        for (String nombre : List.of("Rock", "Pop", "Jazz", "Metal", "Ska", "kpop", "rap", "indie", "electro", "Classic Rock", "Soul", "Hip Hop", "R&B", "Country", "Funk", "Rock Alternativo",
+                "Pop Rock", "Nu Metal", "Indie Rock", "Garage Rock", "pop punk", "Emo", "Funk rock", "Alternative Rock")) {
             GeneroDTO genero = new GeneroDTO(nombre);
             genero.setId(new ObjectId().toHexString());
             generos.add(genero);
@@ -337,6 +404,55 @@ public class InsercionMasiva {
                 new ArtistaDTO.integranteDTO(personas.get(35).getId(), "Bajista", LocalDate.of(1960, Month.JANUARY, 1), null)));
 
         artistas.add(artista);
+        //25
+        id = new ObjectId().toHexString();
+        artista = new ArtistaDTO(id, "Imagine Dragons", "banda", "/portadas/imagineDragons.png", List.of(generos.get(15).getId(), generos.get(16).getId()), List.of(
+                new ArtistaDTO.integranteDTO(personas.get(36).getId(), "Vocalista", LocalDate.of(2008, Month.JANUARY, 1), null),
+                new ArtistaDTO.integranteDTO(personas.get(37).getId(), "Guitarrista", LocalDate.of(2009, Month.JANUARY, 1), null),
+                new ArtistaDTO.integranteDTO(personas.get(38).getId(), "Bajista", LocalDate.of(2009, Month.JANUARY, 1), null),
+                new ArtistaDTO.integranteDTO(personas.get(39).getId(), "Baterista", LocalDate.of(2011, Month.JANUARY, 1), null)));
+
+        artistas.add(artista);
+
+        // 26
+        id = new ObjectId().toHexString();
+        artista = new ArtistaDTO(id, "Linkin Park", "banda", "/portadas/linkinPark.png", List.of(generos.get(17).getId(), generos.get(23).getId()), List.of(
+                new ArtistaDTO.integranteDTO(personas.get(40).getId(), "Vocalista", LocalDate.of(1999, Month.JANUARY, 1), LocalDate.of(2017, Month.JULY, 20)),
+                new ArtistaDTO.integranteDTO(personas.get(41).getId(), "MC / Tecladista", LocalDate.of(1996, Month.JANUARY, 1), null),
+                new ArtistaDTO.integranteDTO(personas.get(42).getId(), "Guitarrista", LocalDate.of(1996, Month.JANUARY, 1), null),
+                new ArtistaDTO.integranteDTO(personas.get(43).getId(), "Baterista", LocalDate.of(1996, Month.JANUARY, 1), null),
+                new ArtistaDTO.integranteDTO(personas.get(44).getId(), "DJ / Sampler", LocalDate.of(1997, Month.JANUARY, 1), null),
+                new ArtistaDTO.integranteDTO(personas.get(45).getId(), "Bajista", LocalDate.of(2001, Month.JANUARY, 1), null)
+        ));
+        artistas.add(artista);
+
+        //27
+        id = new ObjectId().toHexString();
+        artista = new ArtistaDTO(id, "The Strokes", "banda", "/portadas/theStrokes.png", List.of(generos.get(18).getId(), generos.get(19).getId()), List.of(
+                new ArtistaDTO.integranteDTO(personas.get(46).getId(), "Vocalista", LocalDate.of(1998, Month.JANUARY, 1), null),
+                new ArtistaDTO.integranteDTO(personas.get(47).getId(), "Guitarrista principal", LocalDate.of(1998, Month.JANUARY, 1), null),
+                new ArtistaDTO.integranteDTO(personas.get(48).getId(), "Guitarrista rítmico", LocalDate.of(1998, Month.JANUARY, 1), null),
+                new ArtistaDTO.integranteDTO(personas.get(49).getId(), "Bajista", LocalDate.of(1998, Month.JANUARY, 1), null),
+                new ArtistaDTO.integranteDTO(personas.get(50).getId(), "Baterista", LocalDate.of(1998, Month.JANUARY, 1), null)
+        ));
+        artistas.add(artista);
+
+        //28
+        id = new ObjectId().toHexString();
+        artista = new ArtistaDTO(id, "Paramore", "banda", "/portadas/paramore.png", List.of(generos.get(23).getId(), generos.get(20).getId()), List.of(
+                new ArtistaDTO.integranteDTO(personas.get(51).getId(), "Vocalista", LocalDate.of(2004, Month.JANUARY, 1), null),
+                new ArtistaDTO.integranteDTO(personas.get(52).getId(), "Guitarrista", LocalDate.of(2007, Month.JANUARY, 1), null),
+                new ArtistaDTO.integranteDTO(personas.get(53).getId(), "Baterista", LocalDate.of(2004, Month.JANUARY, 1), LocalDate.of(2010, Month.JANUARY, 1))));
+        artistas.add(artista);
+
+        //29
+        id = new ObjectId().toHexString();
+        artista = new ArtistaDTO(id, "Red Hot Chili Peppers", "banda", "/portadas/rhcp.png", List.of(generos.get(22).getId(), generos.get(23).getId()), List.of(
+                new ArtistaDTO.integranteDTO(personas.get(54).getId(), "Vocalista", LocalDate.of(1983, Month.JANUARY, 1), null),
+                new ArtistaDTO.integranteDTO(personas.get(55).getId(), "Bajista", LocalDate.of(1983, Month.JANUARY, 1), null),
+                new ArtistaDTO.integranteDTO(personas.get(56).getId(), "Baterista", LocalDate.of(1988, Month.JANUARY, 1), null),
+                new ArtistaDTO.integranteDTO(personas.get(57).getId(), "Guitarrista", LocalDate.of(1988, Month.JANUARY, 1), LocalDate.of(1992, Month.JANUARY, 1))));
+        artistas.add(artista);
 
         artistaNegocio.insertarArtistas(artistas);
         // 4. Insertar albumes 
@@ -440,6 +556,31 @@ public class InsercionMasiva {
         //24
         album = new AlbumDTO(new ObjectId().toHexString(), "Abbey Road", LocalDate.of(2001, Month.MARCH, 12),
                 List.of(generos.get(0).getId(), generos.get(9).getId()), "/portadas/abbeyroad.png", List.of(artistas.get(24).getId()));
+        albumes.add(album);
+
+        //25
+        album = new AlbumDTO(new ObjectId().toHexString(), "Evolve", LocalDate.of(2017, Month.JUNE, 23),
+                List.of(generos.get(1).getId(), generos.get(16).getId()), "/portadas/Evolve.png", List.of(artistas.get(25).getId()));
+        albumes.add(album);
+
+        // 26
+        album = new AlbumDTO(new ObjectId().toHexString(), "Hybrid Theory", LocalDate.of(2000, Month.OCTOBER, 24),
+                List.of(generos.get(17).getId(), generos.get(23).getId()), "/portadas/hybridTheory.png", List.of(artistas.get(26).getId()));
+        albumes.add(album);
+
+        //27
+        album = new AlbumDTO(new ObjectId().toHexString(), "Is This It", LocalDate.of(2001, Month.JULY, 30),
+                List.of(generos.get(18).getId(), generos.get(19).getId()), "/portadas/isThisIt.png", List.of(artistas.get(27).getId()));
+        albumes.add(album);
+
+        //8
+        album = new AlbumDTO(new ObjectId().toHexString(), "Riot!", LocalDate.of(2007, Month.JUNE, 12),
+                List.of(generos.get(20).getId(), generos.get(23).getId()), "/portadas/riot.png", List.of(artistas.get(28).getId()));
+        albumes.add(album);
+
+        //29
+        album = new AlbumDTO(new ObjectId().toHexString(), "Californication", LocalDate.of(1999, Month.JUNE, 8),
+                List.of(generos.get(22).getId(), generos.get(23).getId()), "/portadas/californication.png", List.of(artistas.get(29).getId()));
         albumes.add(album);
 
         albumNegocio.insertarAlbumes(albumes);
@@ -695,7 +836,67 @@ public class InsercionMasiva {
         cancion = new CancionDTO(new ObjectId().toHexString(),
                 "Here Comes The Sun", albumes.get(24).getId(), List.of(generos.get(9).getId()), List.of(artistas.get(24).getId()));
         canciones.add(cancion);
-        
+        //25
+        cancion = new CancionDTO(new ObjectId().toHexString(),
+                "Radioactive", albumes.get(25).getId(), List.of(generos.get(15).getId()), List.of(artistas.get(25).getId()));
+        canciones.add(cancion);
+
+        cancion = new CancionDTO(new ObjectId().toHexString(),
+                "Demons", albumes.get(25).getId(), List.of(generos.get(15).getId()), List.of(artistas.get(25).getId()));
+        canciones.add(cancion);
+
+        cancion = new CancionDTO(new ObjectId().toHexString(),
+                "It's Time", albumes.get(25).getId(), List.of(generos.get(16).getId()), List.of(artistas.get(25).getId()));
+        canciones.add(cancion);
+        //26
+        cancion = new CancionDTO(new ObjectId().toHexString(),
+                "In the End", albumes.get(26).getId(), List.of(generos.get(10).getId()), List.of(artistas.get(26).getId()));
+        canciones.add(cancion);
+
+        cancion = new CancionDTO(new ObjectId().toHexString(),
+                "One Step Closer", albumes.get(26).getId(), List.of(generos.get(10).getId()), List.of(artistas.get(26).getId()));
+        canciones.add(cancion);
+
+        cancion = new CancionDTO(new ObjectId().toHexString(),
+                "Crawling", albumes.get(26).getId(), List.of(generos.get(3).getId()), List.of(artistas.get(26).getId()));
+        canciones.add(cancion);
+        //27
+        cancion = new CancionDTO(new ObjectId().toHexString(),
+                "Last Nite", albumes.get(27).getId(), List.of(generos.get(14).getId()), List.of(artistas.get(27).getId()));
+        canciones.add(cancion);
+
+        cancion = new CancionDTO(new ObjectId().toHexString(),
+                "Someday", albumes.get(27).getId(), List.of(generos.get(14).getId()), List.of(artistas.get(27).getId()));
+        canciones.add(cancion);
+
+        cancion = new CancionDTO(new ObjectId().toHexString(),
+                "Hard to Explain", albumes.get(27).getId(), List.of(generos.get(7).getId()), List.of(artistas.get(27).getId()));
+        canciones.add(cancion);
+        //28
+        cancion = new CancionDTO(new ObjectId().toHexString(),
+                "Misery Business", albumes.get(28).getId(), List.of(generos.get(12).getId()), List.of(artistas.get(28).getId()));
+        canciones.add(cancion);
+
+        cancion = new CancionDTO(new ObjectId().toHexString(),
+                "Crushcrushcrush", albumes.get(28).getId(), List.of(generos.get(12).getId()), List.of(artistas.get(28).getId()));
+        canciones.add(cancion);
+
+        cancion = new CancionDTO(new ObjectId().toHexString(),
+                "That's What You Get", albumes.get(28).getId(), List.of(generos.get(4).getId()), List.of(artistas.get(28).getId()));
+        canciones.add(cancion);
+        //29
+        cancion = new CancionDTO(new ObjectId().toHexString(),
+                "Californication", albumes.get(29).getId(), List.of(generos.get(1).getId()), List.of(artistas.get(29).getId()));
+        canciones.add(cancion);
+
+        cancion = new CancionDTO(new ObjectId().toHexString(),
+                "Scar Tissue", albumes.get(29).getId(), List.of(generos.get(9).getId()), List.of(artistas.get(29).getId()));
+        canciones.add(cancion);
+
+        cancion = new CancionDTO(new ObjectId().toHexString(),
+                "Otherside", albumes.get(29).getId(), List.of(generos.get(1).getId()), List.of(artistas.get(29).getId()));
+        canciones.add(cancion);
+
         cancionNegocio.insertarCanciones(canciones);
     }
 }
