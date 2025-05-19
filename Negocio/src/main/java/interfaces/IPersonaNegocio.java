@@ -4,7 +4,7 @@
  */
 package interfaces;
 
-import entidades.Persona;
+import dtos.PersonaDTO;
 import java.util.List;
 
 /**
@@ -13,5 +13,5 @@ import java.util.List;
  */
 public interface IPersonaNegocio {
     
-    void insertarPersonas(List<Persona> personas);
+   void insertarPersonas(List<PersonaDTO> persona);
 }

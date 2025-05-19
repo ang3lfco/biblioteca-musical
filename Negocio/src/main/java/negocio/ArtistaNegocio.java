@@ -58,50 +58,102 @@ public class ArtistaNegocio implements IArtistaNegocio {
         }
         return convertirADTO(artista); // Convierte a DTO
     }
-    
+
     @Override
-    public void insertarArtistas (List<Artista> artistas){
-         artistasDAO.insertarArtistas(artistas);
+    public void insertarArtistas(List<ArtistaDTO> artista) {
+        List<Artista> lista = this.ConvertirListaDTOAListaEntidad(artista);
+        this.artistasDAO.insertarArtistas(lista);
+    }
+
+    private List<Artista> ConvertirListaDTOAListaEntidad(List<ArtistaDTO> ArtistaDTO) {
+        List<Artista> resultados = new ArrayList<>();
+
+        if (ArtistaDTO != null) {
+
+            for (ArtistaDTO dto : ArtistaDTO) {
+                resultados.add(
+                        this.convertirAEntidad(dto)
+                );
+            }
+        }
+        return resultados;
+    }
+
+    private Artista convertirAEntidad(ArtistaDTO artistaDTO) {
+        if (artistaDTO == null) {
+            return null;
+        }
+
+        // Convertir lista de géneros
+        List<ObjectId> generosId = new ArrayList<>();
+        if (artistaDTO.getGenerosId() != null) {
+            for (String id : artistaDTO.getGenerosId()) {
+                generosId.add(new ObjectId(id));
+            }
+        }
+
+        List<Artista.Integrante> integrantes = new ArrayList<>();
+        if (artistaDTO.getIntegrantes() != null) {
+            for (ArtistaDTO.integranteDTO integranteDTO : artistaDTO.getIntegrantes()) {
+                Artista.Integrante integrante = new Artista.Integrante();
+                integrante.setPersonaId(new ObjectId(integranteDTO.getPersonaId()));
+                integrante.setRol(integranteDTO.getRol());
+                integrante.setFechaIngreso(integranteDTO.getFechaIngreso());
+                integrante.setFechaSalida(integranteDTO.getFechaSalida());
+                integrantes.add(integrante);
+            }
+        }
+
+        Artista artista = new Artista();
+        if (artistaDTO.getId() != null && !artistaDTO.getId().isBlank()) {
+            artista.setId(new ObjectId(artistaDTO.getId()));
+        }
+        artista.setNombre(artistaDTO.getNombre());
+        artista.setTipo(artistaDTO.getTipo());
+        artista.setRutaImagen(artistaDTO.getRutaImagen());
+        artista.setGenerosId(generosId);
+        artista.setIntegrantes(integrantes);
+
+        return artista;
     }
 
     private ArtistaDTO convertirADTO(Artista artista) {
-    if (artista == null) {
-        return null;
-    }
-
-    List<String> generos = new ArrayList<>();
-    if (artista.getGenerosId() != null) {
-        for (ObjectId id : artista.getGenerosId()) {
-            generos.add(id.toHexString());
+        if (artista == null) {
+            return null;
         }
-    }
 
-    List<ArtistaDTO.integranteDTO> integrantes = new ArrayList<>();
-    if (artista.getIntegrantes() != null) {
-        for (Integrante integrante : artista.getIntegrantes()) {
-            String personaId = null;
-            if (integrante.getPersonaId() != null) {
-                personaId = integrante.getPersonaId().toHexString();
+        List<String> generos = new ArrayList<>();
+        if (artista.getGenerosId() != null) {
+            for (ObjectId id : artista.getGenerosId()) {
+                generos.add(id.toHexString());
             }
-            ArtistaDTO.integranteDTO dto = new ArtistaDTO.integranteDTO(
-                    personaId,
-                    integrante.getRol(),
-                    integrante.getFechaIngreso(),
-                    integrante.getFechaSalida()
-            );
-            integrantes.add(dto);
         }
+
+        List<ArtistaDTO.integranteDTO> integrantes = new ArrayList<>();
+        if (artista.getIntegrantes() != null) {
+            for (Integrante integrante : artista.getIntegrantes()) {
+                String personaId = null;
+                if (integrante.getPersonaId() != null) {
+                    personaId = integrante.getPersonaId().toHexString();
+                }
+                ArtistaDTO.integranteDTO dto = new ArtistaDTO.integranteDTO(
+                        personaId,
+                        integrante.getRol(),
+                        integrante.getFechaIngreso(),
+                        integrante.getFechaSalida()
+                );
+                integrantes.add(dto);
+            }
+        }
+
+        return new ArtistaDTO(
+                artista.getId().toHexString(),
+                artista.getNombre(),
+                artista.getTipo(),
+                artista.getRutaImagen(),
+                generos,
+                integrantes
+        );
     }
-
-    return new ArtistaDTO(
-            artista.getId().toHexString(),
-            artista.getNombre(),
-            artista.getTipo(),
-            artista.getRutaImagen(),
-            generos,
-            integrantes
-    );
-}
-
 
 }

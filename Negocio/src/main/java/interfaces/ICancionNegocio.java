@@ -14,19 +14,21 @@ import org.bson.types.ObjectId;
  * @author Oribiel
  */
 public interface ICancionNegocio {
-    
-            //Regresa una Lista
+
+    //Regresa una Lista
     List<CancionDTO> obtenerTodas();
+
     //Regresa una lista
     List<CancionDTO> buscarPorNombre(String nombre);
+
     //Regresa el id
     List<ObjectId> buscarCancionesPorNombre(String nombre);
+
     //Obtiene todas y las regresa como en entidad
     List<Cancion> obtenerTodasEnEntidad();
 
     CancionDTO obtenerCancionPorId(String id);
 
-    
-    void insertarCanciones(List<Cancion> canciones);
+    void insertarCanciones(List<CancionDTO> cancion);
 
 }
