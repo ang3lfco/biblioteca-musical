@@ -16,4 +16,8 @@ public interface IUsuarioNegocio {
     UsuarioDTO.FavoritosDTO getFavoritos(String idUsuario);
     UsuarioDTO.NoDeseadosDTO getNoDeseados(String idUsuario);
     void editarUsuario(UsuarioDTO usuarioDTO);
+    boolean insertarFavoritoArtista(String idUsuario, String idArtista);
+    boolean insertarFavoritoAlbum(String idUsuario, String idAlbum);
+    boolean insertarFavoritoCancion(String idUsuario, String idCancion);
+    boolean insertarGeneroNoDeseado(String idUsuario, String idGenero);
 }

@@ -17,4 +17,8 @@ public interface IUsuarioDAO {
     Usuario.Favoritos getFavoritos(ObjectId id);
     Usuario.NoDeseados getNoDeseados(ObjectId id);
     void editar(Usuario usuario);
+    boolean insertarFavoritoArtista(ObjectId idUsuario, ObjectId idArtista);
+    boolean insertarFavoritoAlbum(ObjectId idUsuario, ObjectId idAlbum);
+    boolean insertarFavoritoCancion(ObjectId idUsuario, ObjectId idCancion);
+    boolean insertarGeneroNoDeseado(ObjectId idUsuario, ObjectId idGenero);
 }

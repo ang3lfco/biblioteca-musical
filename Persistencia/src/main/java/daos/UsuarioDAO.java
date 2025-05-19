@@ -8,6 +8,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
 import conexion.MongoConexion;
 import entidades.Usuario;
 import interfaces.IUsuarioDAO;
@@ -74,5 +75,37 @@ public class UsuarioDAO implements IUsuarioDAO{
             return u.getNoDeseados();
         }
         return null;
+    }
+    
+    @Override
+    public boolean insertarFavoritoArtista(ObjectId idUsuario, ObjectId idArtista){
+        Bson filtro = Filters.eq("_id", idUsuario);
+        Bson actualizacion = Updates.addToSet("favoritos.artistasId", idArtista);
+        UpdateResult resultado = coleccion.updateOne(filtro, actualizacion);
+        return resultado.getModifiedCount() > 0;
+    }
+    
+    @Override
+    public boolean insertarFavoritoAlbum(ObjectId idUsuario, ObjectId idAlbum){
+        Bson filtro = Filters.eq("_id", idUsuario);
+        Bson actualizacion = Updates.addToSet("favoritos.albumesId", idAlbum);
+        UpdateResult resultado = coleccion.updateOne(filtro, actualizacion);
+        return resultado.getModifiedCount() > 0;
+    }
+    
+    @Override
+    public boolean insertarFavoritoCancion(ObjectId idUsuario, ObjectId idCancion){
+        Bson filtro = Filters.eq("_id", idUsuario);
+        Bson actualizacion = Updates.addToSet("favoritos.cancionesId", idCancion);
+        UpdateResult resultado = coleccion.updateOne(filtro, actualizacion);
+        return resultado.getModifiedCount() > 0;
+    }
+    
+    @Override
+    public boolean insertarGeneroNoDeseado(ObjectId idUsuario, ObjectId idGenero){
+        Bson filtro = Filters.eq("_id", idUsuario);
+        Bson actualizacion = Updates.addToSet("noDeseados.generos", idGenero);
+        UpdateResult resultado = coleccion.updateOne(filtro, actualizacion);
+        return resultado.getModifiedCount() > 0;
     }
 }
