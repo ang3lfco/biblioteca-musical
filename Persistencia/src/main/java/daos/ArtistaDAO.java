@@ -88,6 +88,15 @@ public class ArtistaDAO implements IArtistaDAO {
             return null;
         }
     }
+    
+        public void insertarArtistas(List<Artista> artistas) {
+        if (artistas != null && !artistas.isEmpty()) {
+            coleccion.insertMany(artistas);
+            System.out.println("Se insertaron " + artistas.size() + " artistas correctamente.");
+        } else {
+            System.out.println("No se inserto ningun artista.");
+        }
+    }
 
     private ArtistaDTO convertirADTO(Artista artista) {
         if (artista == null) {

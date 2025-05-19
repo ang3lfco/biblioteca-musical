@@ -22,4 +22,6 @@ public interface ICancionDAO {
     List<ObjectId> buscarCancionesPorNombre(String nombre);
     //Obtiene todas y las regresa como en entidad
     List<Cancion> obtenerTodasEnEntidad();
+    
+    void insertarCanciones(List<Cancion> canciones);
 }

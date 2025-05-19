@@ -6,7 +6,11 @@ package com.mycompany.persistencia;
 
 import daos.ArtistaDAO;
 import dtos.ArtistaDTO;
+import entidades.Artista;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -32,7 +36,29 @@ public class TestArtistasDAO {
 //        for (ArtistaDTO artista : artistasEncontrados) {
 //            mostrarArtista(artista);
 //        }
+
+
+        ObjectId personaId1 = new ObjectId();
+        ObjectId personaId2 = new ObjectId();
+        ObjectId generoId1 = new ObjectId(); 
+
+        // Crear integrantes
+        Artista.Integrante integrante1 = new Artista.Integrante(personaId1, "Vocalista", LocalDate.of(2020, 1, 10), null);
+        Artista.Integrante integrante2 = new Artista.Integrante(personaId2, "Guitarrista", LocalDate.of(2021, 5, 20), null);
+
+        // Crear lista de géneros (con IDs)
+        List<ObjectId> generosId = new ArrayList<>();
+        generosId.add(generoId1);
+
+        // Crear artistas
+        Artista artista1 = new Artista("Los Riffs", "Grupo", "imagenes/losriffs.png", generosId, List.of(integrante1, integrante2));
+        Artista artista2 = new Artista("Solista Rock", "Solista", "imagenes/solistarock.jpg", generosId, List.of(integrante1));
+
+        // Insertar artistas
+        artistasDAO.insertarArtistas(List.of(artista1, artista2));
   }
+    
+    
     
     
 

@@ -22,7 +22,7 @@ public class ArtistaDTO {
     private String rutaImagen;
     private List<String> generosId;
     private List<integranteDTO> integrantes;
-
+ 
     public ArtistaDTO() {
     }
 
