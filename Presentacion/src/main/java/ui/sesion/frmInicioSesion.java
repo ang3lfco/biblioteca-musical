@@ -7,6 +7,7 @@ package ui.sesion;
 import daos.AlbumDAO;
 import daos.ArtistaDAO;
 import daos.CancionDAO;
+import daos.GeneroDAO;
 import daos.UsuarioDAO;
 import interfaces.IAlbumDAO;
 import interfaces.IAlbumNegocio;
@@ -31,6 +32,9 @@ import interfaces.IArtistaDAO;
 import interfaces.ICancionDAO;
 import interfaces.IArtistaNegocio;
 import interfaces.ICancionNegocio;
+import interfaces.IGeneroDAO;
+import interfaces.IGeneroNegocio;
+import negocio.GeneroNegocio;
 
 /**
  *
@@ -42,10 +46,13 @@ public class frmInicioSesion extends javax.swing.JFrame {
     private ICancionDAO cancionDAO = new CancionDAO();
     private IAlbumDAO albumDAO = new AlbumDAO();
     private IArtistaDAO artistaDAO = new ArtistaDAO();
+    private IGeneroDAO generoDAO = new GeneroDAO();
+    
     private ICancionNegocio cancionNegocio = new CancionNegocio(cancionDAO);
     private IUsuarioNegocio usuarioNegocio = new UsuarioNegocio(usuarioDAO);
     private IAlbumNegocio albumNegocio = new AlbumNegocio(albumDAO);
     private IArtistaNegocio artistaNegocio = new ArtistaNegocio(artistaDAO);
+    private IGeneroNegocio generoNegocio = new GeneroNegocio(generoDAO);
     
     /**
      * Creates new form frmInicioSesion
@@ -55,9 +62,6 @@ public class frmInicioSesion extends javax.swing.JFrame {
         setBackground(new Color(0,0,0,0));
         initComponents();
         setLocationRelativeTo(null);
-        
-        System.out.println(usuarioNegocio.getFavoritos("ang3lfco"));
-        System.out.println(usuarioNegocio.getNoDeseados("ang3lfco"));
         
         RoundedPanel panelPrincipal = new RoundedPanel(50, new Color(18,25,44));
         panelPrincipal.setOpaque(false);
@@ -126,7 +130,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
         iniciar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 if(usuarioNegocio.validarSesion(usuario.getText(), contrasena.getText())){
-                    frmInicio inicio = new frmInicio(usuarioNegocio, cancionNegocio, albumNegocio, artistaNegocio);
+                    frmInicio inicio = new frmInicio(usuarioNegocio, cancionNegocio, albumNegocio, artistaNegocio, generoNegocio);
                     inicio.setVisible(true);
                     dispose();
                 }

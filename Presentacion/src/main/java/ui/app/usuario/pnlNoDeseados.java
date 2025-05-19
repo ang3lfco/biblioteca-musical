@@ -4,6 +4,10 @@
  */
 package ui.app.usuario;
 
+import dtos.GeneroDTO;
+import dtos.UsuarioDTO;
+import interfaces.IGeneroNegocio;
+import interfaces.IUsuarioNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -34,24 +38,25 @@ import javax.swing.SwingWorker;
  */
 public class pnlNoDeseados extends javax.swing.JPanel {
     List<Map<String, Object>> elementos = new ArrayList<>();
+    private IUsuarioNegocio usuarioNegocio;
+    private IGeneroNegocio generoNegocio;
+    private UsuarioDTO.NoDeseadosDTO generosNoDeseadosIds;
+    private List<GeneroDTO> generosNoDeseados = new ArrayList<>();
     /**
      * Creates new form pnlFavoritos
      */
-    public pnlNoDeseados() {
+    public pnlNoDeseados(IUsuarioNegocio usuarioNegocio, IGeneroNegocio generoNegocio) {
         initComponents();
         iniciarFlechasScroll();
-        elementos.add(Map.of("tipo", "album", "data", new Album("The Album", "BLACKPINK", "the_album.png")));
-        elementos.add(Map.of("tipo", "album", "data", new Album("Born This Way", "Lady Gaga", "born_this_way.png")));
-        elementos.add(Map.of("tipo", "album", "data", new Album("Careless World: Rise of the Last King", "Tyga", "careless_world.png")));
-
-        elementos.add(Map.of("tipo", "cancion", "data", new Cancion("Corazon de piedra", "Album", "Corazon de piedra.png")));
-        elementos.add(Map.of("tipo", "cancion", "data", new Cancion("El hijo mayor", "Album", "El hijo mayor.png")));
-        elementos.add(Map.of("tipo", "cancion", "data", new Cancion("El gavilan", "Album", "El gavilan.png")));
-
-        elementos.add(Map.of("tipo", "artista", "data", new Artista("Eme Malafe", "Rap Mexicano", "ememalafe.png")));
-        elementos.add(Map.of("tipo", "artista", "data", new Artista("Neto Peña", "Rap Mexicano", "netopena.png")));
+        this.usuarioNegocio = usuarioNegocio;
+        this.generoNegocio = generoNegocio;
+        this.generosNoDeseadosIds = usuarioNegocio.getNoDeseados("682856dbe09c84ef98441541");
         
-        cargarFavoritos();
+        for(String s : generosNoDeseadosIds.getGeneros()){
+            generosNoDeseados.add(generoNegocio.buscarGeneroPorId(s));
+        }
+        
+        cargarNoDeseados();
         
         jScrollPane_NoDeseados.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane_NoDeseados.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -80,114 +85,86 @@ public class pnlNoDeseados extends javax.swing.JPanel {
         });
     }
     
-    private void cargarFavoritos() {
+    private void cargarNoDeseados() {
         jPanel1_noDeseados.setLayout(new BoxLayout(jPanel1_noDeseados, BoxLayout.Y_AXIS));
         jPanel1_noDeseados.removeAll();
 
-        for (Map<String, Object> item : elementos) {
-            String tipo = (String) item.get("tipo");
-            Object data = item.get("data");
-
-            JPanel panel = new JPanel(new java.awt.BorderLayout());
-            panel.setBackground(new java.awt.Color(30, 36, 60));
-            panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 80));
+        // --- Sección de Géneros no deseados ---
+        for (GeneroDTO genero : generosNoDeseados) {
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.setBackground(new Color(30, 36, 60));
+            panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
             panel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-            String portada = "";
-            String nombre = "";
-
-            switch (tipo) {
-                case "album" -> {
-                    Album a = (Album) data;
-                    portada = a.getPortada();
-                    nombre = a.getNombre();
-                }
-                case "cancion" -> {
-                    Cancion c = (Cancion) data;
-                    portada = c.getPortada();
-                    nombre = c.getNombre();
-                }
-                case "artista" -> {
-                    Artista ar = (Artista) data;
-                    portada = ar.getPortada();
-                    nombre = ar.getNombre();
-                }
-            }
-
-            JLabel lblImg;
-            try {
-                ImageIcon icon = new ImageIcon(getClass().getResource("/portadas/" + portada));
-                Image scaled = icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-                lblImg = new JLabel(new ImageIcon(scaled));
-            } catch (Exception e) {
-                lblImg = new JLabel("Sin Img");
-            }
-            lblImg.setPreferredSize(new java.awt.Dimension(70, 70));
-            panel.add(lblImg, BorderLayout.WEST);
+//            JLabel lblImg;
+//            try {
+//                ImageIcon icono = new ImageIcon(getClass().getResource(album.getRutaImagen()));
+//                Image imagenAjustada = icono.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+//                lblImg = new JLabel(new ImageIcon(imagenAjustada));
+//            } catch (Exception e) {
+//                lblImg = new JLabel("Sin imagen");
+//            }
+//            lblImg.setPreferredSize(new Dimension(70, 70));
+//            panel.add(lblImg, BorderLayout.WEST);
 
             JPanel texto = new JPanel();
             texto.setLayout(new BoxLayout(texto, BoxLayout.X_AXIS));
             texto.setOpaque(false);
+            texto.add(Box.createHorizontalStrut(60));
 
-            texto.add(Box.createHorizontalStrut(60)); 
-
-            JLabel lblNombre = new JLabel(nombre);
+            JLabel lblNombre = new JLabel(genero.getNombre());
             lblNombre.setForeground(Color.WHITE);
             lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 14));
-            lblNombre.setPreferredSize(new Dimension(250, 30)); 
+            lblNombre.setPreferredSize(new Dimension(250, 30));
             lblNombre.setMaximumSize(new Dimension(250, 30));
 
-            JLabel lblTipo = new JLabel(tipo.toUpperCase());
+            JLabel lblTipo = new JLabel("Bloqueado");
             lblTipo.setForeground(Color.LIGHT_GRAY);
             lblTipo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
             texto.add(lblNombre);
-            texto.add(Box.createHorizontalStrut(5)); 
+            texto.add(Box.createHorizontalStrut(5));
             texto.add(lblTipo);
 
             panel.add(texto, BorderLayout.CENTER);
 
-            JLabel btnEliminar;
+            JLabel btnNoDeseado;
             try {
-                ImageIcon icono = new ImageIcon(getClass().getResource("/iconos/bloquear.png"));
+                ImageIcon icono = new ImageIcon(getClass().getResource("/iconos/noDeseado.png"));
                 Image imagenAjustada = icono.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-                btnEliminar = new JLabel(new ImageIcon(imagenAjustada));
+                btnNoDeseado = new JLabel(new ImageIcon(imagenAjustada));
             } catch (Exception e) {
-                btnEliminar = new JLabel("X");
+                btnNoDeseado = new JLabel("X");
             }
-
-            btnEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-            btnEliminar.setHorizontalAlignment(SwingConstants.CENTER);
-            btnEliminar.setPreferredSize(new java.awt.Dimension(50, 50));
-
-            btnEliminar.addMouseListener(new java.awt.event.MouseAdapter() {
+            btnNoDeseado.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+            btnNoDeseado.setHorizontalAlignment(SwingConstants.CENTER);
+            btnNoDeseado.setPreferredSize(new Dimension(50, 50));
+            btnNoDeseado.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     JDialog dialogoCargando = mostrarDialogoCargando();
-
                     SwingWorker<Void, Void> worker = new SwingWorker<>() {
                         @Override
                         protected Void doInBackground() throws Exception {
-                            elementos.remove(item);
+                            generosNoDeseados.remove(genero);
                             return null;
                         }
-
                         @Override
                         protected void done() {
-                            cargarFavoritos();
+                            cargarNoDeseados();
                             dialogoCargando.dispose();
                         }
                     };
-
                     worker.execute();
                 }
             });
-
-            panel.add(btnEliminar, BorderLayout.EAST);
+            panel.add(btnNoDeseado, BorderLayout.EAST);
 
             jPanel1_noDeseados.add(panel);
-            jPanel1_noDeseados.add(javax.swing.Box.createVerticalStrut(8));
+            jPanel1_noDeseados.add(Box.createVerticalStrut(8));
         }
+
+        
 
         jPanel1_noDeseados.revalidate();
         jPanel1_noDeseados.repaint();
@@ -332,114 +309,6 @@ public class pnlNoDeseados extends javax.swing.JPanel {
                 .addContainerGap(47, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-public static class Cancion {
-    private String nombre;
-    private String album;
-    private String portada;
-
-    public Cancion(String nombre, String album, String portada) {
-        this.nombre = nombre;
-        this.album = album;
-        this.portada = portada;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getAlbum() {
-        return album;
-    }
-
-    public void setAlbum(String album) {
-        this.album = album;
-    }
-    
-    public String getPortada() {
-        return portada;
-    }
-
-    public void setPortada(String portada) {
-        this.portada = portada;
-    }
-}
-
-public static class Album {
-    private String nombre;
-    private String artista;
-    private String portada;
-
-    public Album(String nombre, String artista, String portada) {
-        this.nombre = nombre;
-        this.artista = artista;
-        this.portada = portada;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getArtista() {
-        return artista;
-    }
-
-    public void setArtista(String artista) {
-        this.artista = artista;
-    }
-    
-    public String getPortada() {
-        return portada;
-    }
-
-    public void setPortada(String portada) {
-        this.portada = portada;
-    }
-}
-
-public static class Artista {
-    private String nombre;
-    private String genero;
-    private String portada;
-
-    public Artista(String nombre, String genero, String portada) {
-        this.nombre = nombre;
-        this.genero = genero;
-        this.portada = portada;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getGenero() {
-        return genero;
-    }
-
-    public void setGenero(String genero) {
-        this.genero = genero;
-    }
-
-    public String getPortada() {
-        return portada;
-    }
-
-    public void setPortada(String portada) {
-        this.portada = portada;
-    }
-}
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
