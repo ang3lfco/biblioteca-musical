@@ -41,12 +41,12 @@ public class frmInicio extends javax.swing.JFrame {
     /**
      * Creates new form frmInicio
      */
-    public frmInicio(IUsuarioNegocio usuarioNegocio, ICancionNegocio cancionesNegocio, IAlbumNegocio albumNegocio, IArtistaNegocio artistaNegocio, IGeneroNegocio generoNegocio) {
+    public frmInicio(IUsuarioNegocio usuarioNegocio, ICancionNegocio cancionNegocio, IAlbumNegocio albumNegocio, IArtistaNegocio artistaNegocio, IGeneroNegocio generoNegocio) {
         setUndecorated(true);
         setBackground(new Color(0, 0, 0, 0));
         initComponents();
         this.usuarioNegocio = usuarioNegocio;
-        this.cancionNegocio = cancionesNegocio;
+        this.cancionNegocio = cancionNegocio;
         this.albumNegocio = albumNegocio;
         this.artistaNegocio = artistaNegocio;
         this.generoNegocio = generoNegocio;
@@ -123,7 +123,7 @@ public class frmInicio extends javax.swing.JFrame {
             }
         });
         
-        pnlPrincipal inicio = new pnlPrincipal(albumNegocio, artistaNegocio);
+        pnlPrincipal inicio = new pnlPrincipal(usuarioNegocio, cancionNegocio, albumNegocio, artistaNegocio);
         pnlSeccion.removeAll();
         pnlSeccion.setLayout(new BorderLayout());
         pnlSeccion.add(inicio, BorderLayout.CENTER);
@@ -165,7 +165,7 @@ public class frmInicio extends javax.swing.JFrame {
         opcion_inicio.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 aplicarGradient(opcion_inicio, lblOpcion_inicio);
-                pnlPrincipal inicio = new pnlPrincipal(albumNegocio, artistaNegocio);
+                pnlPrincipal inicio = new pnlPrincipal(usuarioNegocio, cancionNegocio, albumNegocio, artistaNegocio);
                 pnlSeccion.removeAll();
                 pnlSeccion.setLayout(new BorderLayout());
                 pnlSeccion.add(inicio, BorderLayout.CENTER);

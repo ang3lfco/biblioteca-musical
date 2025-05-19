@@ -4,8 +4,13 @@
  */
 package ui.app.aplicacion;
 
+import dtos.AlbumDTO;
+import dtos.ArtistaDTO;
+import dtos.CancionDTO;
 import interfaces.IAlbumNegocio;
 import interfaces.IArtistaNegocio;
+import interfaces.ICancionNegocio;
+import interfaces.IUsuarioNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -36,20 +41,32 @@ import ui.componentes.CustomRoundedTextField;
  * @author ang3lfco
  */
 public class pnlPrincipal extends javax.swing.JPanel {
+    private IUsuarioNegocio usuarioNegocio;
     private IAlbumNegocio albumNegocio;
     private IArtistaNegocio artistaNegocio;
+    private ICancionNegocio cancionNegocio;
+    
+    private List<ArtistaDTO> artistasdtos = new ArrayList<>();
+    private List<AlbumDTO> albumesdtos = new ArrayList<>();
+    private List<CancionDTO> cancionesdtos = new ArrayList<>();
     /**
      * Creates new form pnlPrincipal
      */
-    public pnlPrincipal(IAlbumNegocio albumNegocio, IArtistaNegocio artistaNegocio) {
+    public pnlPrincipal(IUsuarioNegocio usuarioNegocio, ICancionNegocio cancionesNegocio, IAlbumNegocio albumNegocio, IArtistaNegocio artistaNegocio) {
         initComponents();
+        this.usuarioNegocio = usuarioNegocio;
+        this.cancionNegocio = cancionesNegocio;
         this.albumNegocio = albumNegocio;
         this.artistaNegocio = artistaNegocio;
+        
+        artistasdtos = artistaNegocio.obtenerTodos();
+        albumesdtos = albumNegocio.obtenerTodos();
+        cancionesdtos = cancionNegocio.obtenerTodas();
+        
         jScrollPane1_contenido.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane1_contenido.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1_contenido.getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
         jScrollPane1_contenido.getVerticalScrollBar().setUnitIncrement(14);
-
         jScrollPane1_contenido.setViewportBorder(null);
         jScrollPane1_contenido.setBorder(null);
         pnl_contenido.setLayout(new BoxLayout(pnl_contenido, BoxLayout.Y_AXIS));
@@ -62,33 +79,7 @@ public class pnlPrincipal extends javax.swing.JPanel {
 
         List<Map<String, Object>> elementos = new ArrayList<>();
 
-        for (int i = 0; i < 3; i++) {
-            elementos.add(Map.of("tipo", "album", "data", new Album("BTR", "Big Time Rush", "btr.png")));
-            elementos.add(Map.of("tipo", "album", "data", new Album("Take Care", "Drake", "take_care.png")));
-            elementos.add(Map.of("tipo", "album", "data", new Album("1989", "Taylor Swift", "1989.png")));
-
-            elementos.add(Map.of("tipo", "cancion", "data", new Cancion("Boyfriend", "BTR", "btr.png")));
-            elementos.add(Map.of("tipo", "cancion", "data", new Cancion("HYLT", "The Album", "the_album.png")));
-            elementos.add(Map.of("tipo", "cancion", "data", new Cancion("See You Again", "Rolling Papers", "rolling_papers.png")));
-
-            elementos.add(Map.of("tipo", "artista", "data", new Artista("BLACKPINK", "K-pop", "blackpink.png")));
-            elementos.add(Map.of("tipo", "artista", "data", new Artista("2Pac", "Rap", "2pac.png")));
-            elementos.add(Map.of("tipo", "artista", "data", new Artista("Tyga", "Hip-Hop", "tyga.png")));
-            
-            elementos.add(Map.of("tipo", "album", "data", new Album("BTR", "Big Time Rush", "btr.png")));
-            elementos.add(Map.of("tipo", "album", "data", new Album("Take Care", "Drake", "take_care.png")));
-            elementos.add(Map.of("tipo", "album", "data", new Album("1989", "Taylor Swift", "1989.png")));
-
-            elementos.add(Map.of("tipo", "cancion", "data", new Cancion("Boyfriend", "BTR", "btr.png")));
-            elementos.add(Map.of("tipo", "cancion", "data", new Cancion("HYLT", "The Album", "the_album.png")));
-            elementos.add(Map.of("tipo", "cancion", "data", new Cancion("See You Again", "Rolling Papers", "rolling_papers.png")));
-
-            elementos.add(Map.of("tipo", "artista", "data", new Artista("BLACKPINK", "K-pop", "blackpink.png")));
-            elementos.add(Map.of("tipo", "artista", "data", new Artista("2Pac", "Rap", "2pac.png")));
-            elementos.add(Map.of("tipo", "artista", "data", new Artista("Tyga", "Hip-Hop", "tyga.png")));
-        }
-
-        Component[] albumes = crearItems(elementos, "album");
+        Component[] albumes = crearItemsAlbumes(albumesdtos);
         agregarSeccion("Álbumes", albumes, () -> {
             pnlAlbumes albumesPanel = new pnlAlbumes(albumNegocio, artistaNegocio);
             this.removeAll();
@@ -97,53 +88,60 @@ public class pnlPrincipal extends javax.swing.JPanel {
             this.revalidate();
             this.repaint();
         });
+        
+        Component[] canciones = crearItemsCanciones(cancionesdtos);
+        agregarSeccion("Canciones", canciones, () -> {
+            System.out.println("Ver más canciones");
+        });
 
-        Component[] canciones = crearItems(elementos, "cancion");
-        agregarSeccion("Canciones", canciones, () -> System.out.println("Ver más canciones"));
-
-        Component[] artistas = crearItems(elementos, "artista");
-        agregarSeccion("Artistas", artistas, () -> System.out.println("Ver más artistas"));
+        Component[] artistas = crearItemsArtistas(artistasdtos);
+        agregarSeccion("Artistas", artistas, () -> {
+            System.out.println("Ver más artistas");
+        });
     }
-
-    private Component[] crearItems(List<Map<String, Object>> elementos, String tipo) {
+    
+    private Component[] crearItemsAlbumes(List<AlbumDTO> elementos) {
         List<Component> comps = new ArrayList<>();
-        for (Map<String, Object> item : elementos) {
-            if (item.get("tipo").equals(tipo)) {
-                Object data = item.get("data");
-                Component comp = null;
-                if (data instanceof Album album) {
-                    comp = crearElemento(album.getImagen(), album.getNombre(), album.getArtista());
-                } else if (data instanceof Cancion cancion) {
-                    comp = crearElemento(cancion.getImagen(), cancion.getNombre(), "Género");
-                } else if (data instanceof Artista artista) {
-                    comp = crearElemento(artista.getImagen(), artista.getNombre(), artista.getGenero());
-                }
-                if (comp != null) {
-                    comps.add(comp);
-                }
-            }
+        for (AlbumDTO album : elementos) {
+            comps.add(crearElemento(album));
+        }
+        return comps.toArray(new Component[0]);
+    }
+    
+    private Component[] crearItemsCanciones(List<CancionDTO> elementos) {
+        List<Component> comps = new ArrayList<>();
+        for (CancionDTO cancion : elementos) {
+            comps.add(crearElemento(cancion));
         }
         return comps.toArray(new Component[0]);
     }
 
-    private Component crearElemento(String imagen, String nombre, String atributo) {
+    private Component[] crearItemsArtistas(List<ArtistaDTO> elementos) {
+        List<Component> comps = new ArrayList<>();
+        for (ArtistaDTO artista : elementos) {
+            comps.add(crearElemento(artista));
+        }
+        return comps.toArray(new Component[0]);
+    }
+
+    private Component crearElemento(AlbumDTO album) {
         JPanel panelItem = new JPanel();
         panelItem.setOpaque(true);
-        panelItem.setBackground(new Color(18,25,44));
+        panelItem.setBackground(new Color(18, 25, 44));
         panelItem.setLayout(new BoxLayout(panelItem, BoxLayout.Y_AXIS));
         panelItem.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createMatteBorder(1, 1, 4, 4, new Color(0, 200, 200, 100)),
             BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
-        panelItem.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        panelItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        Dimension itemSize = new Dimension(100, 130); 
+        Dimension itemSize = new Dimension(100, 130);
         panelItem.setPreferredSize(itemSize);
         panelItem.setMinimumSize(itemSize);
         panelItem.setMaximumSize(itemSize);
 
-        Color fondoNormal = panelItem.getBackground();
-        Color fondoHover = new Color(0, 200, 200, 100);
+        final Color fondoNormal = panelItem.getBackground();
+        final Color fondoHover = new Color(0, 200, 200, 100);
 
         panelItem.addMouseListener(new MouseAdapter() {
             @Override
@@ -159,7 +157,7 @@ public class pnlPrincipal extends javax.swing.JPanel {
 
         JLabel lblImagen;
         try {
-            ImageIcon icono = new ImageIcon(getClass().getResource("/portadas/" + imagen));
+            ImageIcon icono = new ImageIcon(getClass().getResource(album.getRutaImagen()));
             Image imgEscalada = icono.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
             lblImagen = new JLabel(new ImageIcon(imgEscalada));
         } catch (Exception e) {
@@ -167,12 +165,12 @@ public class pnlPrincipal extends javax.swing.JPanel {
         }
         lblImagen.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel lblNombre = new JLabel(nombre);
+        JLabel lblNombre = new JLabel(album.getNombre());
         lblNombre.setForeground(Color.WHITE);
         lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 14));
         lblNombre.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel lblAtributo = new JLabel(atributo);
+        JLabel lblAtributo = new JLabel(album.getLanzamiento().toString());
         lblAtributo.setForeground(Color.LIGHT_GRAY);
         lblAtributo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         lblAtributo.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -181,6 +179,100 @@ public class pnlPrincipal extends javax.swing.JPanel {
         panelItem.add(Box.createVerticalStrut(5));
         panelItem.add(lblNombre);
         panelItem.add(lblAtributo);
+
+        return panelItem;
+    }
+    
+    private Component crearElemento(CancionDTO cancion) {
+        JPanel panelItem = crearPanelBase();
+        JLabel lblImagen;
+        try {
+            ImageIcon icono = new ImageIcon(getClass().getResource("/portadas/cancion.png"));
+            Image imgEscalada = icono.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+            lblImagen = new JLabel(new ImageIcon(imgEscalada));
+        } catch (Exception e) {
+            lblImagen = new JLabel("Sin imagen");
+        }
+        lblImagen.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel lblNombre = new JLabel(cancion.getNombre());
+        lblNombre.setForeground(Color.WHITE);
+        lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblNombre.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel lblGenero = new JLabel("Genero");
+        lblGenero.setForeground(Color.LIGHT_GRAY);
+        lblGenero.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblGenero.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        panelItem.add(lblImagen);
+        panelItem.add(Box.createVerticalStrut(5));
+        panelItem.add(lblNombre);
+        panelItem.add(lblGenero);
+
+        return panelItem;
+    }
+    
+    private Component crearElemento(ArtistaDTO artista) {
+        JPanel panelItem = crearPanelBase();
+        JLabel lblImagen;
+        try {
+            ImageIcon icono = new ImageIcon(getClass().getResource(artista.getRutaImagen()));
+            Image imgEscalada = icono.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+            lblImagen = new JLabel(new ImageIcon(imgEscalada));
+        } catch (Exception e) {
+            lblImagen = new JLabel("Sin imagen");
+        }
+        lblImagen.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel lblNombre = new JLabel(artista.getNombre());
+        lblNombre.setForeground(Color.WHITE);
+        lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblNombre.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel lblGenero = new JLabel(artista.getTipo());
+        lblGenero.setForeground(Color.LIGHT_GRAY);
+        lblGenero.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblGenero.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        panelItem.add(lblImagen);
+        panelItem.add(Box.createVerticalStrut(5));
+        panelItem.add(lblNombre);
+        panelItem.add(lblGenero);
+
+        return panelItem;
+    }
+    
+    private JPanel crearPanelBase() {
+        JPanel panelItem = new JPanel();
+        panelItem.setOpaque(true);
+        panelItem.setBackground(new Color(18, 25, 44));
+        panelItem.setLayout(new BoxLayout(panelItem, BoxLayout.Y_AXIS));
+        panelItem.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(1, 1, 4, 4, new Color(0, 200, 200, 100)),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+        panelItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        Dimension itemSize = new Dimension(100, 130);
+        panelItem.setPreferredSize(itemSize);
+        panelItem.setMinimumSize(itemSize);
+        panelItem.setMaximumSize(itemSize);
+
+        final Color fondoNormal = panelItem.getBackground();
+        final Color fondoHover = new Color(0, 200, 200, 100);
+
+        panelItem.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                panelItem.setBackground(fondoHover);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                panelItem.setBackground(fondoNormal);
+            }
+        });
 
         return panelItem;
     }
@@ -298,78 +390,6 @@ public class pnlPrincipal extends javax.swing.JPanel {
                 .addContainerGap(46, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-public class Album {
-    private String nombre;
-    private String artista;
-    private String imagen;
-
-    public Album(String nombre, String artista, String imagen) {
-        this.nombre = nombre;
-        this.artista = artista;
-        this.imagen = imagen;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public String getArtista() {
-        return artista;
-    }
-
-    public String getImagen() {
-        return imagen;
-    }
-}
-
-public class Cancion {
-    private String nombre;
-    private String album;
-    private String imagen;
-
-    public Cancion(String nombre, String album, String imagen) {
-        this.nombre = nombre;
-        this.album = album;
-        this.imagen = imagen;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public String getAlbum() {
-        return album;
-    }
-
-    public String getImagen() {
-        return imagen;
-    }
-}
-
-public class Artista {
-    private String nombre;
-    private String genero;
-    private String imagen;
-
-    public Artista(String nombre, String genero, String imagen) {
-        this.nombre = nombre;
-        this.genero = genero;
-        this.imagen = imagen;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public String getGenero() {
-        return genero;
-    }
-
-    public String getImagen() {
-        return imagen;
-    }
-}
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1_contenido;
