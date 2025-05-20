@@ -24,6 +24,16 @@ import ui.componentes.RoundedPanel;
 import interfaces.IArtistaNegocio;
 import interfaces.ICancionNegocio;
 import interfaces.IGeneroNegocio;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import ui.sesion.Sesion;
+import ui.sesion.frmInicioSesion;
 
 /**
  *
@@ -38,6 +48,7 @@ public class frmInicio extends javax.swing.JFrame {
     private IAlbumNegocio albumNegocio;
     private IArtistaNegocio artistaNegocio;
     private IGeneroNegocio generoNegocio;
+    private String rutaDeImagen = "/iconos/usuario.png";
     /**
      * Creates new form frmInicio
      */
@@ -50,6 +61,22 @@ public class frmInicio extends javax.swing.JFrame {
         this.albumNegocio = albumNegocio;
         this.artistaNegocio = artistaNegocio;
         this.generoNegocio = generoNegocio;
+        
+        String ruta = Sesion.getUsuarioActual().getRutaImagen();
+        if (ruta != null && !ruta.isEmpty()) {
+            try {
+                Path rutaCompleta = Paths.get("src/main/resources" + ruta);
+                if (Files.exists(rutaCompleta)) {
+                    BufferedImage img = ImageIO.read(rutaCompleta.toFile());
+                    ImageIcon icon = new ImageIcon(img.getScaledInstance(64, 64, Image.SCALE_SMOOTH));
+                    lblFotoPerfil.setIcon(icon);
+                    rutaDeImagen = ruta;
+                }
+            } catch (IOException ex) {
+                System.err.println("No se pudo cargar la imagen de perfil: " + ex.getMessage());
+            }
+        }
+        
         configurarEventos();
         setLocationRelativeTo(null);
         
@@ -259,7 +286,7 @@ public class frmInicio extends javax.swing.JFrame {
         lbl_cerrar = new javax.swing.JLabel();
         lbl_minimizar = new javax.swing.JLabel();
         lbl_maximizar = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        lblFotoPerfil = new javax.swing.JLabel();
         lbl_perfil = new javax.swing.JLabel();
         pnlSeccion = new javax.swing.JPanel();
 
@@ -435,8 +462,8 @@ public class frmInicio extends javax.swing.JFrame {
 
         lbl_maximizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/expandir.png"))); // NOI18N
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/usuario.png"))); // NOI18N
+        lblFotoPerfil.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblFotoPerfil.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/usuario.png"))); // NOI18N
 
         lbl_perfil.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lbl_perfil.setForeground(new java.awt.Color(255, 255, 255));
@@ -474,7 +501,7 @@ public class frmInicio extends javax.swing.JFrame {
                     .addGroup(pnlMenuLayout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addGroup(pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblFotoPerfil, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(lbl_perfil, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
@@ -487,7 +514,7 @@ public class frmInicio extends javax.swing.JFrame {
                     .addComponent(lbl_minimizar)
                     .addComponent(lbl_cerrar))
                 .addGap(32, 32, 32)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblFotoPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lbl_perfil)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
@@ -555,7 +582,9 @@ public class frmInicio extends javax.swing.JFrame {
 
     private void lbl_cerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_cerrarMouseClicked
         // TODO add your handling code here:
-        System.exit(0);
+        this.dispose();
+        frmInicioSesion iniciar = new frmInicioSesion();
+        iniciar.setVisible(true);
     }//GEN-LAST:event_lbl_cerrarMouseClicked
 
     private void lbl_minimizarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_minimizarMouseClicked
@@ -605,7 +634,7 @@ public class frmInicio extends javax.swing.JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel lblFotoPerfil;
     private javax.swing.JLabel lblOpcion_albumes;
     private javax.swing.JLabel lblOpcion_artistas;
     private javax.swing.JLabel lblOpcion_canciones;

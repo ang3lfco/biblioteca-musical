@@ -5,15 +5,25 @@
 package ui.app.forms;
 
 import dtos.UsuarioDTO;
-import encriptador.Encriptador;
 import interfaces.IUsuarioNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import ui.app.frmInicio;
 import ui.componentes.CustomRoundedButton;
 import ui.componentes.CustomRoundedPasswordField;
 import ui.componentes.CustomRoundedTextField;
@@ -28,6 +38,7 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
     private int xMouse, yMouse;
     private IUsuarioNegocio usuarioNegocio;
     private String operacion = "";
+    private String rutaDeImagen = "/iconos/usuario.png";
     /**
      * Creates new form frmEditarInfo
      */
@@ -125,6 +136,20 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
         
         CustomRoundedButton btnAccion = null;
         if(operacion.equals("editar")){
+            String ruta = Sesion.getUsuarioActual().getRutaImagen();
+            if (ruta != null && !ruta.isEmpty()) {
+                try {
+                    Path rutaCompleta = Paths.get("src/main/resources" + ruta);
+                    if (Files.exists(rutaCompleta)) {
+                        BufferedImage img = ImageIO.read(rutaCompleta.toFile());
+                        ImageIcon icon = new ImageIcon(img.getScaledInstance(64, 64, Image.SCALE_SMOOTH));
+                        lblFotoPerfil.setIcon(icon);
+                        rutaDeImagen = ruta;
+                    }
+                } catch (IOException ex) {
+                    System.err.println("No se pudo cargar la imagen de perfil: " + ex.getMessage());
+                }
+            }
             nombre.setText(Sesion.getUsuarioActual().getNombre());
             apellido.setText(Sesion.getUsuarioActual().getApellido());
             usuario.setText(Sesion.getUsuarioActual().getUsuario());
@@ -139,12 +164,12 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
                             usuario.getText(),
                             contrasena.getText(),
                             correo.getText(),
-                            "/iconos/usuario.png",
+                            rutaDeImagen,
                             null,
                             null
                     );
                     usuarioNegocio.editarUsuario(usuarioDTO);
-                    JOptionPane.showMessageDialog(null, "Datos actualizados.");
+                    JOptionPane.showMessageDialog(null, "Datos actualizados. Reinicia sesion.");
                     dispose();
                 }
             });
@@ -159,7 +184,7 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
                             usuario.getText(),
                             contrasena.getText(),
                             correo.getText(),
-                            "/iconos/usuario.png",
+                            rutaDeImagen,
                             null,
                             null
                     );
@@ -174,7 +199,48 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
         btnAccion.setPreferredSize(new Dimension(308, 40));
         btnAccion.setOpaque(false);
         
-        
+        lblElegirRuta.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+                fileChooser.setDialogTitle("Seleccionar imagen");
+                fileChooser.setFileSelectionMode(javax.swing.JFileChooser.FILES_ONLY);
+                javax.swing.filechooser.FileNameExtensionFilter filter = new javax.swing.filechooser.FileNameExtensionFilter(
+                    "Imágenes", "jpg", "jpeg", "png");
+                fileChooser.setFileFilter(filter);
+
+                int result = fileChooser.showOpenDialog(frmUsuarioInfo.this);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    String nombreArchivo = selectedFile.getName(); 
+
+                    try {
+                        BufferedImage originalImage = ImageIO.read(selectedFile);
+
+                        Image scaledImage = originalImage.getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+                        BufferedImage resizedImage = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
+
+                        Graphics2D g2d = resizedImage.createGraphics();
+                        g2d.drawImage(scaledImage, 0, 0, null);
+                        g2d.dispose();
+
+                        Path destino = Paths.get("src/main/resources/perfiles", nombreArchivo);
+                        Files.createDirectories(destino.getParent());
+
+                        ImageIO.write(resizedImage, "png", destino.toFile());
+
+                        lblFotoPerfil.setIcon(new ImageIcon(resizedImage));
+
+                        rutaDeImagen = "/perfiles/" + nombreArchivo;
+
+                    }
+                    catch (IOException ex) {
+                        JOptionPane.showMessageDialog(frmUsuarioInfo.this, "Error al guardar la imagen: " + ex.getMessage());
+                    }
+                }
+            }
+        });
+
         
         pnl_editar.setBackground(new Color(0,0,0,0));
         pnl_editar.removeAll();
@@ -197,8 +263,8 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
         pnl_usuario = new javax.swing.JPanel();
         pnl_contrasena = new javax.swing.JPanel();
         pnl_correo = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        lblFotoPerfil = new javax.swing.JLabel();
+        lblElegirRuta = new javax.swing.JLabel();
         pnl_editar = new javax.swing.JPanel();
         lbl_cerrar = new javax.swing.JLabel();
         lbl_minimizar = new javax.swing.JLabel();
@@ -273,13 +339,13 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
             .addGap(0, 40, Short.MAX_VALUE)
         );
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/usuario.png"))); // NOI18N
+        lblFotoPerfil.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblFotoPerfil.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/usuario.png"))); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Cambiar");
+        lblElegirRuta.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblElegirRuta.setForeground(new java.awt.Color(255, 255, 255));
+        lblElegirRuta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblElegirRuta.setText("Cambiar");
 
         pnl_editar.setBackground(new java.awt.Color(255, 255, 255));
         pnl_editar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -323,8 +389,8 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
                     .addComponent(pnl_usuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pnl_contrasena, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pnl_correo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblFotoPerfil, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblElegirRuta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pnl_editar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
             .addGroup(pnl_contenedorLayout.createSequentialGroup()
@@ -345,9 +411,9 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
                     .addComponent(lbl_minimizar)
                     .addComponent(lbl_cerrar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblFotoPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
+                .addComponent(lblElegirRuta)
                 .addGap(29, 29, 29)
                 .addComponent(pnl_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -379,7 +445,7 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
 
     private void lbl_cerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_cerrarMouseClicked
         // TODO add your handling code here:
-        System.exit(0);
+        this.dispose();
     }//GEN-LAST:event_lbl_cerrarMouseClicked
 
     private void lbl_minimizarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_minimizarMouseClicked
@@ -424,8 +490,8 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel lblElegirRuta;
+    private javax.swing.JLabel lblFotoPerfil;
     private javax.swing.JLabel lbl_cerrar;
     private javax.swing.JLabel lbl_maximizar;
     private javax.swing.JLabel lbl_minimizar;
