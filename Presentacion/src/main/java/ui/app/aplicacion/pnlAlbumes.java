@@ -6,6 +6,7 @@ package ui.app.aplicacion;
 
 import dtos.AlbumDTO;
 import dtos.ArtistaDTO;
+import dtos.UsuarioDTO;
 import interfaces.IAlbumNegocio;
 import interfaces.IArtistaNegocio;
 import interfaces.IGeneroNegocio;
@@ -18,6 +19,7 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -45,6 +47,8 @@ public class pnlAlbumes extends javax.swing.JPanel {
     private IArtistaNegocio artistaNegocio;
     private IUsuarioNegocio usuarioNegocio;
     private IGeneroNegocio generoNegocio;
+    private UsuarioDTO.NoDeseadosDTO noDeseados;
+    private List<String> generosNoDeseadosIds;
     private List<AlbumDTO> albumes;
     RoundedComboBox<String> combo;
     CustomRoundedTextField buscador;
@@ -57,6 +61,9 @@ public class pnlAlbumes extends javax.swing.JPanel {
         this.artistaNegocio = artistaNegocio;
         this.usuarioNegocio = usuarioNegocio;
         this.generoNegocio = generoNegocio;
+        noDeseados = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
+        generosNoDeseadosIds = noDeseados.getGeneros();
+        
         iniciarFlechasScroll();
         jScrollPane_albumes.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane_albumes.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -153,8 +160,25 @@ public class pnlAlbumes extends javax.swing.JPanel {
     private void cargarAlbumes() {
         albumes = albumNegocio.obtenerTodos();
         panelAlbumes.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
-
+        
+        List<AlbumDTO> albumesFiltrados = new ArrayList<>();
+        
         for (AlbumDTO album : albumes) {
+            boolean incluirAlbum = true;
+            List<String> generosAlbumActual = album.getGenerosId();
+            for (String idGenero : generosAlbumActual){
+                if (generosNoDeseadosIds.contains(idGenero)) {
+                    incluirAlbum = false;
+                    break;
+                }
+            }
+            if (incluirAlbum) {
+                albumesFiltrados.add(album);
+            }
+        }
+        panelAlbumes.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
+
+        for (AlbumDTO album : albumesFiltrados) {
             JPanel panel = crearPanelAlbum(album);
             panelAlbumes.add(panel);
         }

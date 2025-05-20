@@ -7,6 +7,7 @@ package ui.app.aplicacion;
 import dtos.AlbumDTO;
 import dtos.ArtistaDTO;
 import dtos.CancionDTO;
+import dtos.UsuarioDTO;
 import interfaces.IAlbumNegocio;
 import interfaces.IArtistaNegocio;
 import java.awt.BorderLayout;
@@ -34,6 +35,7 @@ import javax.swing.SwingConstants;
 import ui.componentes.CustomRoundedTextField;
 import ui.componentes.RoundedComboBox;
 import interfaces.ICancionNegocio;
+import interfaces.IGeneroNegocio;
 import interfaces.IUsuarioNegocio;
 import java.util.HashSet;
 import java.util.Set;
@@ -52,16 +54,25 @@ public class pnlCanciones extends javax.swing.JPanel {
     private IArtistaNegocio artistaNegocio;
     private IAlbumNegocio albumNegocio;
     private IUsuarioNegocio usuarioNegocio;
-
+    
+    List<CancionDTO> canciones;
+    private IGeneroNegocio generoNegocio;
+    private UsuarioDTO.NoDeseadosDTO noDeseados;
+    private List<String> generosNoDeseadosIds;
     /**
      * Creates new form pnlCanciones
      */
-    public pnlCanciones(ICancionNegocio cancionesNegocio, IArtistaNegocio artistaNegocio, IAlbumNegocio albumNegocio, IUsuarioNegocio usuarioNegocio) {
+    public pnlCanciones(ICancionNegocio cancionesNegocio, IArtistaNegocio artistaNegocio, IAlbumNegocio albumNegocio, IUsuarioNegocio usuarioNegocio, IGeneroNegocio generoNegocio) {
         initComponents();
         this.cancionesNegocio = cancionesNegocio;
         this.artistaNegocio = artistaNegocio;
         this.albumNegocio = albumNegocio;
         this.usuarioNegocio = usuarioNegocio;
+        this.generoNegocio = generoNegocio;
+        
+        noDeseados = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
+        generosNoDeseadosIds = noDeseados.getGeneros();
+        
         iniciarFlechasScroll();
         jScrollPane_canciones.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane_canciones.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -120,11 +131,27 @@ public class pnlCanciones extends javax.swing.JPanel {
     }
 
     private void cargarCanciones() {
-        List<CancionDTO> canciones = cancionesNegocio.obtenerTodas();
-
+        canciones = cancionesNegocio.obtenerTodas();
         panelCanciones.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
 
+        List<CancionDTO> cancionesFiltradas = new ArrayList<>();
+        
         for (CancionDTO cancion : canciones) {
+            boolean incluirArtista = true;
+            List<String> generosCancionActual = cancion.getGenerosId();
+            for (String idGenero : generosCancionActual){
+                if (generosNoDeseadosIds.contains(idGenero)) {
+                    incluirArtista = false;
+                    break;
+                }
+            }
+            if (incluirArtista) {
+                cancionesFiltradas.add(cancion);
+            }
+        }
+        panelCanciones.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
+
+        for (CancionDTO cancion : cancionesFiltradas) {
             JPanel panel = crearPanelCancion(cancion);
             panelCanciones.add(panel);
         }

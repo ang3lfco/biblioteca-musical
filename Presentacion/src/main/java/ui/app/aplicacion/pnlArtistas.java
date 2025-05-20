@@ -6,6 +6,7 @@ package ui.app.aplicacion;
 
 import dtos.AlbumDTO;
 import dtos.ArtistaDTO;
+import dtos.UsuarioDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -31,7 +32,9 @@ import ui.app.forms.frmIntegrantesInfo;
 import ui.componentes.CustomRoundedTextField;
 import ui.componentes.RoundedComboBox;
 import interfaces.IArtistaNegocio;
+import interfaces.IGeneroNegocio;
 import interfaces.IUsuarioNegocio;
+import java.util.ArrayList;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import ui.sesion.Sesion;
@@ -43,13 +46,23 @@ import ui.sesion.Sesion;
 public class pnlArtistas extends javax.swing.JPanel {
     private IArtistaNegocio artistaNegocio;
     private IUsuarioNegocio usuarioNegocio;
+    
+    List<ArtistaDTO> artistas;
+    private IGeneroNegocio generoNegocio;
+    private UsuarioDTO.NoDeseadosDTO noDeseados;
+    private List<String> generosNoDeseadosIds;
     /**
      * Creates new form pnlCanciones
      */
-    public pnlArtistas(IArtistaNegocio artistaNegocio, IUsuarioNegocio usuarioNegocio) {
+    public pnlArtistas(IArtistaNegocio artistaNegocio, IUsuarioNegocio usuarioNegocio, IGeneroNegocio generoNegocio) {
         initComponents();
         this.artistaNegocio = artistaNegocio;
         this.usuarioNegocio = usuarioNegocio;
+        this.generoNegocio = generoNegocio;
+        
+        noDeseados = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
+        generosNoDeseadosIds = noDeseados.getGeneros();
+        
         iniciarFlechasScroll();
         jScrollPane_artistas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane_artistas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -115,12 +128,27 @@ public class pnlArtistas extends javax.swing.JPanel {
     }
     
     private void cargarArtistas() {
-        List<ArtistaDTO> artistas = artistaNegocio.obtenerTodos();
-
-
+        artistas = artistaNegocio.obtenerTodos();
         panelArtistas.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
 
+        List<ArtistaDTO> artistasFiltrados = new ArrayList<>();
+        
         for (ArtistaDTO artista : artistas) {
+            boolean incluirArtista = true;
+            List<String> generosArtistaActual = artista.getGenerosId();
+            for (String idGenero : generosArtistaActual){
+                if (generosNoDeseadosIds.contains(idGenero)) {
+                    incluirArtista = false;
+                    break;
+                }
+            }
+            if (incluirArtista) {
+                artistasFiltrados.add(artista);
+            }
+        }
+        panelArtistas.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
+
+        for (ArtistaDTO artista : artistasFiltrados) {
             JPanel panel = crearPanelArtista(artista);
             panelArtistas.add(panel);
         }

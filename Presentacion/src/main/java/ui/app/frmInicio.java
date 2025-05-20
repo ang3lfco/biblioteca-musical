@@ -201,7 +201,7 @@ public class frmInicio extends javax.swing.JFrame {
         opcion_artistas.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 aplicarGradient(opcion_artistas, lblOpcion_artistas);
-                pnlArtistas artistas = new pnlArtistas(artistaNegocio, usuarioNegocio);
+                pnlArtistas artistas = new pnlArtistas(artistaNegocio, usuarioNegocio, generoNegocio);
                 pnlSeccion.removeAll();
                 pnlSeccion.setLayout(new BorderLayout());
                 pnlSeccion.add(artistas, BorderLayout.CENTER);
@@ -225,7 +225,7 @@ public class frmInicio extends javax.swing.JFrame {
         opcion_canciones.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 aplicarGradient(opcion_canciones, lblOpcion_canciones);
-                pnlCanciones canciones = new pnlCanciones(cancionNegocio, artistaNegocio, albumNegocio, usuarioNegocio);
+                pnlCanciones canciones = new pnlCanciones(cancionNegocio, artistaNegocio, albumNegocio, usuarioNegocio, generoNegocio);
                 pnlSeccion.removeAll();
                 pnlSeccion.setLayout(new BorderLayout());
                 pnlSeccion.add(canciones, BorderLayout.CENTER);
