@@ -228,13 +228,29 @@ public class InsercionMasiva {
         //57
         persona = new PersonaDTO(new ObjectId().toHexString(), "John", "Frusciante");
         personas.add(persona);
+        
+        
+        //INSERTAR PERSONAS POR ang3lfco
+        personas.add(new PersonaDTO(new ObjectId().toHexString(), "Juan Carlos", "Sauceda Vásquez"));
+        personas.add(new PersonaDTO(new ObjectId().toHexString(), "José Luis", "Maldonado Ramos"));  
+        personas.add(new PersonaDTO(new ObjectId().toHexString(), "Gerardo Daniel", "Torres Montante")); 
+        personas.add(new PersonaDTO(new ObjectId().toHexString(), "Jesica Yocelin", "Martínez Montiel")); 
+        personas.add(new PersonaDTO(new ObjectId().toHexString(), "Alan Alejandro", "Maldonado Tamez"));
+        personas.add(new PersonaDTO(new ObjectId().toHexString(), "David", "Sierra Treviño"));
+        personas.add(new PersonaDTO(new ObjectId().toHexString(), "Eduardo", "Dávalos De Luna"));
+        personas.add(new PersonaDTO(new ObjectId().toHexString(), "Román", "Rodríguez"));
+        personas.add(new PersonaDTO(new ObjectId().toHexString(), "Martín Geovanni", "Aldana Cervantes"));
+        personas.add(new PersonaDTO(new ObjectId().toHexString(), "Erick Raúl", "Alemán Ramírez"));
+        personas.add(new PersonaDTO(new ObjectId().toHexString(), "Irvin", "Puerto Ramírez"));
+
+        
 
         personaNegocio.insertarPersonas(personas);
 
         // 2. Insertar generos
         List<GeneroDTO> generos = new ArrayList<>();
         for (String nombre : List.of("Rock", "Pop", "Jazz", "Metal", "Ska", "kpop", "rap", "indie", "electro", "Classic Rock", "Soul", "Hip Hop", "R&B", "Country", "Funk", "Rock Alternativo",
-                "Pop Rock", "Nu Metal", "Indie Rock", "Garage Rock", "pop punk", "Emo", "Funk rock", "Alternative Rock")) {
+                "Pop Rock", "Nu Metal", "Indie Rock", "Garage Rock", "pop punk", "Emo", "Funk rock", "Alternative Rock", "Rap Mexicano")) {
             GeneroDTO genero = new GeneroDTO(nombre);
             genero.setId(new ObjectId().toHexString());
             generos.add(genero);
@@ -453,8 +469,189 @@ public class InsercionMasiva {
                 new ArtistaDTO.integranteDTO(personas.get(56).getId(), "Baterista", LocalDate.of(1988, Month.JANUARY, 1), null),
                 new ArtistaDTO.integranteDTO(personas.get(57).getId(), "Guitarrista", LocalDate.of(1988, Month.JANUARY, 1), LocalDate.of(1992, Month.JANUARY, 1))));
         artistas.add(artista);
+        
+        
+        //INSERT ARTISTAS POR ang3lfco
+        // Lefty SM
+        ArtistaDTO.integranteDTO leftyPersona = new ArtistaDTO.integranteDTO(
+                personas.get(58).getId(),
+                "Solista",
+                LocalDate.of(2010, Month.JANUARY, 1),
+                null
+        );
+        ArtistaDTO leftyArtista = new ArtistaDTO(
+                new ObjectId().toHexString(), 
+                "Lefty SM", 
+                "Rapero", 
+                "/portadas/leftysm.png", 
+                List.of(generos.get(24).getId()), 
+                List.of(leftyPersona)
+        );
+        artistas.add(leftyArtista);
 
+        // C-Kan
+        ArtistaDTO.integranteDTO ckanPersona = new ArtistaDTO.integranteDTO(
+                personas.get(59).getId(),
+                "Solista",
+                LocalDate.of(2004, Month.JULY, 5),
+                null
+        );
+        ArtistaDTO ckanArtista = new ArtistaDTO(
+                new ObjectId().toHexString(), 
+                "C-Kan", 
+                "Rapero", 
+                "/portadas/ckan.png", 
+                List.of(generos.get(24).getId()), 
+                List.of(ckanPersona)
+        );
+        artistas.add(ckanArtista);
+
+        // Gera MX
+        ArtistaDTO.integranteDTO geraPersona = new ArtistaDTO.integranteDTO(
+                personas.get(60).getId(),
+                "Solista",
+                LocalDate.of(2013, Month.JUNE, 1),
+                null
+        );
+        ArtistaDTO geraArtista = new ArtistaDTO(
+                new ObjectId().toHexString(), 
+                "Gera MX", 
+                "Rapero", 
+                "/portadas/geramx.png", 
+                List.of(generos.get(24).getId()), 
+                List.of(geraPersona)
+        );
+        artistas.add(geraArtista);
+
+        // Yoss Bones
+        ArtistaDTO.integranteDTO yossPersona = new ArtistaDTO.integranteDTO(
+                personas.get(61).getId(),
+                "Solista",
+                LocalDate.of(2017, Month.JANUARY, 1),
+                null
+        );
+        ArtistaDTO yossArtista = new ArtistaDTO(
+                new ObjectId().toHexString(), 
+                "Yoss Bones", 
+                "Rapera", 
+                "/portadas/yossbones.png", 
+                List.of(generos.get(24).getId()), 
+                List.of(yossPersona)
+        );
+        artistas.add(yossArtista);
+
+        // Dharius
+        ArtistaDTO.integranteDTO dhariusPersona = new ArtistaDTO.integranteDTO(
+                personas.get(62).getId(),
+                "Solista",
+                LocalDate.of(1994, Month.JANUARY, 1),
+                null
+        );
+        ArtistaDTO dhariusArtista = new ArtistaDTO(
+                new ObjectId().toHexString(), 
+                "Dharius", 
+                "Rapero", 
+                "/portadas/dharius.png", 
+                List.of(generos.get(24).getId()), 
+                List.of(dhariusPersona)
+        );
+        artistas.add(dhariusArtista);
+
+        // MC Davo
+        ArtistaDTO.integranteDTO davoPersona = new ArtistaDTO.integranteDTO(
+                personas.get(63).getId(),
+                "Solista",
+                LocalDate.of(2012, Month.JANUARY, 1),
+                null
+        );
+        ArtistaDTO davoArtista = new ArtistaDTO(
+                new ObjectId().toHexString(), 
+                "MC Davo", 
+                "Rapero", 
+                "/portadas/mcdavo.png", 
+                List.of(generos.get(24).getId()), 
+                List.of(davoPersona)
+        );
+        artistas.add(davoArtista);
+
+        // Cartel de Santa (Grupo)
+        ArtistaDTO.integranteDTO baboPersona = new ArtistaDTO.integranteDTO(
+                personas.get(64).getId(),
+                "Vocalista",
+                LocalDate.of(1996, Month.JANUARY, 1),
+                null
+        );
+        ArtistaDTO.integranteDTO monoPersona = new ArtistaDTO.integranteDTO(
+                personas.get(65).getId(),
+                "Productor",
+                LocalDate.of(1996, Month.JANUARY, 1),
+                null
+        );
+        ArtistaDTO cartelArtista = new ArtistaDTO(
+                new ObjectId().toHexString(), 
+                "Cartel de Santa", 
+                "Grupo de Rap", 
+                "/portadas/carteldesanta.png", 
+                List.of(generos.get(24).getId()), 
+                List.of(baboPersona, monoPersona)
+        );
+        artistas.add(cartelArtista);
+
+        // Eme Malafe
+        ArtistaDTO.integranteDTO emePersona = new ArtistaDTO.integranteDTO(
+                personas.get(66).getId(),
+                "Solista",
+                LocalDate.of(2017, Month.JUNE, 1),
+                null
+        );
+        ArtistaDTO emeArtista = new ArtistaDTO(
+                new ObjectId().toHexString(), 
+                "Eme Malafe", 
+                "Rapero", 
+                "/portadas/ememalafe.png", 
+                List.of(generos.get(24).getId()), 
+                List.of(emePersona)
+        );
+        artistas.add(emeArtista);
+
+        // Alemán
+        ArtistaDTO.integranteDTO alemanPersona = new ArtistaDTO.integranteDTO(
+                personas.get(67).getId(),
+                "Solista",
+                LocalDate.of(2009, Month.JANUARY, 1),
+                null
+        );
+        ArtistaDTO alemanArtista = new ArtistaDTO(
+                new ObjectId().toHexString(), 
+                "Alemán", 
+                "Rapero", 
+                "/portadas/aleman.png", 
+                List.of(generos.get(24).getId()), 
+                List.of(alemanPersona)
+        );
+        artistas.add(alemanArtista);
+
+        // El Mara
+        ArtistaDTO.integranteDTO maraPersona = new ArtistaDTO.integranteDTO(
+                personas.get(68).getId(),
+                "Solista",
+                LocalDate.of(2015, Month.MARCH, 1),
+                null
+        );
+        ArtistaDTO maraArtista = new ArtistaDTO(
+                new ObjectId().toHexString(), 
+                "El Mara", 
+                "Rapero", 
+                "/portadas/elmara.png", 
+                List.of(generos.get(24).getId()), 
+                List.of(maraPersona)
+        );
+        artistas.add(maraArtista);
+
+       
         artistaNegocio.insertarArtistas(artistas);
+        
+        
         // 4. Insertar albumes 
         List<AlbumDTO> albumes = new ArrayList<>();
         //-0
@@ -582,6 +779,104 @@ public class InsercionMasiva {
         album = new AlbumDTO(new ObjectId().toHexString(), "Californication", LocalDate.of(1999, Month.JUNE, 8),
                 List.of(generos.get(22).getId(), generos.get(23).getId()), "/portadas/californication.png", List.of(artistas.get(29).getId()));
         albumes.add(album);
+        
+        
+        
+        //ALBUMES INSERTADOS POR ang3lfco
+        AlbumDTO leftyAlbum = new AlbumDTO(new ObjectId().toHexString(), "Avión de Papel", LocalDate.of(2023, Month.MAY, 15),
+                List.of(generos.get(24).getId()), "/portadas/aviondepapel.png", List.of(artistas.get(30).getId()));
+        albumes.add(leftyAlbum);
+        
+        AlbumDTO ckanAlbum = new AlbumDTO(
+                new ObjectId().toHexString(), 
+                "Voy Por El Sueño De Muchos", 
+                LocalDate.of(2012, Month.JULY, 5),
+                List.of(generos.get(24).getId()), 
+                "/portadas/voyporelsuenodemuchos.png", 
+                List.of(artistas.get(31).getId())
+        );
+        albumes.add(ckanAlbum);
+
+        AlbumDTO geraAlbum = new AlbumDTO(
+                new ObjectId().toHexString(), 
+                "Los Niños Grandes No Juegan", 
+                LocalDate.of(2018, Month.FEBRUARY, 19),
+                List.of(generos.get(24).getId()), 
+                "/portadas/losninosgrandesnojuegan.png", 
+                List.of(artistas.get(32).getId())
+        );
+        albumes.add(geraAlbum);
+
+        AlbumDTO yossAlbum = new AlbumDTO(
+                new ObjectId().toHexString(), 
+                "Bones", 
+                LocalDate.of(2022, Month.SEPTEMBER, 9),
+                List.of(generos.get(24).getId()), 
+                "/portadas/bones.png", 
+                List.of(artistas.get(33).getId())
+        );
+        albumes.add(yossAlbum);
+
+        AlbumDTO dhariusAlbum = new AlbumDTO(
+                new ObjectId().toHexString(), 
+                "Directo Hasta Arriba", 
+                LocalDate.of(2014, Month.DECEMBER, 9),
+                List.of(generos.get(24).getId()), 
+                "/portadas/directohastaarriba.png", 
+                List.of(artistas.get(34).getId())
+        );
+        albumes.add(dhariusAlbum);
+
+        AlbumDTO davoAlbum = new AlbumDTO(
+                new ObjectId().toHexString(), 
+                "Las Dos Caras", 
+                LocalDate.of(2017, Month.SEPTEMBER, 8),
+                List.of(generos.get(24).getId()), 
+                "/portadas/mcdavoalbum.png", 
+                List.of(artistas.get(35).getId())
+        );
+        albumes.add(davoAlbum);
+
+        AlbumDTO cartelAlbum = new AlbumDTO(
+                new ObjectId().toHexString(), 
+                "Golpe Avisa", 
+                LocalDate.of(2014, Month.AUGUST, 5),
+                List.of(generos.get(24).getId()), 
+                "/portadas/golpeavisa.png", 
+                List.of(artistas.get(36).getId())
+        );
+        albumes.add(cartelAlbum);
+
+        AlbumDTO emeAlbum = new AlbumDTO(
+                new ObjectId().toHexString(), 
+                "Santos", 
+                LocalDate.of(2024, Month.JUNE, 26),
+                List.of(generos.get(24).getId()), 
+                "/portadas/santos.png", 
+                List.of(artistas.get(37).getId())
+        );
+        albumes.add(emeAlbum);
+
+        AlbumDTO alemanAlbum = new AlbumDTO(
+                new ObjectId().toHexString(), 
+                "Rich Mafia Vol. 1", 
+                LocalDate.of(2024, Month.NOVEMBER, 1),
+                List.of(generos.get(24).getId()), 
+                "/portadas/richmafiavol1.png", 
+                List.of(artistas.get(38).getId(), artistas.get(32).getId())
+        );
+        albumes.add(alemanAlbum);
+
+        AlbumDTO maraAlbum = new AlbumDTO(
+                new ObjectId().toHexString(), 
+                "Alambre de Puas", 
+                LocalDate.of(2018, Month.JANUARY, 1),
+                List.of(generos.get(24).getId()), 
+                "/portadas/alambredepuas.png", 
+                List.of(artistas.get(39).getId())
+        );
+        albumes.add(maraAlbum);
+
 
         albumNegocio.insertarAlbumes(albumes);
 
@@ -897,7 +1192,50 @@ public class InsercionMasiva {
                 "Otherside", albumes.get(29).getId(), List.of(generos.get(1).getId()), List.of(artistas.get(29).getId()));
         canciones.add(cancion);
         
-        
+        //CANCIONES INSERTADAS POR ang3lfco
+        // Avión de Papel - Lefty SM
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Vuelo Libre", albumes.get(30).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(30).getId())));
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Al Fin", albumes.get(30).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(30).getId())));
+
+        // Voy Por El Sueño De Muchos - C-Kan
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Voy Por El Sueño De Muchos", albumes.get(31).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(31).getId())));
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "La Vida No La Tienes Comprada", albumes.get(31).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(31).getId())));
+
+        // Los Niños Grandes No Juegan - Gera MX
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Los Niños Grandes No Juegan", albumes.get(32).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(32).getId())));
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "No Me Llames", albumes.get(32).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(32).getId())));
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Nunca Te Pude Alcanzar", albumes.get(32).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(32).getId())));
+
+        // Bones - Yoss Bones
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Eres Mi Aire", albumes.get(33).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(33).getId())));
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "No Escucho tu Voz", albumes.get(33).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(33).getId())));
+
+        // Directo Hasta Arriba - Dharius
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Estilo Malandro", albumes.get(34).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(34).getId())));
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "La Raja", albumes.get(34).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(34).getId())));
+
+        // Las Dos Caras - MC Davo
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Round 3", albumes.get(35).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(35).getId())));
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Despertar Contigo", albumes.get(35).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(35).getId())));
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Verde, Blanco y Rojo", albumes.get(35).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(35).getId())));
+
+        // Golpe Avisa - Cartel de Santa
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Si Te Vienen a Contar", albumes.get(36).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(36).getId())));
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Los Mensajes del WhatsApp", albumes.get(36).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(36).getId())));
+
+        // Santos - Eme Malafe
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Que Chingón", albumes.get(37).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(37).getId())));
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Salí Recio", albumes.get(37).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(37).getId())));
+
+        // Rich Mafia Vol. 1 - Alemán (ft. Gera MX)
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Como Pacman", albumes.get(38).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(38).getId(), artistas.get(32).getId())));
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Abran Paso", albumes.get(38).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(38).getId(), artistas.get(32).getId())));
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Cabo Girl", albumes.get(38).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(38).getId(), artistas.get(32).getId())));
+
+        // Alambre de Púas - El Mara
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "Tienes que alejarte", albumes.get(39).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(39).getId())));
+        canciones.add(new CancionDTO(new ObjectId().toHexString(), "King Kong", albumes.get(39).getId(), List.of(generos.get(24).getId()), List.of(artistas.get(39).getId())));
+
 
         cancionNegocio.insertarCanciones(canciones);
     }
