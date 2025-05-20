@@ -5,6 +5,7 @@
 package negocio;
 
 import dtos.UsuarioDTO;
+import encriptador.Encriptador;
 import entidades.Usuario;
 import interfaces.IUsuarioDAO;
 import interfaces.IUsuarioNegocio;
@@ -29,7 +30,7 @@ public class UsuarioNegocio implements IUsuarioNegocio {
                 usuarioDTO.getNombre(),
                 usuarioDTO.getApellido(),
                 usuarioDTO.getUsuario(),
-                usuarioDTO.getContraseña(),
+                Encriptador.encriptarContraseña(usuarioDTO.getContraseña()),
                 usuarioDTO.getCorreo(),
                 usuarioDTO.getRutaImagen(),
                 null,
@@ -45,7 +46,7 @@ public class UsuarioNegocio implements IUsuarioNegocio {
                 usuarioDTO.getNombre(),
                 usuarioDTO.getApellido(),
                 usuarioDTO.getUsuario(),
-                usuarioDTO.getContraseña(),
+                Encriptador.encriptarContraseña(usuarioDTO.getContraseña()),
                 usuarioDTO.getCorreo(),
                 usuarioDTO.getRutaImagen(),
                 null,
@@ -56,19 +57,25 @@ public class UsuarioNegocio implements IUsuarioNegocio {
     
     @Override
     public UsuarioDTO validarSesion(String usuario, String contrasena){
-        Usuario usuarioValidado = usuarioDAO.validar(usuario, contrasena);
-        UsuarioDTO usuarioEncontrado = new UsuarioDTO(
-                String.valueOf(usuarioValidado.getId()),
-                usuarioValidado.getNombre(),
-                usuarioValidado.getApellido(),
-                usuarioValidado.getUsuario(),
-                usuarioValidado.getContraseña(),
-                usuarioValidado.getCorreo(),
-                usuarioValidado.getRutaImagen(),
+        Usuario usuarioEncontrado = usuarioDAO.validar(usuario);
+        if (usuarioEncontrado == null) {
+            return null;
+        }
+        if(!Encriptador.verificarContraseña(contrasena, usuarioEncontrado.getContraseña())){
+            return null;
+        }
+        UsuarioDTO usuarioValidado = new UsuarioDTO(
+                String.valueOf(usuarioEncontrado.getId()),
+                usuarioEncontrado.getNombre(),
+                usuarioEncontrado.getApellido(),
+                usuarioEncontrado.getUsuario(),
+                usuarioEncontrado.getContraseña(),
+                usuarioEncontrado.getCorreo(),
+                usuarioEncontrado.getRutaImagen(),
                 null,
                 null
-        );
-        return usuarioEncontrado;
+            );
+        return usuarioValidado;
     }
     
     @Override

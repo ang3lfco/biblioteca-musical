@@ -47,10 +47,9 @@ public class UsuarioDAO implements IUsuarioDAO{
     }
     
     @Override
-    public Usuario validar(String usuario, String contrasena){
+    public Usuario validar(String usuario){
         Bson filtro = Filters.and(
-                Filters.eq("usuario", usuario),
-                Filters.eq("contraseña", contrasena)
+                Filters.eq("usuario", usuario)
         );
         return coleccion.find(filtro).first();
     }

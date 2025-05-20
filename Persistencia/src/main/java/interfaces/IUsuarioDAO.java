@@ -13,7 +13,7 @@ import org.bson.types.ObjectId;
  */
 public interface IUsuarioDAO {
     void insertar(Usuario usuario);
-    Usuario validar(String usuario, String contrasena);
+    Usuario validar(String usuario);
     Usuario.Favoritos getFavoritos(ObjectId id);
     Usuario.NoDeseados getNoDeseados(ObjectId id);
     void editar(Usuario usuario);
