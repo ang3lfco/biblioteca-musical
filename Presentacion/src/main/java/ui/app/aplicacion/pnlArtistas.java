@@ -4,6 +4,7 @@
  */
 package ui.app.aplicacion;
 
+import dtos.AlbumDTO;
 import dtos.ArtistaDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,6 +32,8 @@ import ui.componentes.CustomRoundedTextField;
 import ui.componentes.RoundedComboBox;
 import interfaces.IArtistaNegocio;
 import interfaces.IUsuarioNegocio;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import ui.sesion.Sesion;
 
 /**
@@ -55,7 +58,7 @@ public class pnlArtistas extends javax.swing.JPanel {
 
         jScrollPane_artistas.setViewportBorder(null);
         jScrollPane_artistas.setBorder(null);
-        cargarCanciones();
+        cargarArtistas();
         
         String[] items = { "Nombre", "Género" };
         RoundedComboBox<String> combo = new RoundedComboBox<>(items);
@@ -69,6 +72,28 @@ public class pnlArtistas extends javax.swing.JPanel {
         pnlBuscador.setPreferredSize(new Dimension(330, 40));
         pnlBuscador.setBackground(new Color(0,0,0,0));
         pnlBuscador.add(buscador, BorderLayout.CENTER);
+        
+         buscador.getDocument().addDocumentListener(new DocumentListener() {
+            private void actualizar() {
+                String texto = buscador.getText().trim().toLowerCase();
+                buscarYCargarAlbums(texto);
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                actualizar();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                actualizar();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                actualizar();
+            }
+        });
         
         lblFlechaArriba.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -89,15 +114,9 @@ public class pnlArtistas extends javax.swing.JPanel {
         });
     }
     
-    private void cargarCanciones() {
+    private void cargarArtistas() {
         List<ArtistaDTO> artistas = artistaNegocio.obtenerTodos();
-//        artistas.add(new Artista("C-Kan", "Rap Mexicano", "ckan.png"));
-//        artistas.add(new Artista("Mc Davo", "Rap Mexicano", "mcdavo.png"));
-//        artistas.add(new Artista("Dharius", "Rap Mexicano", "dharius.png"));
-//        artistas.add(new Artista("Gera MX", "Rap Mexicano", "geramx.png"));
-//        artistas.add(new Artista("Eme Malafe", "Rap Mexicano", "ememalafe.png"));
-//        artistas.add(new Artista("Lefty SM", "Rap Mexicano", "leftysm.png"));
-//        artistas.add(new Artista("Neto Peña", "Rap Mexicano", "netopena.png"));
+
 
         panelArtistas.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
 
@@ -109,6 +128,27 @@ public class pnlArtistas extends javax.swing.JPanel {
         panelArtistas.revalidate();
         panelArtistas.repaint();
     }
+    
+    private void buscarYCargarAlbums(String texto) {
+    List<ArtistaDTO> resultado;
+
+    if (texto.isEmpty()) {
+        resultado = artistaNegocio.obtenerTodos();
+    } else {
+        resultado = artistaNegocio.buscarPorNombre(texto);
+    }
+
+    panelArtistas.removeAll();
+    panelArtistas.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
+
+    for (ArtistaDTO cancion : resultado) {
+        JPanel panel = crearPanelArtista(cancion);
+        panelArtistas.add(panel);
+    }
+
+    panelArtistas.revalidate();
+    panelArtistas.repaint();
+}
 
     private JPanel crearPanelArtista(ArtistaDTO artista) {
         JPanel panel = new JPanel();
