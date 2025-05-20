@@ -4,8 +4,14 @@
  */
 package ui.app.usuario;
 
+import dtos.AlbumDTO;
+import dtos.ArtistaDTO;
+import dtos.CancionDTO;
 import dtos.GeneroDTO;
 import dtos.UsuarioDTO;
+import interfaces.IAlbumNegocio;
+import interfaces.IArtistaNegocio;
+import interfaces.ICancionNegocio;
 import interfaces.IGeneroNegocio;
 import interfaces.IUsuarioNegocio;
 import java.awt.BorderLayout;
@@ -35,6 +41,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
+import negocio.AlbumNegocio;
 import ui.componentes.RoundedComboBox;
 import ui.sesion.Sesion;
 
@@ -43,22 +50,30 @@ import ui.sesion.Sesion;
  * @author ang3lfco
  */
 public class pnlNoDeseados extends javax.swing.JPanel {
+
     List<Map<String, Object>> elementos = new ArrayList<>();
     private IUsuarioNegocio usuarioNegocio;
     private IGeneroNegocio generoNegocio;
+    private IAlbumNegocio albumNegocio;
+    private ICancionNegocio cancionNegocio;
+    private IArtistaNegocio artistaNegocio;
     private UsuarioDTO.NoDeseadosDTO generosNoDeseadosIds;
     private List<GeneroDTO> generosNoDeseados = new ArrayList<>();
     private RoundedComboBox<String> combo;
+
     /**
      * Creates new form pnlFavoritos
      */
-    public pnlNoDeseados(IUsuarioNegocio usuarioNegocio, IGeneroNegocio generoNegocio) {
+    public pnlNoDeseados(IUsuarioNegocio usuarioNegocio, IGeneroNegocio generoNegocio, IAlbumNegocio albumNegocio, ICancionNegocio cancionNegocio, IArtistaNegocio artistaNegocio) {
         initComponents();
         iniciarFlechasScroll();
+        this.albumNegocio = albumNegocio;
         this.usuarioNegocio = usuarioNegocio;
         this.generoNegocio = generoNegocio;
+        this.cancionNegocio = cancionNegocio;
+        this.artistaNegocio = artistaNegocio;
         this.generosNoDeseadosIds = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
-        if(generosNoDeseadosIds == null){
+        if (generosNoDeseadosIds == null) {
             JOptionPane.showMessageDialog(null, "Sin no deseados.");
             lblFlechaArriba.setText("");
             lblFlechaAbajo.setText("");
@@ -79,40 +94,48 @@ public class pnlNoDeseados extends javax.swing.JPanel {
             jPanel1_noDeseados.repaint();
             generosNoDeseadosIds = new UsuarioDTO.NoDeseadosDTO(new ArrayList<>());
         }
-        
-        for(String s : generosNoDeseadosIds.getGeneros()){
+
+        for (String s : generosNoDeseadosIds.getGeneros()) {
             generosNoDeseados.add(generoNegocio.buscarGeneroPorId(s));
         }
-        
+
         cargarNoDeseados();
         cargarCombo();
-        
-        
-        btnAgregarNoDeseado.addMouseListener(new MouseAdapter(){
+
+        btnAgregarNoDeseado.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e){
+            public void mouseClicked(MouseEvent e) {
                 int indiceSeleccionado = combo.getSelectedIndex();
                 if (indiceSeleccionado >= 0) {
                     GeneroDTO generoSeleccionado = generoNegocio.obtenerTodas().stream().filter(g -> g.getNombre().equals(combo.getSelectedItem())).findFirst().orElse(null);
                     if (generoSeleccionado != null) {
                         String id = generoSeleccionado.getId();
-                        usuarioNegocio.insertarGeneroNoDeseado(Sesion.getUsuarioActual().getId(), id);
-                        generosNoDeseadosIds = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
-                        generosNoDeseados = new ArrayList<>();
-                        for (String s : generosNoDeseadosIds.getGeneros()) {
-                            generosNoDeseados.add(generoNegocio.buscarGeneroPorId(s));
-                        }
-                        cargarCombo();
-                        cargarNoDeseados();
 
-                        System.out.println("ID del género seleccionado: " + id);
-                        System.out.println("Nombre del género seleccionado: " + generoSeleccionado.getNombre());
+                        if (validarFavoritos(id) > 0) {
+                            cargarCombo();
+                            cargarNoDeseados();
+
+                        } else {
+
+                            //
+                            usuarioNegocio.insertarGeneroNoDeseado(Sesion.getUsuarioActual().getId(), id);
+                            usuarioNegocio.getFavoritos(id);
+                            generosNoDeseadosIds = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
+                            generosNoDeseados = new ArrayList<>();
+                            for (String s : generosNoDeseadosIds.getGeneros()) {
+                                generosNoDeseados.add(generoNegocio.buscarGeneroPorId(s));
+                            }
+                            cargarCombo();
+                            cargarNoDeseados();
+
+                            System.out.println("ID del género seleccionado: " + id);
+                            System.out.println("Nombre del género seleccionado: " + generoSeleccionado.getNombre());
+                        }
                     }
                 }
             }
         });
-        
-        
+
         jScrollPane_NoDeseados.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane_NoDeseados.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane_NoDeseados.getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
@@ -120,7 +143,7 @@ public class pnlNoDeseados extends javax.swing.JPanel {
 
         jScrollPane_NoDeseados.setViewportBorder(null);
         jScrollPane_NoDeseados.setBorder(null);
-        
+
         lblFlechaArriba.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -139,28 +162,83 @@ public class pnlNoDeseados extends javax.swing.JPanel {
             }
         });
     }
-    
-    private void cargarCombo(){
+
+    private void cargarCombo() {
         List<GeneroDTO> generosDisponibles = generoNegocio.obtenerTodas();
         List<String> generosBloqueados = generosNoDeseadosIds.getGeneros();
         List<GeneroDTO> generosCombo;
-        if(generosBloqueados != null){
+        if (generosBloqueados != null) {
             generosCombo = generosDisponibles.stream().filter(g -> !generosBloqueados.contains(g.getId())).toList();
-        }
-        else{
+        } else {
             generosCombo = generosDisponibles;
         }
         String[] items = generosCombo.stream().map(GeneroDTO::getNombre).toArray(String[]::new);
         pnl_TipoBusqueda.removeAll();
         combo = new RoundedComboBox<>(items);
         combo.setPreferredSize(new Dimension(200, 40));
-        pnl_TipoBusqueda.setBackground(new Color(0,0,0,0));
+        pnl_TipoBusqueda.setBackground(new Color(0, 0, 0, 0));
         pnl_TipoBusqueda.setLayout(new BorderLayout());
         pnl_TipoBusqueda.add(combo, BorderLayout.CENTER);
         pnl_TipoBusqueda.revalidate();
-        pnl_TipoBusqueda.repaint(); 
+        pnl_TipoBusqueda.repaint();
     }
-    
+
+    public int validarFavoritos(String genero) {
+        int cant = 0;
+        List<String> nombres = new ArrayList<>();
+        AlbumDTO album;
+        ArtistaDTO artista;
+        CancionDTO cancion;
+        List<AlbumDTO> albumesDTO = new ArrayList<>();
+        List<ArtistaDTO> artistasDTO = new ArrayList<>();
+        List<CancionDTO> cancionesDTO = new ArrayList<>();
+        List<GeneroDTO> generos = new ArrayList<>();
+        List<String> canciones = usuarioNegocio.getFavoritos(Sesion.getUsuarioActual().getId()).getCancionesId();
+        List<String> artistas = usuarioNegocio.getFavoritos(Sesion.getUsuarioActual().getId()).getArtistasId();
+        List<String> albumes = usuarioNegocio.getFavoritos(Sesion.getUsuarioActual().getId()).getAlbumesId();
+
+        for (String id : albumes) {
+            album = albumNegocio.buscarAlbumPorId(id);
+            albumesDTO.add(album);
+            if (album.getGenerosId().contains(genero)) {
+                nombres.add(album.getNombre());
+            }
+            for (String g : album.getGenerosId()) {
+                if (genero.equals(g)) {
+                    cant++;
+                }
+            }
+        }
+        for (String id : artistas) {
+            artista = artistaNegocio.buscarArtistaporId(id);
+            artistasDTO.add(artista);
+            if (artista.getGenerosId().contains(genero)) {
+                nombres.add(artista.getNombre());
+            }
+            for (String g : artista.getGenerosId()) {
+                if (genero.equals(g)) {
+                    cant++;
+                }
+            }
+        }
+
+        for (String id : canciones) {
+            cancion = cancionNegocio.obtenerCancionPorId(id);
+            cancionesDTO.add(cancion);
+            if (cancion.getGenerosId().contains(genero)) {
+                nombres.add(cancion.getNombre());
+            }
+            for (String g : cancion.getGenerosId()) {
+                if (genero.equals(g)) {
+                    cant++;
+                }
+            }
+        }
+        mostrarNombresFavoritos(nombres);
+        System.out.println(nombres.size());
+        return cant;
+    }
+
     private void cargarNoDeseados() {
         jPanel1_noDeseados.setLayout(new BoxLayout(jPanel1_noDeseados, BoxLayout.Y_AXIS));
         jPanel1_noDeseados.removeAll();
@@ -182,7 +260,6 @@ public class pnlNoDeseados extends javax.swing.JPanel {
 //            }
 //            lblImg.setPreferredSize(new Dimension(70, 70));
 //            panel.add(lblImg, BorderLayout.WEST);
-
             JPanel texto = new JPanel();
             texto.setLayout(new BoxLayout(texto, BoxLayout.X_AXIS));
             texto.setOpaque(false);
@@ -231,6 +308,7 @@ public class pnlNoDeseados extends javax.swing.JPanel {
 //                            generosNoDeseados.remove(genero);
                             return null;
                         }
+
                         @Override
                         protected void done() {
                             cargarNoDeseados();
@@ -247,12 +325,10 @@ public class pnlNoDeseados extends javax.swing.JPanel {
             jPanel1_noDeseados.add(Box.createVerticalStrut(8));
         }
 
-        
-
         jPanel1_noDeseados.revalidate();
         jPanel1_noDeseados.repaint();
     }
-    
+
     private JDialog mostrarDialogoCargando() {
         JDialog dialogo = new JDialog();
         dialogo.setUndecorated(true);
@@ -294,7 +370,52 @@ public class pnlNoDeseados extends javax.swing.JPanel {
 
         return dialogo;
     }
-    
+
+    private JDialog mostrarNombresFavoritos(List<String> lista) {
+        JDialog dialogo = new JDialog();
+        dialogo.setUndecorated(true);
+        dialogo.setModal(false);
+        dialogo.setSize(250, 100);
+        dialogo.setLocationRelativeTo(this);
+
+        JPanel panel = new JPanel(new GridBagLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                g2.setColor(new Color(0, 0, 0, 50));
+                g2.fillRoundRect(5, 5, getWidth() - 10, getHeight() - 10, 30, 30);
+
+                g2.setColor(new Color(180, 30, 90, 230));
+                g2.fillRoundRect(0, 0, getWidth() - 10, getHeight() - 10, 30, 30);
+
+                g2.dispose();
+            }
+
+            @Override
+            public boolean isOpaque() {
+                return false;
+            }
+        };
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setOpaque(false);
+
+        for (String nombre : lista) {
+            JLabel lbl = new JLabel(nombre);
+            lbl.setForeground(Color.WHITE);
+            lbl.setFont(new Font("Segoe UI", Font.BOLD, 16));
+            lbl.setHorizontalAlignment(SwingConstants.CENTER);
+
+            dialogo.setBackground(new Color(0, 0, 0, 0));
+            dialogo.getContentPane().add(panel);
+            dialogo.setVisible(true);
+            panel.add(lbl);
+        }
+
+        return dialogo;
+    }
+
     private void iniciarFlechasScroll() {
         lblFlechaArriba.setText("↑");
         lblFlechaArriba.setFont(new Font("Segoe UI", Font.BOLD, 30));
@@ -324,7 +445,9 @@ public class pnlNoDeseados extends javax.swing.JPanel {
     }
 
     /**
-     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
