@@ -127,7 +127,7 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
             nombre.setText(Sesion.getUsuarioActual().getNombre());
             apellido.setText(Sesion.getUsuarioActual().getApellido());
             usuario.setText(Sesion.getUsuarioActual().getUsuario());
-            contrasena.setText(Sesion.getUsuarioActual().getContraseña());
+            contrasena.setText("contrasena");
             correo.setText(Sesion.getUsuarioActual().getCorreo());
             btnAccion = new CustomRoundedButton("Editar", new Color(180, 30, 90));
                 btnAccion.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -137,7 +137,7 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
                             nombre.getText(),
                             apellido.getText(),
                             usuario.getText(),
-                            contrasena.getText(),
+                            null,
                             correo.getText(),
                             "/iconos/usuario.png",
                             null,
