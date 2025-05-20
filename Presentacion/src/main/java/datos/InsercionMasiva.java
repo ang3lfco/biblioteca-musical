@@ -422,7 +422,7 @@ public class InsercionMasiva {
         artistas.add(artista);
         //25
         id = new ObjectId().toHexString();
-        artista = new ArtistaDTO(id, "Imagine Dragons", "banda", "/portadas/imagineDragons.png", List.of(generos.get(15).getId(), generos.get(16).getId()), List.of(
+        artista = new ArtistaDTO(id, "Imagine Dragons", "banda", "/portadas/imaginedragons.png", List.of(generos.get(15).getId(), generos.get(16).getId()), List.of(
                 new ArtistaDTO.integranteDTO(personas.get(36).getId(), "Vocalista", LocalDate.of(2008, Month.JANUARY, 1), null),
                 new ArtistaDTO.integranteDTO(personas.get(37).getId(), "Guitarrista", LocalDate.of(2009, Month.JANUARY, 1), null),
                 new ArtistaDTO.integranteDTO(personas.get(38).getId(), "Bajista", LocalDate.of(2009, Month.JANUARY, 1), null),
