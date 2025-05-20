@@ -48,6 +48,7 @@ public class pnlNoDeseados extends javax.swing.JPanel {
     private IGeneroNegocio generoNegocio;
     private UsuarioDTO.NoDeseadosDTO generosNoDeseadosIds;
     private List<GeneroDTO> generosNoDeseados = new ArrayList<>();
+    private RoundedComboBox<String> combo;
     /**
      * Creates new form pnlFavoritos
      */
@@ -84,35 +85,29 @@ public class pnlNoDeseados extends javax.swing.JPanel {
         }
         
         cargarNoDeseados();
+        cargarCombo();
         
-        List<GeneroDTO> generosDisponibles = generoNegocio.obtenerTodas();
-        List<String> generosBloqueados = generosNoDeseadosIds.getGeneros();
-        List<GeneroDTO> generosCombo;
-        if(generosBloqueados != null){
-            generosCombo = generosDisponibles.stream().filter(g -> !generosBloqueados.contains(g.getId())).toList();
-        }
-        else{
-            generosCombo = generosDisponibles;
-        }
-        String[] items = generosCombo.stream().map(GeneroDTO::getNombre).toArray(String[]::new);
-        RoundedComboBox<String> combo = new RoundedComboBox<>(items);
-        combo.setPreferredSize(new Dimension(200, 40));
-        pnl_TipoBusqueda.setBackground(new Color(0,0,0,0));
-        pnl_TipoBusqueda.setLayout(new BorderLayout());
-        pnl_TipoBusqueda.add(combo, BorderLayout.CENTER);
-        pnl_TipoBusqueda.revalidate();
-        pnl_TipoBusqueda.repaint(); 
         
         btnAgregarNoDeseado.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
                 int indiceSeleccionado = combo.getSelectedIndex();
                 if (indiceSeleccionado >= 0) {
-                    GeneroDTO generoSeleccionado = generosCombo.get(indiceSeleccionado);
-                    String id = generoSeleccionado.getId();
-                    usuarioNegocio.insertarGeneroNoDeseado(Sesion.getUsuarioActual().getId(), id);
-                    System.out.println("ID del género seleccionado: " + id);
-                    System.out.println("Nombre del género seleccionado: " + generoSeleccionado.getNombre());
+                    GeneroDTO generoSeleccionado = generoNegocio.obtenerTodas().stream().filter(g -> g.getNombre().equals(combo.getSelectedItem())).findFirst().orElse(null);
+                    if (generoSeleccionado != null) {
+                        String id = generoSeleccionado.getId();
+                        usuarioNegocio.insertarGeneroNoDeseado(Sesion.getUsuarioActual().getId(), id);
+                        generosNoDeseadosIds = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
+                        generosNoDeseados = new ArrayList<>();
+                        for (String s : generosNoDeseadosIds.getGeneros()) {
+                            generosNoDeseados.add(generoNegocio.buscarGeneroPorId(s));
+                        }
+                        cargarCombo();
+                        cargarNoDeseados();
+
+                        System.out.println("ID del género seleccionado: " + id);
+                        System.out.println("Nombre del género seleccionado: " + generoSeleccionado.getNombre());
+                    }
                 }
             }
         });
@@ -143,6 +138,27 @@ public class pnlNoDeseados extends javax.swing.JPanel {
                 barra.setValue(barra.getValue() + paso);
             }
         });
+    }
+    
+    private void cargarCombo(){
+        List<GeneroDTO> generosDisponibles = generoNegocio.obtenerTodas();
+        List<String> generosBloqueados = generosNoDeseadosIds.getGeneros();
+        List<GeneroDTO> generosCombo;
+        if(generosBloqueados != null){
+            generosCombo = generosDisponibles.stream().filter(g -> !generosBloqueados.contains(g.getId())).toList();
+        }
+        else{
+            generosCombo = generosDisponibles;
+        }
+        String[] items = generosCombo.stream().map(GeneroDTO::getNombre).toArray(String[]::new);
+        pnl_TipoBusqueda.removeAll();
+        combo = new RoundedComboBox<>(items);
+        combo.setPreferredSize(new Dimension(200, 40));
+        pnl_TipoBusqueda.setBackground(new Color(0,0,0,0));
+        pnl_TipoBusqueda.setLayout(new BorderLayout());
+        pnl_TipoBusqueda.add(combo, BorderLayout.CENTER);
+        pnl_TipoBusqueda.revalidate();
+        pnl_TipoBusqueda.repaint(); 
     }
     
     private void cargarNoDeseados() {

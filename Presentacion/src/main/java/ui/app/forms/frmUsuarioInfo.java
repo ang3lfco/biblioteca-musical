@@ -10,6 +10,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import ui.app.frmInicio;
 import ui.componentes.CustomRoundedButton;
@@ -143,6 +144,8 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
                             null
                     );
                     usuarioNegocio.editarUsuario(usuarioDTO);
+                    JOptionPane.showMessageDialog(null, "Datos actualizados.");
+                    dispose();
                 }
             });
         }
@@ -161,6 +164,8 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
                             null
                     );
                     usuarioNegocio.registrarUsuario(usuarioDTO);
+                    JOptionPane.showMessageDialog(null, "Usuario registrado.");
+                    dispose();
                 }
             });
         }
