@@ -104,7 +104,17 @@ public class CancionDAO implements ICancionDAO {
     @Override
     public List<CancionDTO> buscarPorArtistaId(String artistaId) {
         List<CancionDTO> lista = new ArrayList<>();
-        try (MongoCursor<Cancion> cursor = coleccion.find(eq("artistaId", artistaId)).iterator()) {
+        ObjectId idObj;
+        try {
+            idObj = new ObjectId(artistaId);
+        } catch (IllegalArgumentException e) {
+
+            return lista;
+        }
+
+        Bson filtro = Filters.eq("artistasId", idObj);
+
+        try (MongoCursor<Cancion> cursor = coleccion.find(filtro).iterator()) {
             while (cursor.hasNext()) {
                 Cancion cancion = cursor.next();
                 lista.add(convertirADTO(cancion));

@@ -18,6 +18,7 @@ import java.util.List;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import interfaces.IArtistaDAO;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -46,7 +47,7 @@ public class ArtistaDAO implements IArtistaDAO {
 
     public List<ArtistaDTO> buscarPorNombre(String nombre) {
         List<ArtistaDTO> lista = new ArrayList<>();
-        Bson filtro = Filters.eq("nombre", nombre);
+        Bson filtro = Filters.regex("nombre", Pattern.compile(Pattern.quote(nombre), Pattern.CASE_INSENSITIVE));
         try (MongoCursor<Artista> cursor = coleccion.find(filtro).iterator()) {
             while (cursor.hasNext()) {
                 Artista artista = cursor.next();
@@ -88,8 +89,8 @@ public class ArtistaDAO implements IArtistaDAO {
             return null;
         }
     }
-    
-        public void insertarArtistas(List<Artista> artistas) {
+
+    public void insertarArtistas(List<Artista> artistas) {
         if (artistas != null && !artistas.isEmpty()) {
             coleccion.insertMany(artistas);
             System.out.println("Se insertaron " + artistas.size() + " artistas correctamente.");
@@ -138,7 +139,5 @@ public class ArtistaDAO implements IArtistaDAO {
 
         return dto;
     }
-
-    
 
 }

@@ -134,15 +134,34 @@ public class pnlCanciones extends javax.swing.JPanel {
     }
 
     private void buscarYCargarCanciones(String texto) {
-        List<CancionDTO> resultado;
+        List<CancionDTO> resultado = new ArrayList<>();
 
         if (texto.isEmpty()) {
             resultado = cancionesNegocio.obtenerTodas();
         } else {
-            resultado = cancionesNegocio.buscarPorNombre(texto);
+
+            List<CancionDTO> cancionesPorNombre = cancionesNegocio.buscarPorNombre(texto);
+            List<ArtistaDTO> artistas = artistaNegocio.buscarPorNombre(texto);
+
+            Set<String> idsCancionesAgregadas = new HashSet<>();
+
+            for (CancionDTO c : cancionesPorNombre) {
+                resultado.add(c);
+                idsCancionesAgregadas.add(c.getId());
+            }
+
+
+            for (ArtistaDTO artista : artistas) {
+                List<CancionDTO> cancionesDelArtista = cancionesNegocio.buscarPorArtistaId(artista.getId());
+                for (CancionDTO c : cancionesDelArtista) {
+                    if (!idsCancionesAgregadas.contains(c.getId())) {
+                        resultado.add(c);
+                        idsCancionesAgregadas.add(c.getId());
+                    }
+                }
+            }
         }
 
-        // Limpiar el panel y mostrar los resultados
         panelCanciones.removeAll();
         panelCanciones.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
 
