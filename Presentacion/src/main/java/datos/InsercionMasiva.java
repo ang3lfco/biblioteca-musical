@@ -896,6 +896,8 @@ public class InsercionMasiva {
         cancion = new CancionDTO(new ObjectId().toHexString(),
                 "Otherside", albumes.get(29).getId(), List.of(generos.get(1).getId()), List.of(artistas.get(29).getId()));
         canciones.add(cancion);
+        
+        
 
         cancionNegocio.insertarCanciones(canciones);
     }

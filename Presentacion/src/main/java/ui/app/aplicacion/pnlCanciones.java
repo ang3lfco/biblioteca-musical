@@ -134,45 +134,57 @@ public class pnlCanciones extends javax.swing.JPanel {
     }
 
     private void buscarYCargarCanciones(String texto) {
-        List<CancionDTO> resultado = new ArrayList<>();
+    List<CancionDTO> resultado = new ArrayList<>();
+    Set<String> idsCancionesAgregadas = new HashSet<>();
 
-        if (texto.isEmpty()) {
-            resultado = cancionesNegocio.obtenerTodas();
-        } else {
+    if (texto.isEmpty()) {
 
-            List<CancionDTO> cancionesPorNombre = cancionesNegocio.buscarPorNombre(texto);
-            List<ArtistaDTO> artistas = artistaNegocio.buscarPorNombre(texto);
+        resultado = cancionesNegocio.obtenerTodas();
+        for (CancionDTO c : resultado) {
+            idsCancionesAgregadas.add(c.getId());
+        }
+    } else {
 
-            Set<String> idsCancionesAgregadas = new HashSet<>();
+        List<CancionDTO> cancionesPorNombre = cancionesNegocio.buscarPorNombre(texto);
+        for (CancionDTO c : cancionesPorNombre) {
+            resultado.add(c);
+            idsCancionesAgregadas.add(c.getId());
+        }
 
-            for (CancionDTO c : cancionesPorNombre) {
-                resultado.add(c);
-                idsCancionesAgregadas.add(c.getId());
-            }
-
-
-            for (ArtistaDTO artista : artistas) {
-                List<CancionDTO> cancionesDelArtista = cancionesNegocio.buscarPorArtistaId(artista.getId());
-                for (CancionDTO c : cancionesDelArtista) {
-                    if (!idsCancionesAgregadas.contains(c.getId())) {
-                        resultado.add(c);
-                        idsCancionesAgregadas.add(c.getId());
-                    }
+        List<ArtistaDTO> artistas = artistaNegocio.buscarPorNombre(texto);
+        for (ArtistaDTO artista : artistas) {
+            List<CancionDTO> cancionesDelArtista = cancionesNegocio.buscarPorArtistaId(artista.getId());
+            for (CancionDTO c : cancionesDelArtista) {
+                if (!idsCancionesAgregadas.contains(c.getId())) {
+                    resultado.add(c);
+                    idsCancionesAgregadas.add(c.getId());
                 }
             }
         }
 
-        panelCanciones.removeAll();
-        panelCanciones.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
-
-        for (CancionDTO cancion : resultado) {
-            JPanel panel = crearPanelCancion(cancion);
-            panelCanciones.add(panel);
+        List<CancionDTO> cancionesSinArtista = cancionesNegocio.buscarPorArtistaId("sin-artista");
+        for (CancionDTO c : cancionesSinArtista) {
+            if (!idsCancionesAgregadas.contains(c.getId())
+                    && c.getNombre().toLowerCase().contains(texto.toLowerCase())) {
+                resultado.add(c);
+                idsCancionesAgregadas.add(c.getId());
+            }
         }
-
-        panelCanciones.revalidate();
-        panelCanciones.repaint();
     }
+
+    // Mostrar resultados en el panel
+    panelCanciones.removeAll();
+    panelCanciones.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
+
+    for (CancionDTO cancion : resultado) {
+        JPanel panel = crearPanelCancion(cancion);
+        panelCanciones.add(panel);
+    }
+
+    panelCanciones.revalidate();
+    panelCanciones.repaint();
+}
+
 
     private JPanel crearPanelCancion(CancionDTO cancion) {
         JPanel panel = new JPanel();

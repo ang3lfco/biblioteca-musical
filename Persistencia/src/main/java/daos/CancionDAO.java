@@ -104,15 +104,24 @@ public class CancionDAO implements ICancionDAO {
     @Override
     public List<CancionDTO> buscarPorArtistaId(String artistaId) {
         List<CancionDTO> lista = new ArrayList<>();
-        ObjectId idObj;
-        try {
-            idObj = new ObjectId(artistaId);
-        } catch (IllegalArgumentException e) {
+        Bson filtro;
 
-            return lista;
+        if ("sin-artista".equals(artistaId)) {
+            // Buscar canciones donde artistasId sea null o esté vacío
+            filtro = Filters.or(
+                    Filters.eq("artistasId", null),
+                    Filters.size("artistasId", 0)
+            );
+        } else {
+            ObjectId idObj;
+            try {
+                idObj = new ObjectId(artistaId);
+            } catch (IllegalArgumentException e) {
+                return lista; 
+            }
+
+            filtro = Filters.eq("artistasId", idObj);
         }
-
-        Bson filtro = Filters.eq("artistasId", idObj);
 
         try (MongoCursor<Cancion> cursor = coleccion.find(filtro).iterator()) {
             while (cursor.hasNext()) {
@@ -120,6 +129,7 @@ public class CancionDAO implements ICancionDAO {
                 lista.add(convertirADTO(cancion));
             }
         }
+
         return lista;
     }
 
