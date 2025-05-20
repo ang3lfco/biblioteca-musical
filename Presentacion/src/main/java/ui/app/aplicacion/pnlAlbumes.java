@@ -8,6 +8,7 @@ import dtos.AlbumDTO;
 import dtos.ArtistaDTO;
 import interfaces.IAlbumNegocio;
 import interfaces.IArtistaNegocio;
+import interfaces.IGeneroNegocio;
 import interfaces.IUsuarioNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -28,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import ui.componentes.CustomRoundedTextField;
@@ -42,14 +44,19 @@ public class pnlAlbumes extends javax.swing.JPanel {
     private IAlbumNegocio albumNegocio;
     private IArtistaNegocio artistaNegocio;
     private IUsuarioNegocio usuarioNegocio;
+    private IGeneroNegocio generoNegocio;
+    private List<AlbumDTO> albumes;
+    RoundedComboBox<String> combo;
+    CustomRoundedTextField buscador;
     /**
      * Creates new form pnlCanciones
      */
-    public pnlAlbumes(IAlbumNegocio albumNegocio, IArtistaNegocio artistaNegocio, IUsuarioNegocio usuarioNegocio) {
+    public pnlAlbumes(IAlbumNegocio albumNegocio, IArtistaNegocio artistaNegocio, IUsuarioNegocio usuarioNegocio, IGeneroNegocio generoNegocio) {
         initComponents();
         this.albumNegocio = albumNegocio;
         this.artistaNegocio = artistaNegocio;
         this.usuarioNegocio = usuarioNegocio;
+        this.generoNegocio = generoNegocio;
         iniciarFlechasScroll();
         jScrollPane_albumes.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane_albumes.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -58,20 +65,71 @@ public class pnlAlbumes extends javax.swing.JPanel {
 
         jScrollPane_albumes.setViewportBorder(null);
         jScrollPane_albumes.setBorder(null);
+        
         cargarAlbumes();
         
         String[] items = { "Nombre", "Género", "Fecha de Lanzamiento" };
-        RoundedComboBox<String> combo = new RoundedComboBox<>(items);
+        combo = new RoundedComboBox<>(items);
         combo.setPreferredSize(new Dimension(200, 40));
         pnl_TipoBusqueda.setBackground(new Color(0,0,0,0));
         pnl_TipoBusqueda.setLayout(new BorderLayout());
         pnl_TipoBusqueda.add(combo, BorderLayout.CENTER);
         
-        CustomRoundedTextField buscador = new CustomRoundedTextField("Buscar álbumes...", "/iconos/buscar.png");
+        buscador = new CustomRoundedTextField("Buscar álbumes...", "/iconos/buscar.png");
         pnlBuscador.setLayout(new BorderLayout());
         pnlBuscador.setPreferredSize(new Dimension(330, 40));
         pnlBuscador.setBackground(new Color(0,0,0,0));
         pnlBuscador.add(buscador, BorderLayout.CENTER);
+        
+        JTextField campoBusqueda = buscador.getTextField();
+        campoBusqueda.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                realizarBusqueda();
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                realizarBusqueda();
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                realizarBusqueda();
+            }
+
+            private void realizarBusqueda() {
+                String texto = campoBusqueda.getText().toLowerCase();
+                String criterio = combo.getSelectedItem().toString();
+
+                List<AlbumDTO> resultados = albumes.stream().filter(album -> {
+                    switch (criterio) {
+                        case "Nombre":
+                            return album.getNombre().toLowerCase().contains(texto);
+                        case "Género":
+                            try {
+                                List<String> generosId = album.getGenerosId();
+                                for (String idGenero : generosId) {
+                                    String nombreGenero = generoNegocio.buscarGeneroPorId(idGenero).getNombre();
+                                    if (nombreGenero.toLowerCase().contains(texto)) {
+                                        return true;
+                                    }
+                                }
+                            } catch (Exception e) {
+                                return false;
+                            }
+                            return false;
+                        case "Fecha de Lanzamiento":
+                            return album.getLanzamiento()!= null &&
+                                   album.getLanzamiento().toString().toLowerCase().contains(texto);
+                        default:
+                            return false;
+                    }
+                }).toList();
+
+                mostrarResultados(resultados);
+            }
+        });
         
         lblFlechaArriba.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -93,7 +151,7 @@ public class pnlAlbumes extends javax.swing.JPanel {
     }
     
     private void cargarAlbumes() {
-        List<AlbumDTO> albumes = albumNegocio.obtenerTodos();
+        albumes = albumNegocio.obtenerTodos();
         panelAlbumes.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
 
         for (AlbumDTO album : albumes) {
@@ -101,6 +159,16 @@ public class pnlAlbumes extends javax.swing.JPanel {
             panelAlbumes.add(panel);
         }
 
+        panelAlbumes.revalidate();
+        panelAlbumes.repaint();
+    }
+    
+    private void mostrarResultados(List<AlbumDTO> resultados) {
+        panelAlbumes.removeAll();
+        for (AlbumDTO album : resultados) {
+            JPanel panel = crearPanelAlbum(album);
+            panelAlbumes.add(panel);
+        }
         panelAlbumes.revalidate();
         panelAlbumes.repaint();
     }

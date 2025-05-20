@@ -10,6 +10,7 @@ import dtos.CancionDTO;
 import interfaces.IAlbumNegocio;
 import interfaces.IArtistaNegocio;
 import interfaces.ICancionNegocio;
+import interfaces.IGeneroNegocio;
 import interfaces.IUsuarioNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -48,6 +49,7 @@ public class pnlPrincipal extends javax.swing.JPanel {
     private IAlbumNegocio albumNegocio;
     private IArtistaNegocio artistaNegocio;
     private ICancionNegocio cancionNegocio;
+    private IGeneroNegocio generoNegocio;
 
     private List<ArtistaDTO> artistasdtos = new ArrayList<>();
     private List<AlbumDTO> albumesdtos = new ArrayList<>();
@@ -59,12 +61,13 @@ public class pnlPrincipal extends javax.swing.JPanel {
     /**
      * Creates new form pnlPrincipal
      */
-    public pnlPrincipal(IUsuarioNegocio usuarioNegocio, ICancionNegocio cancionesNegocio, IAlbumNegocio albumNegocio, IArtistaNegocio artistaNegocio) {
+    public pnlPrincipal(IUsuarioNegocio usuarioNegocio, ICancionNegocio cancionesNegocio, IAlbumNegocio albumNegocio, IArtistaNegocio artistaNegocio, IGeneroNegocio generoNegocio) {
         initComponents();
         this.usuarioNegocio = usuarioNegocio;
         this.cancionNegocio = cancionesNegocio;
         this.albumNegocio = albumNegocio;
         this.artistaNegocio = artistaNegocio;
+        this.generoNegocio = generoNegocio;
 
         artistasdtos = artistaNegocio.obtenerTodos();
         albumesdtos = albumNegocio.obtenerTodos();
@@ -102,7 +105,7 @@ public class pnlPrincipal extends javax.swing.JPanel {
 
         Component[] albumes = crearItemsAlbumes(albumesdtos);
         agregarAlbumes("Álbumes", albumes, () -> {
-            pnlAlbumes albumesPanel = new pnlAlbumes(albumNegocio, artistaNegocio, usuarioNegocio);
+            pnlAlbumes albumesPanel = new pnlAlbumes(albumNegocio, artistaNegocio, usuarioNegocio, generoNegocio);
             this.removeAll();
             this.setLayout(new BorderLayout());
             this.add(albumesPanel, BorderLayout.CENTER);
