@@ -34,6 +34,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.Timer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import ui.componentes.CustomRoundedTextField;
 
 /**
@@ -41,14 +43,19 @@ import ui.componentes.CustomRoundedTextField;
  * @author ang3lfco
  */
 public class pnlPrincipal extends javax.swing.JPanel {
+
     private IUsuarioNegocio usuarioNegocio;
     private IAlbumNegocio albumNegocio;
     private IArtistaNegocio artistaNegocio;
     private ICancionNegocio cancionNegocio;
-    
+
     private List<ArtistaDTO> artistasdtos = new ArrayList<>();
     private List<AlbumDTO> albumesdtos = new ArrayList<>();
     private List<CancionDTO> cancionesdtos = new ArrayList<>();
+    private Component[] albumes;
+    private Component[] artistas;
+    private Component[] canciones;
+
     /**
      * Creates new form pnlPrincipal
      */
@@ -58,11 +65,11 @@ public class pnlPrincipal extends javax.swing.JPanel {
         this.cancionNegocio = cancionesNegocio;
         this.albumNegocio = albumNegocio;
         this.artistaNegocio = artistaNegocio;
-        
+
         artistasdtos = artistaNegocio.obtenerTodos();
         albumesdtos = albumNegocio.obtenerTodos();
         cancionesdtos = cancionNegocio.obtenerTodas();
-        
+
         jScrollPane1_contenido.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane1_contenido.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1_contenido.getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
@@ -70,17 +77,31 @@ public class pnlPrincipal extends javax.swing.JPanel {
         jScrollPane1_contenido.setViewportBorder(null);
         jScrollPane1_contenido.setBorder(null);
         pnl_contenido.setLayout(new BoxLayout(pnl_contenido, BoxLayout.Y_AXIS));
-        
+
         CustomRoundedTextField buscador = new CustomRoundedTextField("Buscar canciónes...", "/iconos/buscar.png");
         pnlBuscador.setLayout(new BorderLayout());
         pnlBuscador.setPreferredSize(new Dimension(330, 40));
-        pnlBuscador.setBackground(new Color(0,0,0,0));
+        pnlBuscador.setBackground(new Color(0, 0, 0, 0));
         pnlBuscador.add(buscador, BorderLayout.CENTER);
+
+        buscador.getTextField().getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) {
+                filtrarContenido(buscador.getText());
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                filtrarContenido(buscador.getText());
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                filtrarContenido(buscador.getText());
+            }
+        });
 
         List<Map<String, Object>> elementos = new ArrayList<>();
 
         Component[] albumes = crearItemsAlbumes(albumesdtos);
-        agregarSeccion("Álbumes", albumes, () -> {
+        agregarAlbumes("Álbumes", albumes, () -> {
             pnlAlbumes albumesPanel = new pnlAlbumes(albumNegocio, artistaNegocio, usuarioNegocio);
             this.removeAll();
             this.setLayout(new BorderLayout());
@@ -88,18 +109,38 @@ public class pnlPrincipal extends javax.swing.JPanel {
             this.revalidate();
             this.repaint();
         });
-        
+
         Component[] canciones = crearItemsCanciones(cancionesdtos);
-        agregarSeccion("Canciones", canciones, () -> {
+        agregarCanciones("Canciones", canciones, () -> {
             System.out.println("Ver más canciones");
         });
 
         Component[] artistas = crearItemsArtistas(artistasdtos);
-        agregarSeccion("Artistas", artistas, () -> {
+        agregarArtistas("Artistas", artistas, () -> {
             System.out.println("Ver más artistas");
         });
+
     }
-    
+
+    private void filtrarContenido(String texto) {
+        
+        if (texto.equals("")) {
+            Component[] albumes = crearItemsAlbumes(this.albumesdtos);
+            this.albumes = albumes;
+            Component[] canciones = crearItemsCanciones(this.cancionesdtos);
+            this.canciones = canciones;
+            Component[] artistas = crearItemsArtistas(this.artistasdtos);
+            this.artistas = artistas;
+        } else {
+            Component[] albumes = crearItemsAlbumes(albumNegocio.buscarAlbumesPorNombre(texto));
+            this.albumes = albumes;
+            Component[] canciones = crearItemsCanciones(cancionNegocio.buscarPorNombre(texto));
+            this.canciones = canciones;
+            Component[] artistas = crearItemsArtistas(artistaNegocio.buscarPorNombre(texto));
+            this.artistas = artistas;
+        }
+    }
+
     private Component[] crearItemsAlbumes(List<AlbumDTO> elementos) {
         List<Component> comps = new ArrayList<>();
         for (AlbumDTO album : elementos) {
@@ -107,7 +148,7 @@ public class pnlPrincipal extends javax.swing.JPanel {
         }
         return comps.toArray(new Component[0]);
     }
-    
+
     private Component[] crearItemsCanciones(List<CancionDTO> elementos) {
         List<Component> comps = new ArrayList<>();
         for (CancionDTO cancion : elementos) {
@@ -130,8 +171,8 @@ public class pnlPrincipal extends javax.swing.JPanel {
         panelItem.setBackground(new Color(18, 25, 44));
         panelItem.setLayout(new BoxLayout(panelItem, BoxLayout.Y_AXIS));
         panelItem.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createMatteBorder(1, 1, 4, 4, new Color(0, 200, 200, 100)),
-            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+                BorderFactory.createMatteBorder(1, 1, 4, 4, new Color(0, 200, 200, 100)),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
         panelItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
@@ -182,7 +223,7 @@ public class pnlPrincipal extends javax.swing.JPanel {
 
         return panelItem;
     }
-    
+
     private Component crearElemento(CancionDTO cancion) {
         JPanel panelItem = crearPanelBase();
         JLabel lblImagen;
@@ -212,7 +253,7 @@ public class pnlPrincipal extends javax.swing.JPanel {
 
         return panelItem;
     }
-    
+
     private Component crearElemento(ArtistaDTO artista) {
         JPanel panelItem = crearPanelBase();
         JLabel lblImagen;
@@ -239,18 +280,17 @@ public class pnlPrincipal extends javax.swing.JPanel {
         panelItem.add(Box.createVerticalStrut(5));
         panelItem.add(lblNombre);
         panelItem.add(lblGenero);
-
         return panelItem;
     }
-    
+
     private JPanel crearPanelBase() {
         JPanel panelItem = new JPanel();
         panelItem.setOpaque(true);
         panelItem.setBackground(new Color(18, 25, 44));
         panelItem.setLayout(new BoxLayout(panelItem, BoxLayout.Y_AXIS));
         panelItem.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createMatteBorder(1, 1, 4, 4, new Color(0, 200, 200, 100)),
-            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+                BorderFactory.createMatteBorder(1, 1, 4, 4, new Color(0, 200, 200, 100)),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
         panelItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
@@ -277,7 +317,7 @@ public class pnlPrincipal extends javax.swing.JPanel {
         return panelItem;
     }
 
-    private void agregarSeccion(String titulo, Component[] elementos, Runnable verMasAccion) {
+    private void agregarAlbumes(String titulo, Component[] elementos, Runnable verMasAccion) {
         JPanel panelSeccion = new JPanel();
         panelSeccion.setOpaque(false);
         panelSeccion.setLayout(new BoxLayout(panelSeccion, BoxLayout.Y_AXIS));
@@ -292,7 +332,7 @@ public class pnlPrincipal extends javax.swing.JPanel {
         pnlHeader.add(lblTitulo, BorderLayout.WEST);
 
         JButton btnVerMas = new JButton("Ver más");
-        btnVerMas.setBackground(new Color(0,0,0,0));
+        btnVerMas.setBackground(new Color(0, 0, 0, 0));
         btnVerMas.setForeground(Color.WHITE);
         btnVerMas.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnVerMas.addActionListener(e -> verMasAccion.run());
@@ -305,22 +345,29 @@ public class pnlPrincipal extends javax.swing.JPanel {
 
         panelSeccion.add(panelItems);
         pnl_contenido.add(panelSeccion);
-
         int maxVisibles = 5;
         final int[] index = {0};
+        this.albumes = elementos;
 
         Runnable actualizarCarrusel = () -> {
             panelItems.removeAll();
             for (int i = 0; i < maxVisibles; i++) {
-                int idx = (index[0] + i) % elementos.length;
-                panelItems.add(elementos[idx]);
+                if (this.albumes.length > 0) {
+                    int idx = (index[0] + i) % this.albumes.length;
+
+                    panelItems.add(this.albumes[idx]);
+                }
+
             }
             panelItems.revalidate();
             panelItems.repaint();
+
         };
 
         Timer timer = new Timer(1800, e -> {
-            index[0] = (index[0] + 1) % elementos.length;
+            if (this.albumes.length > 0) {
+                index[0] = (index[0] + 1) % this.albumes.length;
+            }
             actualizarCarrusel.run();
         });
         timer.start();
@@ -328,8 +375,126 @@ public class pnlPrincipal extends javax.swing.JPanel {
         actualizarCarrusel.run();
     }
 
+    private void agregarArtistas(String titulo, Component[] elementos, Runnable verMasAccion) {
+        JPanel panelSeccion = new JPanel();
+        panelSeccion.setOpaque(false);
+        panelSeccion.setLayout(new BoxLayout(panelSeccion, BoxLayout.Y_AXIS));
+        panelSeccion.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JLabel lblTitulo = new JLabel(titulo);
+        lblTitulo.setForeground(Color.WHITE);
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 16));
+
+        JPanel pnlHeader = new JPanel(new BorderLayout());
+        pnlHeader.setOpaque(false);
+        pnlHeader.add(lblTitulo, BorderLayout.WEST);
+
+        JButton btnVerMas = new JButton("Ver más");
+        btnVerMas.setBackground(new Color(0, 0, 0, 0));
+        btnVerMas.setForeground(Color.WHITE);
+        btnVerMas.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnVerMas.addActionListener(e -> verMasAccion.run());
+        pnlHeader.add(btnVerMas, BorderLayout.EAST);
+
+        panelSeccion.add(pnlHeader);
+
+        JPanel panelItems = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        panelItems.setOpaque(false);
+
+        panelSeccion.add(panelItems);
+        pnl_contenido.add(panelSeccion);
+        int maxVisibles = 5;
+        final int[] index = {0};
+        this.artistas = elementos;
+        Runnable actualizarCarrusel = () -> {
+            panelItems.removeAll();
+            for (int i = 0; i < maxVisibles; i++) {
+                if (this.artistas.length > 0) {
+                    int idx = (index[0] + i) % this.artistas.length;
+
+                    panelItems.add(this.artistas[idx]);
+                }
+
+            }
+            panelItems.revalidate();
+            panelItems.repaint();
+
+        };
+
+        Timer timer = new Timer(1800, e -> {
+            if (this.artistas.length > 0) {
+                index[0] = (index[0] + 1) % this.artistas.length;
+            }
+            actualizarCarrusel.run();
+
+        });
+        timer.start();
+
+        actualizarCarrusel.run();
+    }
+
+    private void agregarCanciones(String titulo, Component[] elementos, Runnable verMasAccion) {
+        JPanel panelSeccion = new JPanel();
+        panelSeccion.setOpaque(false);
+        panelSeccion.setLayout(new BoxLayout(panelSeccion, BoxLayout.Y_AXIS));
+        panelSeccion.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JLabel lblTitulo = new JLabel(titulo);
+        lblTitulo.setForeground(Color.WHITE);
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 16));
+
+        JPanel pnlHeader = new JPanel(new BorderLayout());
+        pnlHeader.setOpaque(false);
+        pnlHeader.add(lblTitulo, BorderLayout.WEST);
+
+        JButton btnVerMas = new JButton("Ver más");
+        btnVerMas.setBackground(new Color(0, 0, 0, 0));
+        btnVerMas.setForeground(Color.WHITE);
+        btnVerMas.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnVerMas.addActionListener(e -> verMasAccion.run());
+        pnlHeader.add(btnVerMas, BorderLayout.EAST);
+
+        panelSeccion.add(pnlHeader);
+
+        JPanel panelItems = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        panelItems.setOpaque(false);
+
+        panelSeccion.add(panelItems);
+        pnl_contenido.add(panelSeccion);
+        int maxVisibles = 5;
+        final int[] index = {0};
+        this.canciones = elementos;
+        Runnable actualizarCarrusel = () -> {
+            panelItems.removeAll();
+            for (int i = 0; i < maxVisibles; i++) {
+                if (this.canciones.length > 0) {
+                    int idx = (index[0] + i) % this.canciones.length;
+
+                    panelItems.add(this.canciones[idx]);
+                }
+
+            }
+            panelItems.revalidate();
+            panelItems.repaint();
+
+        };
+
+        Timer timer = new Timer(1800, e -> {
+            if (this.canciones.length > 0) {
+                index[0] = (index[0] + 1) % this.canciones.length;
+            }
+            actualizarCarrusel.run();
+
+        });
+        timer.start();
+
+        actualizarCarrusel.run();
+    }
+
     /**
-     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
