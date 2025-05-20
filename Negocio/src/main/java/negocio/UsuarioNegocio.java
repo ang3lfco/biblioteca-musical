@@ -80,9 +80,9 @@ public class UsuarioNegocio implements IUsuarioNegocio {
     
     @Override
     public UsuarioDTO.FavoritosDTO getFavoritos(String idUsuario){
+        System.out.println("sadadsa");
         Usuario.Favoritos Favoritos = usuarioDAO.getFavoritos(new ObjectId(idUsuario));
         UsuarioDTO.FavoritosDTO FavoritosDTO = new UsuarioDTO.FavoritosDTO();
-        
         if (Favoritos == null) {
             return null;
         }

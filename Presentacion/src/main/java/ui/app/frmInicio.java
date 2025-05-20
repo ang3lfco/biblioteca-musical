@@ -189,7 +189,7 @@ public class frmInicio extends javax.swing.JFrame {
         opcion_nodeseados.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 aplicarGradient(opcion_nodeseados, lblOpcion_nodeseados);
-                pnlNoDeseados nodeseados = new pnlNoDeseados(usuarioNegocio, generoNegocio);
+                pnlNoDeseados nodeseados = new pnlNoDeseados(usuarioNegocio, generoNegocio,albumNegocio,cancionNegocio,artistaNegocio);
                 pnlSeccion.removeAll();
                 pnlSeccion.setLayout(new BorderLayout());
                 pnlSeccion.add(nodeseados, BorderLayout.CENTER);
