@@ -107,4 +107,36 @@ public class UsuarioDAO implements IUsuarioDAO{
         UpdateResult resultado = coleccion.updateOne(filtro, actualizacion);
         return resultado.getModifiedCount() > 0;
     }
+    
+    @Override
+    public boolean eliminarFavoritoCancion(ObjectId idUsuario, ObjectId idCancion){
+        Bson filtro = Filters.eq("_id", idUsuario);
+        Bson actualizacion = Updates.pull("favoritos.cancionesId", idCancion);
+        UpdateResult resultado = coleccion.updateOne(filtro, actualizacion);
+        return resultado.getModifiedCount() > 0;
+    }
+
+    @Override
+    public boolean eliminarFavoritoAlbum(ObjectId idUsuario, ObjectId idAlbum){
+        Bson filtro = Filters.eq("_id", idUsuario);
+        Bson actualizacion = Updates.pull("favoritos.albumesId", idAlbum);
+        UpdateResult resultado = coleccion.updateOne(filtro, actualizacion);
+        return resultado.getModifiedCount() > 0;
+    }
+
+    @Override
+    public boolean eliminarFavoritoArtista(ObjectId idUsuario, ObjectId idArtista){
+        Bson filtro = Filters.eq("_id", idUsuario);
+        Bson actualizacion = Updates.pull("favoritos.artistasId", idArtista);
+        UpdateResult resultado = coleccion.updateOne(filtro, actualizacion);
+        return resultado.getModifiedCount() > 0;
+    }
+
+    @Override
+    public boolean eliminarGeneroNoDeseado(ObjectId idUsuario, ObjectId idGenero){
+        Bson filtro = Filters.eq("_id", idUsuario);
+        Bson actualizacion = Updates.pull("noDeseados.generos", idGenero);
+        UpdateResult resultado = coleccion.updateOne(filtro, actualizacion);
+        return resultado.getModifiedCount() > 0;
+    }
 }

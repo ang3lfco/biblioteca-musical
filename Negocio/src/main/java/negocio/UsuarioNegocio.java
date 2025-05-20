@@ -145,4 +145,24 @@ public class UsuarioNegocio implements IUsuarioNegocio {
     public boolean insertarGeneroNoDeseado(String idUsuario, String idGenero){
         return usuarioDAO.insertarGeneroNoDeseado(new ObjectId(idUsuario), new ObjectId(idGenero));
     }
+    
+    @Override
+    public boolean eliminarFavoritoCancion(String idUsuario, String idCancion) {
+        return usuarioDAO.eliminarFavoritoCancion(new ObjectId(idUsuario), new ObjectId(idCancion));
+    }
+
+    @Override
+    public boolean eliminarFavoritoAlbum(String idUsuario, String idAlbum) {
+        return usuarioDAO.eliminarFavoritoAlbum(new ObjectId(idUsuario), new ObjectId(idAlbum));
+    }
+
+    @Override
+    public boolean eliminarFavoritoArtista(String idUsuario, String idArtista) {
+        return usuarioDAO.eliminarFavoritoArtista(new ObjectId(idUsuario), new ObjectId(idArtista));
+    }
+
+    @Override
+    public boolean eliminarGeneroNoDeseado(String idUsuario, String idGenero) {
+        return usuarioDAO.eliminarGeneroNoDeseado(new ObjectId(idUsuario), new ObjectId(idGenero));
+    }
 }

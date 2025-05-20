@@ -137,7 +137,7 @@ public class pnlFavoritos extends javax.swing.JPanel {
     private void cargarFavoritos() {
         jPanel1_favoritos.setLayout(new BoxLayout(jPanel1_favoritos, BoxLayout.Y_AXIS));
         jPanel1_favoritos.removeAll();
-
+        
         // --- Sección de Álbumes Favoritos ---
         for (AlbumDTO album : albumesdtos) {
             JPanel panel = new JPanel(new BorderLayout());
@@ -195,7 +195,13 @@ public class pnlFavoritos extends javax.swing.JPanel {
                     SwingWorker<Void, Void> worker = new SwingWorker<>() {
                         @Override
                         protected Void doInBackground() throws Exception {
-                            albumesdtos.remove(album);
+                            usuarioNegocio.eliminarFavoritoAlbum(Sesion.getUsuarioActual().getId(), album.getId());
+                            favoritos = usuarioNegocio.getFavoritos(Sesion.getUsuarioActual().getId());
+                            albumesdtos = new ArrayList<>();
+                            for (String s : favoritos.getAlbumesId()) {
+                                albumesdtos.add(albumNegocio.buscarAlbumPorId(s));
+                            }
+//                            albumesdtos.remove(album);
                             return null;
                         }
                         @Override
@@ -270,7 +276,12 @@ public class pnlFavoritos extends javax.swing.JPanel {
                     SwingWorker<Void, Void> worker = new SwingWorker<>() {
                         @Override
                         protected Void doInBackground() throws Exception {
-                            cancionesdtos.remove(cancion);
+                            usuarioNegocio.eliminarFavoritoCancion(Sesion.getUsuarioActual().getId(), cancion.getId());
+                            favoritos = usuarioNegocio.getFavoritos(Sesion.getUsuarioActual().getId());
+                            cancionesdtos = new ArrayList<>();
+                            for (String s : favoritos.getCancionesId()) {
+                                cancionesdtos.add(cancionNegocio.obtenerCancionPorId(s));
+                            }
                             return null;
                         }
                         @Override
@@ -345,7 +356,12 @@ public class pnlFavoritos extends javax.swing.JPanel {
                     SwingWorker<Void, Void> worker = new SwingWorker<>() {
                         @Override
                         protected Void doInBackground() throws Exception {
-                            artistasdtos.remove(artista);
+                            usuarioNegocio.eliminarFavoritoArtista(Sesion.getUsuarioActual().getId(), artista.getId());
+                            favoritos = usuarioNegocio.getFavoritos(Sesion.getUsuarioActual().getId());
+                            artistasdtos = new ArrayList<>();
+                            for (String s : favoritos.getArtistasId()) {
+                                artistasdtos.add(artistaNegocio.buscarArtistaporId(s));
+                            }
                             return null;
                         }
                         @Override

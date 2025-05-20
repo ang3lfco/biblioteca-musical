@@ -20,4 +20,8 @@ public interface IUsuarioNegocio {
     boolean insertarFavoritoAlbum(String idUsuario, String idAlbum);
     boolean insertarFavoritoCancion(String idUsuario, String idCancion);
     boolean insertarGeneroNoDeseado(String idUsuario, String idGenero);
+    boolean eliminarFavoritoCancion(String idUsuario, String idCancion);
+    boolean eliminarFavoritoAlbum(String idUsuario, String idAlbum);
+    boolean eliminarFavoritoArtista(String idUsuario, String idArtista);
+    boolean eliminarGeneroNoDeseado(String idUsuario, String idGenero);
 }

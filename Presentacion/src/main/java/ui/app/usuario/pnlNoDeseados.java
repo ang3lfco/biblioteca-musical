@@ -222,12 +222,19 @@ public class pnlNoDeseados extends javax.swing.JPanel {
                     SwingWorker<Void, Void> worker = new SwingWorker<>() {
                         @Override
                         protected Void doInBackground() throws Exception {
-                            generosNoDeseados.remove(genero);
+                            usuarioNegocio.eliminarGeneroNoDeseado(Sesion.getUsuarioActual().getId(), genero.getId());
+                            generosNoDeseadosIds = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
+                            generosNoDeseados = new ArrayList<>();
+                            for (String s : generosNoDeseadosIds.getGeneros()) {
+                                generosNoDeseados.add(generoNegocio.buscarGeneroPorId(s));
+                            }
+//                            generosNoDeseados.remove(genero);
                             return null;
                         }
                         @Override
                         protected void done() {
                             cargarNoDeseados();
+                            cargarCombo();
                             dialogoCargando.dispose();
                         }
                     };

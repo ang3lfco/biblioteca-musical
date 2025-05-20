@@ -21,4 +21,8 @@ public interface IUsuarioDAO {
     boolean insertarFavoritoAlbum(ObjectId idUsuario, ObjectId idAlbum);
     boolean insertarFavoritoCancion(ObjectId idUsuario, ObjectId idCancion);
     boolean insertarGeneroNoDeseado(ObjectId idUsuario, ObjectId idGenero);
+    boolean eliminarFavoritoCancion(ObjectId idUsuario, ObjectId idCancion);
+    boolean eliminarFavoritoAlbum(ObjectId idUsuario, ObjectId idAlbum);
+    boolean eliminarFavoritoArtista(ObjectId idUsuario, ObjectId idArtista);
+    boolean eliminarGeneroNoDeseado(ObjectId idUsuario, ObjectId idGenero);
 }
