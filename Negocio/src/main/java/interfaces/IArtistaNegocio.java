@@ -26,4 +26,6 @@ public interface IArtistaNegocio {
     ArtistaDTO buscarArtistaporId(String id);
     
     void insertarArtistas(List<ArtistaDTO> artista);
+    
+    
 }

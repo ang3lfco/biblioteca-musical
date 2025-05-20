@@ -26,5 +26,7 @@ public interface ICancionDAO {
     CancionDTO getCancionPorId(String id);
 
     void insertarCanciones(List<Cancion> canciones);
+    
+    List<CancionDTO> buscarPorArtistaId(String artistaId);
 
 }

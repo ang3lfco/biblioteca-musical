@@ -7,6 +7,7 @@ package daos;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
+import static com.mongodb.client.model.Filters.eq;
 import conexion.MongoConexion;
 import dtos.CancionDTO;
 import entidades.Cancion;
@@ -15,6 +16,7 @@ import java.util.List;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import interfaces.ICancionDAO;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -28,7 +30,7 @@ public class CancionDAO implements ICancionDAO {
         this.coleccion = MongoConexion.getCancionCollection();
 
     }
-    
+
     @Override
     public CancionDTO getCancionPorId(String id) {
         try {
@@ -56,7 +58,7 @@ public class CancionDAO implements ICancionDAO {
     @Override
     public List<CancionDTO> buscarPorNombre(String nombre) {
         List<CancionDTO> lista = new ArrayList<>();
-        Bson filtro = Filters.eq("nombre", nombre);
+        Bson filtro = Filters.regex("nombre", Pattern.compile(nombre, Pattern.CASE_INSENSITIVE));
         try (MongoCursor<Cancion> cursor = coleccion.find(filtro).iterator()) {
             while (cursor.hasNext()) {
                 Cancion cancion = cursor.next();
@@ -89,6 +91,7 @@ public class CancionDAO implements ICancionDAO {
         return canciones;
     }
 
+    @Override
     public void insertarCanciones(List<Cancion> canciones) {
         if (canciones != null && !canciones.isEmpty()) {
             coleccion.insertMany(canciones);
@@ -96,6 +99,18 @@ public class CancionDAO implements ICancionDAO {
         } else {
             System.out.println("No se inserto ningun cancion.");
         }
+    }
+
+    @Override
+    public List<CancionDTO> buscarPorArtistaId(String artistaId) {
+        List<CancionDTO> lista = new ArrayList<>();
+        try (MongoCursor<Cancion> cursor = coleccion.find(eq("artistaId", artistaId)).iterator()) {
+            while (cursor.hasNext()) {
+                Cancion cancion = cursor.next();
+                lista.add(convertirADTO(cancion));
+            }
+        }
+        return lista;
     }
 
     private CancionDTO convertirADTO(Cancion cancion) {

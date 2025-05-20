@@ -71,6 +71,10 @@ public class CancionNegocio implements ICancionNegocio {
         }
         return resultados;
     }
+    @Override
+    public List<CancionDTO> buscarPorArtistaId(String artistaId){
+        return cancionesDAO.buscarPorArtistaId(artistaId);
+    }
 
     private Cancion convertirAEntidad(CancionDTO cancionDTO) {
         if (cancionDTO == null) {

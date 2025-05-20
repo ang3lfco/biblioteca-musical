@@ -30,5 +30,7 @@ public interface ICancionNegocio {
     CancionDTO obtenerCancionPorId(String id);
 
     void insertarCanciones(List<CancionDTO> cancion);
+    
+    List<CancionDTO> buscarPorArtistaId(String artistaId);
 
 }

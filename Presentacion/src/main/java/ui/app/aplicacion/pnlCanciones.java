@@ -35,6 +35,11 @@ import ui.componentes.CustomRoundedTextField;
 import ui.componentes.RoundedComboBox;
 import interfaces.ICancionNegocio;
 import interfaces.IUsuarioNegocio;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import ui.sesion.Sesion;
 
 /**
@@ -42,10 +47,12 @@ import ui.sesion.Sesion;
  * @author ang3lfco
  */
 public class pnlCanciones extends javax.swing.JPanel {
+
     private ICancionNegocio cancionesNegocio;
     private IArtistaNegocio artistaNegocio;
     private IAlbumNegocio albumNegocio;
     private IUsuarioNegocio usuarioNegocio;
+
     /**
      * Creates new form pnlCanciones
      */
@@ -64,13 +71,35 @@ public class pnlCanciones extends javax.swing.JPanel {
         jScrollPane_canciones.setViewportBorder(null);
         jScrollPane_canciones.setBorder(null);
         cargarCanciones();
-        
+
         CustomRoundedTextField buscador = new CustomRoundedTextField("Buscar canciónes...", "/iconos/buscar.png");
         pnlBuscador.setLayout(new BorderLayout());
         pnlBuscador.setPreferredSize(new Dimension(330, 40));
-        pnlBuscador.setBackground(new Color(0,0,0,0));
+        pnlBuscador.setBackground(new Color(0, 0, 0, 0));
         pnlBuscador.add(buscador, BorderLayout.CENTER);
-        
+
+        buscador.getDocument().addDocumentListener(new DocumentListener() {
+            private void actualizar() {
+                String texto = buscador.getText().trim().toLowerCase();
+                buscarYCargarCanciones(texto);
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                actualizar();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                actualizar();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                actualizar();
+            }
+        });
+
         lblFlechaArriba.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -89,19 +118,9 @@ public class pnlCanciones extends javax.swing.JPanel {
             }
         });
     }
-    
+
     private void cargarCanciones() {
         List<CancionDTO> canciones = cancionesNegocio.obtenerTodas();
-//        canciones.add(new Cancion("Amapola", "Album", "Amapola.png"));
-//        canciones.add(new Cancion("Madonna", "Album", "Madonna.png"));
-//        canciones.add(new Cancion("Rosones", "Album", "Rosones.png"));
-//        canciones.add(new Cancion("Si no quieres no", "Album", "Si no quieres no.png"));
-//        canciones.add(new Cancion("Te queria ver", "Album", "Te queria ver.png"));
-//        canciones.add(new Cancion("Triple lavada", "Album", "Triple lavada.png"));
-//        canciones.add(new Cancion("Corazon de piedra", "Album", "Corazon de piedra.png"));
-//        canciones.add(new Cancion("El hijo mayor", "Album", "El hijo mayor.png"));
-//        canciones.add(new Cancion("El gavilan", "Album", "El gavilan.png"));
-        
 
         panelCanciones.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
 
@@ -114,11 +133,33 @@ public class pnlCanciones extends javax.swing.JPanel {
         panelCanciones.repaint();
     }
 
+    private void buscarYCargarCanciones(String texto) {
+        List<CancionDTO> resultado;
+
+        if (texto.isEmpty()) {
+            resultado = cancionesNegocio.obtenerTodas();
+        } else {
+            resultado = cancionesNegocio.buscarPorNombre(texto);
+        }
+
+        // Limpiar el panel y mostrar los resultados
+        panelCanciones.removeAll();
+        panelCanciones.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
+
+        for (CancionDTO cancion : resultado) {
+            JPanel panel = crearPanelCancion(cancion);
+            panelCanciones.add(panel);
+        }
+
+        panelCanciones.revalidate();
+        panelCanciones.repaint();
+    }
+
     private JPanel crearPanelCancion(CancionDTO cancion) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        panel.setBackground(new java.awt.Color(23,30,49));
-        
+        panel.setBackground(new java.awt.Color(23, 30, 49));
+
         int imagenAncho = 0;
         try {
             ImageIcon icono = new ImageIcon(getClass().getResource("/portadas/" + "cancion.png"));
@@ -134,22 +175,22 @@ public class pnlCanciones extends javax.swing.JPanel {
         JPanel contenedorTexto = new JPanel();
         contenedorTexto.setLayout(new BoxLayout(contenedorTexto, BoxLayout.Y_AXIS));
         contenedorTexto.setOpaque(false);
-        
+
         JLabel lblNombre = new JLabel(cancion.getNombre(), SwingConstants.CENTER);
         lblNombre.setForeground(Color.WHITE);
         lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblNombre.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblNombre.setPreferredSize(new Dimension(imagenAncho, lblNombre.getPreferredSize().height));
         lblNombre.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
-        
+
         String albumDeCancionId = cancion.getAlbumId();
         AlbumDTO albumDeCancion = albumNegocio.buscarAlbumPorId(albumDeCancionId);
         String artista = "";
         StringBuilder artistasLabel = new StringBuilder();
         List<String> artistasTotalesIds = albumDeCancion.getArtistasId();
-        for(String s : artistasTotalesIds){
+        for (String s : artistasTotalesIds) {
             artistasLabel.append(artistaNegocio.buscarArtistaporId(s).getNombre());
-            if(artistasTotalesIds.size() > 1){
+            if (artistasTotalesIds.size() > 1) {
                 artistasLabel.append(", ");
             }
         }
@@ -165,18 +206,18 @@ public class pnlCanciones extends javax.swing.JPanel {
         contenedorTexto.add(lblArtista);
 
         panel.add(contenedorTexto, BorderLayout.SOUTH);
-        
+
         JPopupMenu popupMenu = new JPopupMenu();
         popupMenu.setBackground(new Color(30, 30, 30));
         popupMenu.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100)));
         popupMenu.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        
+
         JMenuItem itemFavoritos = new JMenuItem("Agregar a Favoritos");
         JMenuItem itemNoDeseados = new JMenuItem("Agregar a No Deseados");
-        
-        personalizarMenuItem(itemFavoritos, new Color(18,25,44), Color.WHITE);
-        personalizarMenuItem(itemNoDeseados, new Color(18,25,44), Color.WHITE);
-        
+
+        personalizarMenuItem(itemFavoritos, new Color(18, 25, 44), Color.WHITE);
+        personalizarMenuItem(itemNoDeseados, new Color(18, 25, 44), Color.WHITE);
+
         popupMenu.add(itemFavoritos);
         popupMenu.add(itemNoDeseados);
 
@@ -187,14 +228,13 @@ public class pnlCanciones extends javax.swing.JPanel {
         itemNoDeseados.addActionListener(e -> {
             JOptionPane.showMessageDialog(null, "Función no disponible.");
         });
-        
-        panel.addMouseListener(new MouseAdapter(){
+
+        panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON3){
+                if (e.getButton() == MouseEvent.BUTTON3) {
                     popupMenu.show(panel, e.getX(), e.getY());
-                } 
-                else if (e.getButton() == MouseEvent.BUTTON1){
+                } else if (e.getButton() == MouseEvent.BUTTON1) {
                     //Click Derecho
                     JOptionPane.showMessageDialog(null, "Mostrar Informacion.");
                 }
@@ -203,7 +243,7 @@ public class pnlCanciones extends javax.swing.JPanel {
 
         return panel;
     }
-    
+
     private void personalizarMenuItem(JMenuItem item, Color background, Color foreground) {
         item.setOpaque(true);
         item.setBackground(background);
@@ -211,8 +251,7 @@ public class pnlCanciones extends javax.swing.JPanel {
         item.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         item.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
     }
-    
-    
+
     private void iniciarFlechasScroll() {
         lblFlechaArriba.setText("↑");
         lblFlechaArriba.setFont(new Font("Segoe UI", Font.BOLD, 30));
@@ -242,7 +281,9 @@ public class pnlCanciones extends javax.swing.JPanel {
     }
 
     /**
-     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -321,41 +362,42 @@ public class pnlCanciones extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-public static class Cancion {
-    private String nombre;
-    private String album;
-    private String portada;
+    public static class Cancion {
 
-    public Cancion(String nombre, String album, String portada) {
-        this.nombre = nombre;
-        this.album = album;
-        this.portada = portada;
-    }
+        private String nombre;
+        private String album;
+        private String portada;
 
-    public String getNombre() {
-        return nombre;
-    }
+        public Cancion(String nombre, String album, String portada) {
+            this.nombre = nombre;
+            this.album = album;
+            this.portada = portada;
+        }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+        public String getNombre() {
+            return nombre;
+        }
 
-    public String getAlbum() {
-        return album;
-    }
+        public void setNombre(String nombre) {
+            this.nombre = nombre;
+        }
 
-    public void setAlbum(String album) {
-        this.album = album;
-    }
-    
-    public String getPortada() {
-        return portada;
-    }
+        public String getAlbum() {
+            return album;
+        }
 
-    public void setPortada(String portada) {
-        this.portada = portada;
+        public void setAlbum(String album) {
+            this.album = album;
+        }
+
+        public String getPortada() {
+            return portada;
+        }
+
+        public void setPortada(String portada) {
+            this.portada = portada;
+        }
     }
-}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane_canciones;
     private javax.swing.JLabel lblFlechaAbajo;
@@ -364,5 +406,3 @@ public static class Cancion {
     private javax.swing.JPanel pnlBuscador;
     // End of variables declaration//GEN-END:variables
 }
-
-

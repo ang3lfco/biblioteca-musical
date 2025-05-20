@@ -6,12 +6,14 @@ package ui.componentes;
 
 import javax.swing.*;
 import java.awt.*;
+import javax.swing.text.Document;
 
 /**
  *
  * @author ang3lfco
  */
 public class CustomRoundedTextField extends JPanel {
+
     private JTextField textField;
     private final JLabel iconLabel;
     private final String placeholder;
@@ -30,7 +32,7 @@ public class CustomRoundedTextField extends JPanel {
         textField.setBorder(BorderFactory.createEmptyBorder(5, -23, 5, 10));
         textField.setFont(new Font("SansSerif", Font.PLAIN, 14));
         textField.setOpaque(false);
-        textField.setBackground(new Color(0,0,0,0));
+        textField.setBackground(new Color(0, 0, 0, 0));
         textField.setForeground(textColor);
 
         textField.setText(placeholder);
@@ -76,18 +78,24 @@ public class CustomRoundedTextField extends JPanel {
     }
 
     public String getText() {
-        return textField.getText();
+        String text = textField.getText();
+    return text.equals(placeholder) ? "" : text;
+        
+    }
+
+    public Document getDocument() {
+        return textField.getDocument();
     }
 
     public void setText(String text) {
         textField.setText(text);
     }
-    
+
     public void setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
         repaint();
     }
-    
+
     public void setTextColor(Color textColor) {
         this.textColor = textColor;
         textField.setForeground(textColor);
