@@ -5,6 +5,7 @@
 package ui.app.forms;
 
 import dtos.UsuarioDTO;
+import encriptador.Encriptador;
 import interfaces.IUsuarioNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -127,7 +128,6 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
             nombre.setText(Sesion.getUsuarioActual().getNombre());
             apellido.setText(Sesion.getUsuarioActual().getApellido());
             usuario.setText(Sesion.getUsuarioActual().getUsuario());
-            contrasena.setText("contrasena");
             correo.setText(Sesion.getUsuarioActual().getCorreo());
             btnAccion = new CustomRoundedButton("Editar", new Color(180, 30, 90));
                 btnAccion.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -137,7 +137,7 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
                             nombre.getText(),
                             apellido.getText(),
                             usuario.getText(),
-                            null,
+                            contrasena.getText(),
                             correo.getText(),
                             "/iconos/usuario.png",
                             null,
