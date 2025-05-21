@@ -832,7 +832,7 @@ public class InsercionMasiva {
                 "Las Dos Caras", 
                 LocalDate.of(2017, Month.SEPTEMBER, 8),
                 List.of(generos.get(24).getId()), 
-                "/portadas/mcdavoalbum.png", 
+                "/portadas/lasdoscaras.png", 
                 List.of(artistas.get(35).getId())
         );
         albumes.add(davoAlbum);
