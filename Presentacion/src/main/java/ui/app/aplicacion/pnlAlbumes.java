@@ -94,6 +94,13 @@ public class pnlAlbumes extends javax.swing.JPanel {
         pnl_TipoBusqueda.setLayout(new BorderLayout());
         pnl_TipoBusqueda.add(combo, BorderLayout.CENTER);
 
+        combo.addActionListener(e -> {
+            String texto = buscador.getText().trim().toLowerCase();
+            if (!texto.isEmpty()) {
+                realizarBusqueda(texto);
+            }
+        });
+
         buscador = new CustomRoundedTextField("Buscar álbumes...", "/iconos/buscar.png");
         pnlBuscador.setLayout(new BorderLayout());
         pnlBuscador.setPreferredSize(new Dimension(330, 40));
@@ -102,6 +109,7 @@ public class pnlAlbumes extends javax.swing.JPanel {
 
         JTextField campoBusqueda = buscador.getTextField();
         campoBusqueda.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+
             @Override
             public void insertUpdate(DocumentEvent e) {
                 String texto = buscador.getText().trim().toLowerCase();
@@ -126,44 +134,6 @@ public class pnlAlbumes extends javax.swing.JPanel {
                 }
             }
 
-            private void realizarBusqueda(String texto) {
-                String criterio = combo.getSelectedItem().toString();
-
-                NoDeseadosDTO usuario = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
-                List<String> generosNoDeseados = (usuario != null) ? usuario.getGeneros() : new ArrayList<>();
-
-                List<AlbumDTO> resultados = albumes.stream().filter(album -> {
-                    if (album.getGenerosId().stream().anyMatch(generosNoDeseados::contains)) {
-                        return false;
-                    }
-
-                    switch (criterio) {
-                        case "Nombre":
-                            return album.getNombre().toLowerCase().contains(texto.toLowerCase());
-                        case "Género":
-                            try {
-                                List<String> generosId = album.getGenerosId();
-                                for (String idGenero : generosId) {
-                                    String nombreGenero = generoNegocio.buscarGeneroPorId(idGenero).getNombre();
-                                    if (nombreGenero.toLowerCase().contains(texto.toLowerCase())) {
-                                        return true;
-                                    }
-                                }
-                            } catch (Exception e) {
-                                return false;
-                            }
-                            return false;
-                        case "Fecha de Lanzamiento":
-                            return album.getLanzamiento() != null
-                                    && album.getLanzamiento().toString().toLowerCase().contains(texto.toLowerCase());
-                        default:
-                            return false;
-                    }
-                }).toList();
-
-                mostrarResultados(resultados);
-            }
-
         });
 
         lblFlechaArriba.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -183,6 +153,75 @@ public class pnlAlbumes extends javax.swing.JPanel {
                 barra.setValue(barra.getValue() + paso);
             }
         });
+    }
+
+    private void realizarBusqueda(String textoOriginal) {
+        String criterio = combo.getSelectedItem().toString();
+        final String textoFinal = textoOriginal.toLowerCase().trim();
+
+        NoDeseadosDTO usuario = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
+        List<String> generosNoDeseados = (usuario != null) ? usuario.getGeneros() : new ArrayList<>();
+
+        List<AlbumDTO> resultados = albumes.stream()
+                .filter(album -> {
+                    if (album.getGenerosId().stream().anyMatch(generosNoDeseados::contains)) {
+                        return false;
+                    }
+
+                    if ("Fecha de Lanzamiento".equals(criterio)) {
+                        boolean coincideNombre = album.getNombre().toLowerCase().contains(textoFinal);
+                        boolean coincideGenero = false;
+                        try {
+                            for (String idGenero : album.getGenerosId()) {
+                                String nombreGenero = generoNegocio.buscarGeneroPorId(idGenero).getNombre();
+                                if (nombreGenero.toLowerCase().contains(textoFinal)) {
+                                    coincideGenero = true;
+                                    break;
+                                }
+                            }
+                        } catch (Exception ex) {
+                            return false;
+                        }
+                        return coincideNombre || coincideGenero;
+                    }
+
+                    switch (criterio) {
+                        case "Nombre":
+                            return album.getNombre().toLowerCase().contains(textoFinal);
+                        case "Género":
+                            try {
+                                for (String idGenero : album.getGenerosId()) {
+                                    String nombreGenero = generoNegocio.buscarGeneroPorId(idGenero).getNombre();
+                                    if (nombreGenero.toLowerCase().contains(textoFinal)) {
+                                        return true;
+                                    }
+                                }
+                            } catch (Exception ex) {
+                                return false;
+                            }
+                            return false;
+                        default:
+                            return false;
+                    }
+                })
+                .sorted((a1, a2) -> {
+                    if ("Fecha de Lanzamiento".equals(criterio)) {
+                        if (a1.getLanzamiento() == null && a2.getLanzamiento() == null) {
+                            return 0;
+                        }
+                        if (a1.getLanzamiento() == null) {
+                            return 1;
+                        }
+                        if (a2.getLanzamiento() == null) {
+                            return -1;
+                        }
+                        return a2.getLanzamiento().compareTo(a1.getLanzamiento());
+                    }
+                    return 0;
+                })
+                .toList();
+
+        mostrarResultados(resultados);
     }
 
     private void cargarAlbumes() {
