@@ -15,6 +15,8 @@ import entidades.Genero;
 import interfaces.IGeneroDAO;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 /**
@@ -64,6 +66,19 @@ public class GeneroDAO implements IGeneroDAO{
         } else {
             System.out.println("No se inserto ningun genero.");
         }
+    }
+    
+        @Override
+    public List<GeneroDTO> buscarPorNombre(String nombre) {
+        List<GeneroDTO> lista = new ArrayList<>();
+        Bson filtro = Filters.regex("nombre", Pattern.compile(Pattern.quote(nombre), Pattern.CASE_INSENSITIVE));
+        try (MongoCursor<Genero> cursor = coleccion.find(filtro).iterator()) {
+            while (cursor.hasNext()) {
+                Genero genero = cursor.next();
+                lista.add(convertirADTO(genero));
+            }
+        }
+        return lista;
     }
     
     private GeneroDTO convertirADTO(Genero genero) {

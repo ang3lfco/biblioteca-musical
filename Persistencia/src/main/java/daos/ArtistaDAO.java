@@ -34,6 +34,7 @@ public class ArtistaDAO implements IArtistaDAO {
         this.generoCollection = MongoConexion.getGeneroCollection();
     }
 
+    @Override
     public List<ArtistaDTO> obtenerTodos() {
         List<ArtistaDTO> lista = new ArrayList<>();
         try (MongoCursor<Artista> cursor = coleccion.find().iterator()) {
@@ -45,6 +46,7 @@ public class ArtistaDAO implements IArtistaDAO {
         return lista;
     }
 
+    @Override
     public List<ArtistaDTO> buscarPorNombre(String nombre) {
         List<ArtistaDTO> lista = new ArrayList<>();
         Bson filtro = Filters.regex("nombre", Pattern.compile(Pattern.quote(nombre), Pattern.CASE_INSENSITIVE));
@@ -57,6 +59,7 @@ public class ArtistaDAO implements IArtistaDAO {
         return lista;
     }
 
+    @Override
     public List<ObjectId> buscarArtistasPorNombre(String nombre) {
         List<ObjectId> ids = new ArrayList<>();
         Bson filtro = Filters.eq("nombre", nombre);
@@ -66,6 +69,7 @@ public class ArtistaDAO implements IArtistaDAO {
         return ids;
     }
 
+    @Override
     public List<ObjectId> buscarArtistasPorGenero(String nombreGenero) {
         List<ObjectId> ids = new ArrayList<>();
         Genero genero = generoCollection.find(Filters.eq("nombre", nombreGenero)).first();
@@ -81,6 +85,7 @@ public class ArtistaDAO implements IArtistaDAO {
         return ids;
     }
 
+    @Override
     public Artista buscarArtistaporId(String id) {
         try {
             ObjectId objectId = new ObjectId(id);
@@ -90,6 +95,7 @@ public class ArtistaDAO implements IArtistaDAO {
         }
     }
 
+    @Override
     public void insertarArtistas(List<Artista> artistas) {
         if (artistas != null && !artistas.isEmpty()) {
             coleccion.insertMany(artistas);
@@ -97,6 +103,38 @@ public class ArtistaDAO implements IArtistaDAO {
         } else {
             System.out.println("No se inserto ningun artista.");
         }
+    }
+
+    @Override
+    public List<ArtistaDTO> buscarPorGeneroId(String generoid) {
+        List<ArtistaDTO> lista = new ArrayList<>();
+        Bson filtro;
+
+        if ("sin-generos".equals(generoid)) {
+            // Buscar canciones donde artistasId sea null o esté vacío
+            filtro = Filters.or(
+                    Filters.eq("generosId", null),
+                    Filters.size("generosId", 0)
+            );
+        } else {
+            ObjectId idObj;
+            try {
+                idObj = new ObjectId(generoid);
+            } catch (IllegalArgumentException e) {
+                return lista;
+            }
+
+            filtro = Filters.eq("generosId", idObj);
+        }
+
+        try (MongoCursor<Artista> cursor = coleccion.find(filtro).iterator()) {
+            while (cursor.hasNext()) {
+                Artista genero = cursor.next();
+                lista.add(convertirADTO(genero));
+            }
+        }
+
+        return lista;
     }
 
     private ArtistaDTO convertirADTO(Artista artista) {

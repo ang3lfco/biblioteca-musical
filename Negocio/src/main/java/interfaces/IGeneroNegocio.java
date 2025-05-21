@@ -16,4 +16,5 @@ public interface IGeneroNegocio {
     GeneroDTO buscarGeneroPorId(String id);
     void guardarGenero(String genero);
     void insertarGeneros(List<GeneroDTO> generos);
+    List<GeneroDTO> buscarPorNombre(String nombre);
 }

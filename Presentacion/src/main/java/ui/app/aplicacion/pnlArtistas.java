@@ -6,6 +6,7 @@ package ui.app.aplicacion;
 
 import dtos.AlbumDTO;
 import dtos.ArtistaDTO;
+import dtos.GeneroDTO;
 import dtos.UsuarioDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -36,7 +37,12 @@ import interfaces.IGeneroNegocio;
 import interfaces.IPersonaNegocio;
 import interfaces.IUsuarioNegocio;
 import java.util.ArrayList;
+<<<<<<< HEAD
 import javax.swing.SwingUtilities;
+=======
+import java.util.HashSet;
+import java.util.Set;
+>>>>>>> e861c9880ce74b8530fa656e94b632493bcf85eb
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import ui.sesion.Sesion;
@@ -99,7 +105,7 @@ public class pnlArtistas extends javax.swing.JPanel {
          buscador.getDocument().addDocumentListener(new DocumentListener() {
             private void actualizar() {
                 String texto = buscador.getText().trim().toLowerCase();
-                buscarYCargarAlbums(texto);
+                buscarYCargarArtistas(texto);
             }
 
             @Override
@@ -167,26 +173,57 @@ public class pnlArtistas extends javax.swing.JPanel {
         panelArtistas.repaint();
     }
     
-    private void buscarYCargarAlbums(String texto) {
-    List<ArtistaDTO> resultado;
+private void buscarYCargarArtistas(String texto) {
+    List<ArtistaDTO> resultado = new ArrayList<>();
+    Set<String> idsArtistasAgregadas = new HashSet<>();
 
     if (texto.isEmpty()) {
+
         resultado = artistaNegocio.obtenerTodos();
+        for (ArtistaDTO c : resultado) {
+            idsArtistasAgregadas.add(c.getId());
+        }
     } else {
-        resultado = artistaNegocio.buscarPorNombre(texto);
+
+        List<ArtistaDTO> artistasPorNombre = artistaNegocio.buscarPorNombre(texto);
+        for (ArtistaDTO c : artistasPorNombre) {
+            resultado.add(c);
+            idsArtistasAgregadas.add(c.getId());
+        }
+
+        List<GeneroDTO> generos = generoNegocio.buscarPorNombre(texto);
+        for (GeneroDTO genero : generos) {
+            List<ArtistaDTO> artistasDelGenero = artistaNegocio.buscarPorGeneroId(genero.getId());
+            for (ArtistaDTO c : artistasDelGenero) {
+                if (!idsArtistasAgregadas.contains(c.getId())) {
+                    resultado.add(c);
+                    idsArtistasAgregadas.add(c.getId());
+                }
+            }
+        }
     }
 
+        List<ArtistaDTO> artistasSinGenero = artistaNegocio.buscarPorGeneroId("sin-artista");
+        for (ArtistaDTO c : artistasSinGenero) {
+            if (!idsArtistasAgregadas.contains(c.getId())
+                    && c.getNombre().toLowerCase().contains(texto.toLowerCase())) {
+                resultado.add(c);
+                idsArtistasAgregadas.add(c.getId());
+            }
+        }
+        
+            // Mostrar resultados en el panel
     panelArtistas.removeAll();
     panelArtistas.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
 
-    for (ArtistaDTO cancion : resultado) {
-        JPanel panel = crearPanelArtista(cancion);
+    for (ArtistaDTO artista : resultado) {
+        JPanel panel = crearPanelArtista(artista);
         panelArtistas.add(panel);
     }
 
     panelArtistas.revalidate();
     panelArtistas.repaint();
-}
+    }
 
     private JPanel crearPanelArtista(ArtistaDTO artista) {
         JPanel panel = new JPanel();

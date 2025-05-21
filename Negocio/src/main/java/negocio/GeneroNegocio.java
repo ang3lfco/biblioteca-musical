@@ -48,6 +48,10 @@ public class GeneroNegocio implements IGeneroNegocio {
         List<Genero> lista = this.ConvertirListaDTOAListaEntidad(generos);
         this.generoDAO.insertarGeneros(lista);
     }
+    @Override
+    public List<GeneroDTO> buscarPorNombre(String nombre){
+        return generoDAO.buscarPorNombre(nombre);
+    }
 
     private GeneroDTO convertirADTO(Genero genero) {
         if (genero == null) {

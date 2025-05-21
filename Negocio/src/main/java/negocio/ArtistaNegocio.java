@@ -64,6 +64,10 @@ public class ArtistaNegocio implements IArtistaNegocio {
         List<Artista> lista = this.ConvertirListaDTOAListaEntidad(artista);
         this.artistasDAO.insertarArtistas(lista);
     }
+    @Override
+    public List<ArtistaDTO> buscarPorGeneroId(String generoid){
+        return artistasDAO.buscarPorGeneroId(generoid);
+    }
 
     private List<Artista> ConvertirListaDTOAListaEntidad(List<ArtistaDTO> ArtistaDTO) {
         List<Artista> resultados = new ArrayList<>();

@@ -17,4 +17,5 @@ public interface IGeneroDAO {
     Genero buscarGeneroPorId(Object id);
     void guardarGenero(String genero);
     void insertarGeneros(List<Genero> generos);
+    List<GeneroDTO> buscarPorNombre(String nombre);
 }

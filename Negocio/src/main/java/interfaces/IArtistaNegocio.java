@@ -27,5 +27,7 @@ public interface IArtistaNegocio {
     
     void insertarArtistas(List<ArtistaDTO> artista);
     
+    List<ArtistaDTO> buscarPorGeneroId(String generoid);
+    
     
 }
