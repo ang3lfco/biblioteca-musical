@@ -154,9 +154,7 @@ public class pnlPrincipal extends javax.swing.JPanel {
         List<AlbumDTO> lista = new ArrayList<>();
 
         Set<String> idsAlbumesAgregadas = new HashSet<>();
-        System.out.println("1");
         NoDeseadosDTO usuario = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
-        System.out.println("2");
         
         Component[] albumes;
         if (texto.equals("")) {
@@ -183,13 +181,11 @@ public class pnlPrincipal extends javax.swing.JPanel {
             }
 
             if (usuario != null) {
-                System.out.println("3");
                 List<String> generosNoDeseados = usuario.getGeneros();
                 lista = lista.stream()
                         .filter(album -> album.getGenerosId().stream().noneMatch(generosNoDeseados::contains))
                         .collect(Collectors.toList());
             }
-            System.out.println("4");
             albumes = crearItemsAlbumes(lista);
         }
         this.albumes = albumes;
