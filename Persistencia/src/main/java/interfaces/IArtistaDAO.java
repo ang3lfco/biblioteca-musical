@@ -26,5 +26,7 @@ public interface IArtistaDAO {
     Artista buscarArtistaporId(String id);
 
     void insertarArtistas(List<Artista> artistas);
+    
+    List<ArtistaDTO> buscarPorGeneroId(String generoid);
 
 }
