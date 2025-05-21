@@ -33,4 +33,5 @@ public interface ICancionNegocio {
     
     List<CancionDTO> buscarPorArtistaId(String artistaId);
 
+    List<CancionDTO> buscarAlbumesPorGenero(String genero);
 }

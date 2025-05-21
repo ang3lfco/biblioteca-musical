@@ -104,6 +104,10 @@ public class AlbumNegocio implements IAlbumNegocio {
         albumDAO.insertarAlbumes(albumes);
     }
 
+    @Override
+    public List<AlbumDTO> buscarPorArtistaId(String artistaId){
+        return albumDAO.buscarPorArtistaId(artistaId);
+    }
     private List<AlbumDTO> ConvertirListaEntidadAListaDTO(List<Album> listaDAO) {
         List<AlbumDTO> resultados = new ArrayList<>();
 

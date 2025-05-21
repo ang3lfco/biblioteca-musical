@@ -4,6 +4,7 @@
  */
 package interfaces;
 
+import dtos.AlbumDTO;
 import entidades.Album;
 import java.time.LocalDate;
 import java.util.List;
@@ -22,4 +23,5 @@ public interface IAlbumDAO {
     Album buscarAlbumPorId(Object id);
     List<Album> obtenerTodos();
     void insertarAlbumes(List<Album> albumes);
+    List<AlbumDTO> buscarPorArtistaId(String artistaId);
 }

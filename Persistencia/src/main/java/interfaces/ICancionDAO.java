@@ -28,5 +28,8 @@ public interface ICancionDAO {
     void insertarCanciones(List<Cancion> canciones);
     
     List<CancionDTO> buscarPorArtistaId(String artistaId);
+    
+    List<Cancion> buscarCancionesPorGenero(String genero);
+    
 
 }

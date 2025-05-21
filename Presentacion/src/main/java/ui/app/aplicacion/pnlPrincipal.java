@@ -7,6 +7,8 @@ package ui.app.aplicacion;
 import dtos.AlbumDTO;
 import dtos.ArtistaDTO;
 import dtos.CancionDTO;
+import dtos.GeneroDTO;
+import dtos.UsuarioDTO.NoDeseadosDTO;
 import interfaces.IAlbumNegocio;
 import interfaces.IArtistaNegocio;
 import interfaces.ICancionNegocio;
@@ -23,8 +25,11 @@ import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -39,6 +44,7 @@ import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import ui.componentes.CustomRoundedTextField;
+import ui.sesion.Sesion;
 
 /**
  *
@@ -69,7 +75,7 @@ public class pnlPrincipal extends javax.swing.JPanel {
         this.albumNegocio = albumNegocio;
         this.artistaNegocio = artistaNegocio;
         this.generoNegocio = generoNegocio;
-        
+
         SwingUtilities.invokeLater(() -> pnlPrincipal.this.getRootPane().requestFocusInWindow());
 
         artistasdtos = artistaNegocio.obtenerTodos();
@@ -93,21 +99,21 @@ public class pnlPrincipal extends javax.swing.JPanel {
         buscador.getTextField().getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e) {
                 String texto = buscador.getText().trim().toLowerCase();
-                if(!texto.isEmpty()){
+                if (!texto.isEmpty()) {
                     filtrarContenido(texto);
                 }
             }
 
             public void removeUpdate(DocumentEvent e) {
                 String texto = buscador.getText().trim().toLowerCase();
-                if(!texto.isEmpty()){
+                if (!texto.isEmpty()) {
                     filtrarContenido(texto);
                 }
             }
 
             public void changedUpdate(DocumentEvent e) {
                 String texto = buscador.getText().trim().toLowerCase();
-                if(!texto.isEmpty()){
+                if (!texto.isEmpty()) {
                     filtrarContenido(texto);
                 }
             }
@@ -138,21 +144,130 @@ public class pnlPrincipal extends javax.swing.JPanel {
     }
 
     private void filtrarContenido(String texto) {
+        filtrarAlbumes(texto);
+        filtrarCanciones(texto);
+        filtrarArtistas(texto);
+    }
+
+    private void filtrarAlbumes(String texto) {
+        List<AlbumDTO> xgenero = new ArrayList<>();
+        List<AlbumDTO> lista = new ArrayList<>();
+
+        Set<String> idsAlbumesAgregadas = new HashSet<>();
+        NoDeseadosDTO usuario = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
+        List<String> generosNoDeseados = usuario.getGeneros();
+
+        Component[] albumes;
         if (texto.equals("")) {
-            Component[] albumes = crearItemsAlbumes(this.albumesdtos);
-            this.albumes = albumes;
-            Component[] canciones = crearItemsCanciones(this.cancionesdtos);
-            this.canciones = canciones;
-            Component[] artistas = crearItemsArtistas(this.artistasdtos);
-            this.artistas = artistas;
+            albumes = crearItemsAlbumes(this.albumesdtos);
         } else {
-            Component[] albumes = crearItemsAlbumes(albumNegocio.buscarAlbumesPorNombre(texto));
-            this.albumes = albumes;
-            Component[] canciones = crearItemsCanciones(cancionNegocio.buscarPorNombre(texto));
-            this.canciones = canciones;
-            Component[] artistas = crearItemsArtistas(artistaNegocio.buscarPorNombre(texto));
-            this.artistas = artistas;
+            lista = albumNegocio.buscarAlbumesPorNombre(texto);
+            xgenero = albumNegocio.buscarAlbumesPorGenero(texto);
+
+            for (AlbumDTO album : xgenero) {
+                if (!lista.contains(album)) {
+                    lista.add(album);
+                }
+            }
+
+            List<ArtistaDTO> artistas = artistaNegocio.buscarPorNombre(texto);
+            for (ArtistaDTO artista : artistas) {
+                List<AlbumDTO> albumDelArtistas = albumNegocio.buscarPorArtistaId(artista.getId());
+                for (AlbumDTO c : albumDelArtistas) {
+                    if (!idsAlbumesAgregadas.contains(c.getId())) {
+                        lista.add(c);
+                        idsAlbumesAgregadas.add(c.getId());
+                    }
+                }
+            }
+
+            lista = lista.stream()
+                    .filter(album -> album.getGenerosId().stream().noneMatch(generosNoDeseados::contains))
+                    .collect(Collectors.toList());
+            
+            albumes = crearItemsAlbumes(lista);
         }
+        this.albumes = albumes;
+    }
+
+    private void filtrarCanciones(String texto) {
+        List<CancionDTO> xgenero = new ArrayList<>();
+        List<CancionDTO> lista = new ArrayList<>();
+        Set<String> idsCancionesAgregadas = new HashSet<>();
+        NoDeseadosDTO usuario = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
+        List<String> generosNoDeseados = usuario.getGeneros();
+        Component[] canciones;
+        if (texto.equals("")) {
+            canciones = crearItemsCanciones(this.cancionesdtos);
+        } else {
+            lista = cancionNegocio.buscarPorNombre(texto);
+            xgenero = cancionNegocio.buscarAlbumesPorGenero(texto);
+
+            for (CancionDTO album : xgenero) {
+                if (!lista.contains(album)) {
+                    lista.add(album);
+                }
+            }
+
+            List<ArtistaDTO> artistas = artistaNegocio.buscarPorNombre(texto);
+            for (ArtistaDTO artista : artistas) {
+                List<CancionDTO> cancionesDelArtista = cancionNegocio.buscarPorArtistaId(artista.getId());
+                for (CancionDTO c : cancionesDelArtista) {
+                    if (!idsCancionesAgregadas.contains(c.getId())) {
+                        lista.add(c);
+                        idsCancionesAgregadas.add(c.getId());
+                    }
+                }
+            }
+            
+            lista = lista.stream()
+                    .filter(cancion -> cancion.getGenerosId().stream().noneMatch(generosNoDeseados::contains))
+                    .collect(Collectors.toList());
+            
+            canciones = crearItemsCanciones(lista);
+        }
+        this.canciones = canciones;
+    }
+
+    private void filtrarArtistas(String texto) {
+        Component[] artistas;
+        List<ArtistaDTO> resultado = new ArrayList<>();
+        Set<String> idsArtistasAgregadas = new HashSet<>();
+        
+        NoDeseadosDTO usuario = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
+        List<String> generosNoDeseados = usuario.getGeneros();
+        
+        if (texto.isEmpty()) {
+
+            resultado = artistaNegocio.obtenerTodos();
+            for (ArtistaDTO c : resultado) {
+                idsArtistasAgregadas.add(c.getId());
+            }
+        } else {
+
+            List<ArtistaDTO> artistasPorNombre = artistaNegocio.buscarPorNombre(texto);
+            for (ArtistaDTO c : artistasPorNombre) {
+                resultado.add(c);
+                idsArtistasAgregadas.add(c.getId());
+            }
+
+            List<GeneroDTO> generos = generoNegocio.buscarPorNombre(texto);
+            for (GeneroDTO genero : generos) {
+                List<ArtistaDTO> artistasDelGenero = artistaNegocio.buscarPorGeneroId(genero.getId());
+                for (ArtistaDTO c : artistasDelGenero) {
+                    if (!idsArtistasAgregadas.contains(c.getId())) {
+                        resultado.add(c);
+                        idsArtistasAgregadas.add(c.getId());
+                    }
+                }
+            }
+        }
+        resultado = resultado.stream()
+                    .filter(artista -> artista.getGenerosId().stream().noneMatch(generosNoDeseados::contains))
+                    .collect(Collectors.toList());
+        
+        artistas = crearItemsArtistas(resultado);
+        this.artistas = artistas;
     }
 
     private Component[] crearItemsAlbumes(List<AlbumDTO> elementos) {

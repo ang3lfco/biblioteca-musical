@@ -8,6 +8,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import conexion.MongoConexion;
+import dtos.AlbumDTO;
 import entidades.Album;
 import entidades.Genero;
 import entidades.Usuario;
@@ -153,14 +154,80 @@ public class AlbumDAO implements IAlbumDAO{
         }
     }
     
-    private ObjectId buscarIdGeneroPorNombre(String nombre){
+    @Override
+    public List<AlbumDTO> buscarPorArtistaId(String artistaId) {
+        MongoCollection<Album> coleccion;
+
+        coleccion = MongoConexion.getAlbumCollection();
+        List<AlbumDTO> lista = new ArrayList<>();
+        Bson filtro;
+
+        if ("sin-artista".equals(artistaId)) {
+            // Buscar albumes donde artistasId sea null o esté vacío
+            filtro = Filters.or(
+                    Filters.eq("artistasId", null),
+                    Filters.size("artistasId", 0)
+            );
+        } else {
+            ObjectId idObj;
+            try {
+                idObj = new ObjectId(artistaId);
+            } catch (IllegalArgumentException e) {
+                return lista; 
+            }
+
+            filtro = Filters.eq("artistasId", idObj);
+        }
+
+        try (MongoCursor<Album> cursor = coleccion.find(filtro).iterator()) {
+            while (cursor.hasNext()) {
+                Album album = cursor.next();
+                lista.add(convertirADTO(album));
+            }
+        }
+
+        return lista;
+    }
+    
+    private List<ObjectId> buscarIdGeneroPorNombre(String nombre){
         MongoCollection<Genero> generosCollection = MongoConexion.getGeneroCollection();
         
-        Genero genero = generosCollection.find(Filters.regex("nombre", "^" + Pattern.quote(nombre) + "$", "i")).first();
-        if (genero == null) {
-            return new ObjectId();
-        }
+        List<ObjectId> resultados = new ArrayList<>();
         
-        return genero.getId();
+        try (MongoCursor<Genero> cursor = generosCollection.find(Filters.regex("nombre","^" + Pattern.quote(nombre), "i")).iterator()) {
+            while (cursor.hasNext()) {
+                Genero generos = cursor.next();
+                resultados.add(generos.getId());
+            }
+        }
+        return resultados;
+    }
+    
+    private AlbumDTO convertirADTO(Album album) {
+        if (album == null) {
+            return null;
+        }
+
+        List<String> generos = new ArrayList<>();
+        for (ObjectId id : album.getGenerosId()) {
+            generos.add(id.toHexString());
+        }
+
+        List<String> artistas = new ArrayList<>();
+        for (ObjectId id : album.getArtistasId()) {
+            artistas.add(id.toHexString());
+        }
+
+        AlbumDTO dto = new AlbumDTO(
+                album.getId().toHexString(),
+                album.getNombre(),
+                album.getLanzamiento(),
+                generos,
+                album.getRutaImagen(),
+                artistas
+        );
+
+        return dto;
+
     }
 }

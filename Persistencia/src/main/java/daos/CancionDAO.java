@@ -10,7 +10,9 @@ import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.eq;
 import conexion.MongoConexion;
 import dtos.CancionDTO;
+import entidades.Album;
 import entidades.Cancion;
+import entidades.Genero;
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.conversions.Bson;
@@ -133,6 +135,39 @@ public class CancionDAO implements ICancionDAO {
         return lista;
     }
 
+    @Override
+    public List<Cancion> buscarCancionesPorGenero(String genero) {
+        List<Cancion> resultados = new ArrayList<>();
+
+        Bson filtro = Filters.and(
+                Filters.in("generosId", this.buscarIdGeneroPorNombre(genero))
+                
+        );
+
+        try (MongoCursor<Cancion> cursor = coleccion.find(filtro).iterator()) {
+            while (cursor.hasNext()) {
+                Cancion cancion = cursor.next();
+                resultados.add(cancion);
+            }
+        }
+        
+        return resultados;
+    }
+    
+    private List<ObjectId> buscarIdGeneroPorNombre(String nombre){
+        MongoCollection<Genero> generosCollection = MongoConexion.getGeneroCollection();
+        
+        List<ObjectId> resultados = new ArrayList<>();
+        
+        try (MongoCursor<Genero> cursor = generosCollection.find(Filters.regex("nombre","^" + Pattern.quote(nombre), "i")).iterator()) {
+            while (cursor.hasNext()) {
+                Genero generos = cursor.next();
+                resultados.add(generos.getId());
+            }
+        }
+        return resultados;
+    }
+    
     private CancionDTO convertirADTO(Cancion cancion) {
         if (cancion == null) {
             return null;

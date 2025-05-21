@@ -76,6 +76,17 @@ public class CancionNegocio implements ICancionNegocio {
         return cancionesDAO.buscarPorArtistaId(artistaId);
     }
 
+    @Override
+    public List<CancionDTO> buscarAlbumesPorGenero(String genero) {
+        List<CancionDTO> resultados = new ArrayList<>();
+        List<Cancion> dtos = cancionesDAO.buscarCancionesPorGenero(genero);
+
+        for (Cancion dto: dtos) {
+            resultados.add(convertirADTO(dto));
+        }
+
+        return resultados;
+    }
     private Cancion convertirAEntidad(CancionDTO cancionDTO) {
         if (cancionDTO == null) {
             return null;
@@ -100,5 +111,40 @@ public class CancionNegocio implements ICancionNegocio {
         );
 
         return entidad;
+    }
+    
+    private CancionDTO convertirADTO(Cancion cancion) {
+        if (cancion == null) {
+            return null;
+        }
+
+        List<String> generos = new ArrayList<>();
+        if (cancion.getGenerosId() != null) {
+            for (ObjectId id : cancion.getGenerosId()) {
+                generos.add(id.toHexString());
+            }
+        }
+
+        List<String> artistas = new ArrayList<>();
+        if (cancion.getArtistasId() != null) {
+            for (ObjectId id : cancion.getArtistasId()) {
+                artistas.add(id.toHexString());
+            }
+        }
+
+        String albumId = null;
+        if (cancion.getAlbumId() != null) {
+            albumId = cancion.getAlbumId().toHexString();
+        }
+
+        CancionDTO dto = new CancionDTO(
+                cancion.getId().toHexString(),
+                cancion.getNombre(),
+                albumId,
+                generos,
+                artistas
+        );
+
+        return dto;
     }
 }
