@@ -34,6 +34,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -68,6 +69,8 @@ public class pnlPrincipal extends javax.swing.JPanel {
         this.albumNegocio = albumNegocio;
         this.artistaNegocio = artistaNegocio;
         this.generoNegocio = generoNegocio;
+        
+        SwingUtilities.invokeLater(() -> pnlPrincipal.this.getRootPane().requestFocusInWindow());
 
         artistasdtos = artistaNegocio.obtenerTodos();
         albumesdtos = albumNegocio.obtenerTodos();
@@ -89,15 +92,24 @@ public class pnlPrincipal extends javax.swing.JPanel {
 
         buscador.getTextField().getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e) {
-                filtrarContenido(buscador.getText());
+                String texto = buscador.getText().trim();
+                if(!texto.isEmpty()){
+                    filtrarContenido(texto);
+                }
             }
 
             public void removeUpdate(DocumentEvent e) {
-                filtrarContenido(buscador.getText());
+                String texto = buscador.getText().trim();
+                if(!texto.isEmpty()){
+                    filtrarContenido(texto);
+                }
             }
 
             public void changedUpdate(DocumentEvent e) {
-                filtrarContenido(buscador.getText());
+                String texto = buscador.getText().trim();
+                if(!texto.isEmpty()){
+                    filtrarContenido(texto);
+                }
             }
         });
 
@@ -126,7 +138,6 @@ public class pnlPrincipal extends javax.swing.JPanel {
     }
 
     private void filtrarContenido(String texto) {
-        
         if (texto.equals("")) {
             Component[] albumes = crearItemsAlbumes(this.albumesdtos);
             this.albumes = albumes;

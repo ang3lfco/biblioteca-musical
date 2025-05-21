@@ -28,7 +28,6 @@ import ui.app.frmInicio;
 import ui.componentes.CustomRoundedButton;
 import ui.componentes.CustomRoundedPasswordField;
 import ui.componentes.CustomRoundedTextField;
-import ui.componentes.GradientPanel;
 import ui.componentes.RoundedPanel;
 import interfaces.IArtistaDAO;
 import interfaces.ICancionDAO;
@@ -38,6 +37,7 @@ import interfaces.IGeneroDAO;
 import interfaces.IGeneroNegocio;
 import interfaces.IPersonaDAO;
 import interfaces.IPersonaNegocio;
+import javax.swing.SwingUtilities;
 import negocio.GeneroNegocio;
 import negocio.PersonaNegocio;
 
@@ -112,6 +112,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
         });
 
         pnl_contenedor.setOpaque(false);
+        SwingUtilities.invokeLater(() -> frmInicioSesion.this.getRootPane().requestFocusInWindow());
         
         CustomRoundedTextField usuario = new CustomRoundedTextField("Usuario", "");
         usuario.setBackgroundColor(new Color(23,30,49));
@@ -129,7 +130,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
         pnl_contrasena.setBackground(new Color(0,0,0,0));
         pnl_contrasena.add(contrasena, BorderLayout.CENTER);
         
-        CustomRoundedButton iniciar = new CustomRoundedButton("Iniciar sesión ", new Color(180, 30, 90));
+        CustomRoundedButton iniciar = new CustomRoundedButton("Iniciar sesión ", new Color(30, 180, 180));
         iniciar.setTextColor(Color.WHITE);
         iniciar.setPreferredSize(new Dimension(308, 40));
         iniciar.setOpaque(false);
@@ -170,9 +171,6 @@ public class frmInicioSesion extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         pnl_iniciar = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
 
@@ -205,7 +203,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
         );
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/logo-login-Photoroom.png"))); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/image.png"))); // NOI18N
 
         pnl_iniciar.setBackground(new java.awt.Color(255, 255, 255));
         pnl_iniciar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -229,18 +227,10 @@ public class frmInicioSesion extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Olvidaste tu contraseña?");
 
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("o inicia sesion con");
-
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/google.png"))); // NOI18N
-
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/facebook.png"))); // NOI18N
-
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("No tienes una cuenta?");
 
-        jLabel7.setForeground(new java.awt.Color(180, 30, 90));
+        jLabel7.setForeground(new java.awt.Color(30, 180, 180));
         jLabel7.setText("Registrate aqui");
         jLabel7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel7.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -264,7 +254,6 @@ public class frmInicioSesion extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_contenedorLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(jLabel1))
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(pnl_usuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(pnl_contenedorLayout.createSequentialGroup()
                         .addGap(56, 56, 56)
@@ -273,12 +262,6 @@ public class frmInicioSesion extends javax.swing.JFrame {
                         .addComponent(jLabel7)
                         .addGap(0, 51, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_contenedorLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel6)
-                .addGap(133, 133, 133))
         );
         pnl_contenedorLayout.setVerticalGroup(
             pnl_contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -293,17 +276,11 @@ public class frmInicioSesion extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(26, 26, 26)
                 .addComponent(pnl_iniciar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnl_contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 127, Short.MAX_VALUE)
                 .addGroup(pnl_contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jLabel7))
-                .addGap(16, 16, 16))
+                .addGap(25, 25, 25))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -369,10 +346,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel pnl_contenedor;
     private javax.swing.JPanel pnl_contrasena;

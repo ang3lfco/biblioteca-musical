@@ -34,6 +34,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
 import ui.componentes.CustomRoundedTextField;
 import ui.componentes.RoundedComboBox;
 import ui.sesion.Sesion;
@@ -69,6 +71,8 @@ public class pnlAlbumes extends javax.swing.JPanel {
             generosNoDeseadosIds = new ArrayList<>();
         }
         
+        SwingUtilities.invokeLater(() -> pnlAlbumes.this.getRootPane().requestFocusInWindow());
+        
         iniciarFlechasScroll();
         jScrollPane_albumes.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane_albumes.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -96,22 +100,30 @@ public class pnlAlbumes extends javax.swing.JPanel {
         JTextField campoBusqueda = buscador.getTextField();
         campoBusqueda.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             @Override
-            public void insertUpdate(javax.swing.event.DocumentEvent e) {
-                realizarBusqueda();
+            public void insertUpdate(DocumentEvent e) {
+                String texto = buscador.getText().trim();
+                if(!texto.isEmpty()){
+                    realizarBusqueda(texto);
+                }
             }
 
             @Override
-            public void removeUpdate(javax.swing.event.DocumentEvent e) {
-                realizarBusqueda();
+            public void removeUpdate(DocumentEvent e) {
+                String texto = buscador.getText().trim();
+                if(!texto.isEmpty()){
+                    realizarBusqueda(texto);
+                }
             }
 
             @Override
-            public void changedUpdate(javax.swing.event.DocumentEvent e) {
-                realizarBusqueda();
+            public void changedUpdate(DocumentEvent e) {
+                String texto = buscador.getText().trim();
+                if(!texto.isEmpty()){
+                    realizarBusqueda(texto);
+                }
             }
 
-            private void realizarBusqueda() {
-                String texto = campoBusqueda.getText().toLowerCase();
+            private void realizarBusqueda(String texto) {
                 String criterio = combo.getSelectedItem().toString();
 
                 List<AlbumDTO> resultados = albumes.stream().filter(album -> {

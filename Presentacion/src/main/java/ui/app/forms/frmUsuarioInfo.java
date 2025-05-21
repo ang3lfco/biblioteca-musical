@@ -154,7 +154,7 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
             apellido.setText(Sesion.getUsuarioActual().getApellido());
             usuario.setText(Sesion.getUsuarioActual().getUsuario());
             correo.setText(Sesion.getUsuarioActual().getCorreo());
-            btnAccion = new CustomRoundedButton("Editar", new Color(180, 30, 90));
+            btnAccion = new CustomRoundedButton("Editar", new Color(30, 180, 180));
                 btnAccion.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     UsuarioDTO usuarioDTO = new UsuarioDTO(
@@ -175,7 +175,7 @@ public class frmUsuarioInfo extends javax.swing.JFrame {
             });
         }
         else if(operacion.equals("registrar")){
-            btnAccion = new CustomRoundedButton("Registrar", new Color(180, 30, 90));
+            btnAccion = new CustomRoundedButton("Registrar", new Color(30, 180, 180));
                 btnAccion.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     UsuarioDTO usuarioDTO = new UsuarioDTO(

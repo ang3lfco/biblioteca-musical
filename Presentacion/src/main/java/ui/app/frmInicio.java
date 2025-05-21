@@ -33,6 +33,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 import ui.sesion.Sesion;
 import ui.sesion.frmInicioSesion;
 
@@ -64,6 +65,8 @@ public class frmInicio extends javax.swing.JFrame {
         this.artistaNegocio = artistaNegocio;
         this.generoNegocio = generoNegocio;
         this.personaNegocio = personaNegocio;
+        
+        SwingUtilities.invokeLater(() -> frmInicio.this.getRootPane().requestFocusInWindow());
         
         String ruta = Sesion.getUsuarioActual().getRutaImagen();
         if (ruta != null && !ruta.isEmpty()) {

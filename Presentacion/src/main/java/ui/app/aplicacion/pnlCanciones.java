@@ -40,6 +40,7 @@ import interfaces.IUsuarioNegocio;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import ui.sesion.Sesion;
@@ -76,6 +77,8 @@ public class pnlCanciones extends javax.swing.JPanel {
         } else {
             generosNoDeseadosIds = new ArrayList<>();
         }
+        
+        SwingUtilities.invokeLater(() -> pnlCanciones.this.getRootPane().requestFocusInWindow());
         
         iniciarFlechasScroll();
         jScrollPane_canciones.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);

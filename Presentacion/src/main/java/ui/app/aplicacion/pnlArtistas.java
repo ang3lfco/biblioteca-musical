@@ -36,6 +36,7 @@ import interfaces.IGeneroNegocio;
 import interfaces.IPersonaNegocio;
 import interfaces.IUsuarioNegocio;
 import java.util.ArrayList;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import ui.sesion.Sesion;
@@ -69,6 +70,8 @@ public class pnlArtistas extends javax.swing.JPanel {
         } else {
             generosNoDeseadosIds = new ArrayList<>();
         }
+        
+        SwingUtilities.invokeLater(() -> pnlArtistas.this.getRootPane().requestFocusInWindow());
         
         iniciarFlechasScroll();
         jScrollPane_artistas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
