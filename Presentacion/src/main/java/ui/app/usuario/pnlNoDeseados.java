@@ -73,17 +73,26 @@ public class pnlNoDeseados extends javax.swing.JPanel {
         this.cancionNegocio = cancionNegocio;
         this.artistaNegocio = artistaNegocio;
         this.generosNoDeseadosIds = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
-        if (generosNoDeseadosIds == null || generosNoDeseadosIds.getGeneros() == null || generosNoDeseadosIds.getGeneros().isEmpty()) {
-             mostrarPanelVacio();
-             generosNoDeseadosIds = new UsuarioDTO.NoDeseadosDTO(new ArrayList<>());
-        }
-        else {
-            for (String s : generosNoDeseadosIds.getGeneros()) {
-                GeneroDTO genero = generoNegocio.buscarGeneroPorId(s);
-                if (genero != null) {
-                    generosNoDeseados.add(genero);
-                }
-            }
+        if (generosNoDeseadosIds == null) {
+            JOptionPane.showMessageDialog(null, "Sin no deseados.");
+            lblFlechaArriba.setText("");
+            lblFlechaAbajo.setText("");
+            JLabel lblMensaje = new JLabel("Aquí no hay nada");
+            lblMensaje.setForeground(Color.LIGHT_GRAY);
+            lblMensaje.setFont(new Font("Segoe UI", Font.ITALIC, 16));
+            lblMensaje.setHorizontalAlignment(SwingConstants.CENTER);
+            lblMensaje.setAlignmentX(CENTER_ALIGNMENT);
+
+            JPanel panelMensaje = new JPanel();
+            panelMensaje.setBackground(new Color(23, 30, 49));
+            panelMensaje.setLayout(new GridBagLayout());
+            panelMensaje.add(lblMensaje);
+
+            jPanel1_noDeseados.setLayout(new BorderLayout());
+            jPanel1_noDeseados.add(panelMensaje, BorderLayout.CENTER);
+            jPanel1_noDeseados.revalidate();
+            jPanel1_noDeseados.repaint();
+            generosNoDeseadosIds = new UsuarioDTO.NoDeseadosDTO(new ArrayList<>());
         }
 
         for (String s : generosNoDeseadosIds.getGeneros()) {
@@ -152,24 +161,6 @@ public class pnlNoDeseados extends javax.swing.JPanel {
                 barra.setValue(barra.getValue() + paso);
             }
         });
-    }
-    
-    private void mostrarPanelVacio() {
-        jPanel1_noDeseados.removeAll();
-        jPanel1_noDeseados.setLayout(new BorderLayout());
-
-        JLabel lblMensaje = new JLabel("Aquí no hay nada");
-        lblMensaje.setForeground(Color.LIGHT_GRAY);
-        lblMensaje.setFont(new Font("Segoe UI", Font.ITALIC, 16));
-        lblMensaje.setHorizontalAlignment(SwingConstants.CENTER);
-
-        JPanel panelMensaje = new JPanel(new GridBagLayout());
-        panelMensaje.setBackground(new Color(23, 30, 49));
-        panelMensaje.add(lblMensaje);
-
-        jPanel1_noDeseados.add(panelMensaje, BorderLayout.CENTER);
-        jPanel1_noDeseados.revalidate();
-        jPanel1_noDeseados.repaint();
     }
 
     private void cargarCombo() {
