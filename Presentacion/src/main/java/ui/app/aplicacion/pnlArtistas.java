@@ -8,6 +8,7 @@ import dtos.AlbumDTO;
 import dtos.ArtistaDTO;
 import dtos.GeneroDTO;
 import dtos.UsuarioDTO;
+import dtos.UsuarioDTO.NoDeseadosDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -42,6 +43,7 @@ import javax.swing.SwingUtilities;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -211,16 +213,25 @@ private void buscarYCargarArtistas(String texto) {
         }
     }
 
-        List<ArtistaDTO> artistasSinGenero = artistaNegocio.buscarPorGeneroId("sin-artista");
-        for (ArtistaDTO c : artistasSinGenero) {
-            if (!idsArtistasAgregadas.contains(c.getId())
-                    && c.getNombre().toLowerCase().contains(texto.toLowerCase())) {
-                resultado.add(c);
-                idsArtistasAgregadas.add(c.getId());
-            }
+    List<ArtistaDTO> artistasSinGenero = artistaNegocio.buscarPorGeneroId("sin-artista");
+    for (ArtistaDTO c : artistasSinGenero) {
+        if (!idsArtistasAgregadas.contains(c.getId())
+                && c.getNombre().toLowerCase().contains(texto.toLowerCase())) {
+            resultado.add(c);
+            idsArtistasAgregadas.add(c.getId());
         }
-        
-            // Mostrar resultados en el panel
+    }
+
+
+    NoDeseadosDTO usuario = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
+    if (usuario != null) {
+        List<String> generosNoDeseados = usuario.getGeneros();
+        resultado = resultado.stream()
+                .filter(artista -> artista.getGenerosId().stream().noneMatch(generosNoDeseados::contains))
+                .collect(Collectors.toList());
+    }
+
+
     panelArtistas.removeAll();
     panelArtistas.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
 
@@ -231,7 +242,8 @@ private void buscarYCargarArtistas(String texto) {
 
     panelArtistas.revalidate();
     panelArtistas.repaint();
-    }
+}
+
 
     private JPanel crearPanelArtista(ArtistaDTO artista) {
         JPanel panel = new JPanel();
