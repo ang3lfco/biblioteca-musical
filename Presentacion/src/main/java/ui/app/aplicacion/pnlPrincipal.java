@@ -154,9 +154,10 @@ public class pnlPrincipal extends javax.swing.JPanel {
         List<AlbumDTO> lista = new ArrayList<>();
 
         Set<String> idsAlbumesAgregadas = new HashSet<>();
+        System.out.println("1");
         NoDeseadosDTO usuario = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
-        List<String> generosNoDeseados = usuario.getGeneros();
-
+        System.out.println("2");
+        
         Component[] albumes;
         if (texto.equals("")) {
             albumes = crearItemsAlbumes(this.albumesdtos);
@@ -181,10 +182,14 @@ public class pnlPrincipal extends javax.swing.JPanel {
                 }
             }
 
-            lista = lista.stream()
-                    .filter(album -> album.getGenerosId().stream().noneMatch(generosNoDeseados::contains))
-                    .collect(Collectors.toList());
-            
+            if (usuario != null) {
+                System.out.println("3");
+                List<String> generosNoDeseados = usuario.getGeneros();
+                lista = lista.stream()
+                        .filter(album -> album.getGenerosId().stream().noneMatch(generosNoDeseados::contains))
+                        .collect(Collectors.toList());
+            }
+            System.out.println("4");
             albumes = crearItemsAlbumes(lista);
         }
         this.albumes = albumes;
@@ -195,7 +200,6 @@ public class pnlPrincipal extends javax.swing.JPanel {
         List<CancionDTO> lista = new ArrayList<>();
         Set<String> idsCancionesAgregadas = new HashSet<>();
         NoDeseadosDTO usuario = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
-        List<String> generosNoDeseados = usuario.getGeneros();
         Component[] canciones;
         if (texto.equals("")) {
             canciones = crearItemsCanciones(this.cancionesdtos);
@@ -219,11 +223,14 @@ public class pnlPrincipal extends javax.swing.JPanel {
                     }
                 }
             }
-            
-            lista = lista.stream()
-                    .filter(cancion -> cancion.getGenerosId().stream().noneMatch(generosNoDeseados::contains))
-                    .collect(Collectors.toList());
-            
+
+            if (usuario != null) {
+                List<String> generosNoDeseados = usuario.getGeneros();
+                lista = lista.stream()
+                        .filter(cancion -> cancion.getGenerosId().stream().noneMatch(generosNoDeseados::contains))
+                        .collect(Collectors.toList());
+            }
+
             canciones = crearItemsCanciones(lista);
         }
         this.canciones = canciones;
@@ -233,9 +240,8 @@ public class pnlPrincipal extends javax.swing.JPanel {
         Component[] artistas;
         List<ArtistaDTO> resultado = new ArrayList<>();
         Set<String> idsArtistasAgregadas = new HashSet<>();
-        
+
         NoDeseadosDTO usuario = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
-        List<String> generosNoDeseados = usuario.getGeneros();
         
         if (texto.isEmpty()) {
 
@@ -262,10 +268,13 @@ public class pnlPrincipal extends javax.swing.JPanel {
                 }
             }
         }
-        resultado = resultado.stream()
+
+        if (usuario != null) {
+            List<String> generosNoDeseados = usuario.getGeneros();
+            resultado = resultado.stream()
                     .filter(artista -> artista.getGenerosId().stream().noneMatch(generosNoDeseados::contains))
                     .collect(Collectors.toList());
-        
+        }
         artistas = crearItemsArtistas(resultado);
         this.artistas = artistas;
     }
