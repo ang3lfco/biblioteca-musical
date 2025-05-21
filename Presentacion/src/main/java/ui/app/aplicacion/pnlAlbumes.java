@@ -7,6 +7,7 @@ package ui.app.aplicacion;
 import dtos.AlbumDTO;
 import dtos.ArtistaDTO;
 import dtos.UsuarioDTO;
+import dtos.UsuarioDTO.NoDeseadosDTO;
 import interfaces.IAlbumNegocio;
 import interfaces.IArtistaNegocio;
 import interfaces.IGeneroNegocio;
@@ -45,6 +46,7 @@ import ui.sesion.Sesion;
  * @author ang3lfco
  */
 public class pnlAlbumes extends javax.swing.JPanel {
+
     private IAlbumNegocio albumNegocio;
     private IArtistaNegocio artistaNegocio;
     private IUsuarioNegocio usuarioNegocio;
@@ -54,6 +56,7 @@ public class pnlAlbumes extends javax.swing.JPanel {
     private List<AlbumDTO> albumes;
     RoundedComboBox<String> combo;
     CustomRoundedTextField buscador;
+
     /**
      * Creates new form pnlCanciones
      */
@@ -63,16 +66,16 @@ public class pnlAlbumes extends javax.swing.JPanel {
         this.artistaNegocio = artistaNegocio;
         this.usuarioNegocio = usuarioNegocio;
         this.generoNegocio = generoNegocio;
-        
+
         noDeseados = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
         if (noDeseados != null) {
             generosNoDeseadosIds = noDeseados.getGeneros();
         } else {
             generosNoDeseadosIds = new ArrayList<>();
         }
-        
+
         SwingUtilities.invokeLater(() -> pnlAlbumes.this.getRootPane().requestFocusInWindow());
-        
+
         iniciarFlechasScroll();
         jScrollPane_albumes.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane_albumes.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -81,28 +84,28 @@ public class pnlAlbumes extends javax.swing.JPanel {
 
         jScrollPane_albumes.setViewportBorder(null);
         jScrollPane_albumes.setBorder(null);
-        
+
         cargarAlbumes();
-        
-        String[] items = { "Nombre", "Género", "Fecha de Lanzamiento" };
+
+        String[] items = {"Nombre", "Género", "Fecha de Lanzamiento"};
         combo = new RoundedComboBox<>(items);
         combo.setPreferredSize(new Dimension(200, 40));
-        pnl_TipoBusqueda.setBackground(new Color(0,0,0,0));
+        pnl_TipoBusqueda.setBackground(new Color(0, 0, 0, 0));
         pnl_TipoBusqueda.setLayout(new BorderLayout());
         pnl_TipoBusqueda.add(combo, BorderLayout.CENTER);
-        
+
         buscador = new CustomRoundedTextField("Buscar álbumes...", "/iconos/buscar.png");
         pnlBuscador.setLayout(new BorderLayout());
         pnlBuscador.setPreferredSize(new Dimension(330, 40));
-        pnlBuscador.setBackground(new Color(0,0,0,0));
+        pnlBuscador.setBackground(new Color(0, 0, 0, 0));
         pnlBuscador.add(buscador, BorderLayout.CENTER);
-        
+
         JTextField campoBusqueda = buscador.getTextField();
         campoBusqueda.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 String texto = buscador.getText().trim().toLowerCase();
-                if(!texto.isEmpty()){
+                if (!texto.isEmpty()) {
                     realizarBusqueda(texto);
                 }
             }
@@ -110,7 +113,7 @@ public class pnlAlbumes extends javax.swing.JPanel {
             @Override
             public void removeUpdate(DocumentEvent e) {
                 String texto = buscador.getText().trim().toLowerCase();
-                if(!texto.isEmpty()){
+                if (!texto.isEmpty()) {
                     realizarBusqueda(texto);
                 }
             }
@@ -118,7 +121,7 @@ public class pnlAlbumes extends javax.swing.JPanel {
             @Override
             public void changedUpdate(DocumentEvent e) {
                 String texto = buscador.getText().trim().toLowerCase();
-                if(!texto.isEmpty()){
+                if (!texto.isEmpty()) {
                     realizarBusqueda(texto);
                 }
             }
@@ -126,16 +129,23 @@ public class pnlAlbumes extends javax.swing.JPanel {
             private void realizarBusqueda(String texto) {
                 String criterio = combo.getSelectedItem().toString();
 
+                NoDeseadosDTO usuario = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
+                List<String> generosNoDeseados = (usuario != null) ? usuario.getGeneros() : new ArrayList<>();
+
                 List<AlbumDTO> resultados = albumes.stream().filter(album -> {
+                    if (album.getGenerosId().stream().anyMatch(generosNoDeseados::contains)) {
+                        return false;
+                    }
+
                     switch (criterio) {
                         case "Nombre":
-                            return album.getNombre().toLowerCase().contains(texto);
+                            return album.getNombre().toLowerCase().contains(texto.toLowerCase());
                         case "Género":
                             try {
                                 List<String> generosId = album.getGenerosId();
                                 for (String idGenero : generosId) {
                                     String nombreGenero = generoNegocio.buscarGeneroPorId(idGenero).getNombre();
-                                    if (nombreGenero.toLowerCase().contains(texto)) {
+                                    if (nombreGenero.toLowerCase().contains(texto.toLowerCase())) {
                                         return true;
                                     }
                                 }
@@ -144,8 +154,8 @@ public class pnlAlbumes extends javax.swing.JPanel {
                             }
                             return false;
                         case "Fecha de Lanzamiento":
-                            return album.getLanzamiento()!= null &&
-                                   album.getLanzamiento().toString().toLowerCase().contains(texto);
+                            return album.getLanzamiento() != null
+                                    && album.getLanzamiento().toString().toLowerCase().contains(texto.toLowerCase());
                         default:
                             return false;
                     }
@@ -153,8 +163,9 @@ public class pnlAlbumes extends javax.swing.JPanel {
 
                 mostrarResultados(resultados);
             }
+
         });
-        
+
         lblFlechaArriba.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -173,17 +184,17 @@ public class pnlAlbumes extends javax.swing.JPanel {
             }
         });
     }
-    
+
     private void cargarAlbumes() {
         albumes = albumNegocio.obtenerTodos();
         panelAlbumes.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
-        
+
         List<AlbumDTO> albumesFiltrados = new ArrayList<>();
-        if(generosNoDeseadosIds != null){
+        if (generosNoDeseadosIds != null) {
             for (AlbumDTO album : albumes) {
                 boolean incluirAlbum = true;
                 List<String> generosAlbumActual = album.getGenerosId();
-                for (String idGenero : generosAlbumActual){
+                for (String idGenero : generosAlbumActual) {
                     if (generosNoDeseadosIds.contains(idGenero)) {
                         incluirAlbum = false;
                         break;
@@ -193,8 +204,7 @@ public class pnlAlbumes extends javax.swing.JPanel {
                     albumesFiltrados.add(album);
                 }
             }
-        }
-        else{
+        } else {
             albumesFiltrados = albumes;
         }
         panelAlbumes.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
@@ -207,7 +217,7 @@ public class pnlAlbumes extends javax.swing.JPanel {
         panelAlbumes.revalidate();
         panelAlbumes.repaint();
     }
-    
+
     private void mostrarResultados(List<AlbumDTO> resultados) {
         panelAlbumes.removeAll();
         for (AlbumDTO album : resultados) {
@@ -221,7 +231,7 @@ public class pnlAlbumes extends javax.swing.JPanel {
     private JPanel crearPanelAlbum(AlbumDTO album) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        panel.setBackground(new java.awt.Color(23,30,49));
+        panel.setBackground(new java.awt.Color(23, 30, 49));
 
         int imagenAncho = 0;
         try {
@@ -245,18 +255,18 @@ public class pnlAlbumes extends javax.swing.JPanel {
         lblNombre.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblNombre.setPreferredSize(new Dimension(imagenAncho, lblNombre.getPreferredSize().height));
         lblNombre.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
-        
+
         StringBuilder artistasLabel = new StringBuilder();
         List<String> artistasDelAlbum = album.getArtistasId();
-        for(String s : artistasDelAlbum){
+        for (String s : artistasDelAlbum) {
             ArtistaDTO adto = artistaNegocio.buscarArtistaporId(s);
             artistasLabel.append(adto.getNombre());
-            if(artistasDelAlbum.size() > 1){
+            if (artistasDelAlbum.size() > 1) {
                 artistasLabel.append(", ");
             }
         }
         String artistasTexto = artistasLabel.toString();
-        
+
         JLabel lblArtista = new JLabel(artistasTexto, SwingConstants.CENTER);
         lblArtista.setForeground(Color.LIGHT_GRAY);
         lblArtista.setFont(new Font("Segoe UI", Font.PLAIN, 12));
@@ -267,18 +277,18 @@ public class pnlAlbumes extends javax.swing.JPanel {
         contenedorTexto.add(lblArtista);
 
         panel.add(contenedorTexto, BorderLayout.SOUTH);
-        
+
         JPopupMenu popupMenu = new JPopupMenu();
         popupMenu.setBackground(new Color(30, 30, 30));
         popupMenu.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100)));
         popupMenu.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        
+
         JMenuItem itemFavoritos = new JMenuItem("Agregar a Favoritos");
         JMenuItem itemNoDeseados = new JMenuItem("Agregar a No Deseados");
-        
-        personalizarMenuItem(itemFavoritos, new Color(18,25,44), Color.WHITE);
-        personalizarMenuItem(itemNoDeseados, new Color(18,25,44), Color.WHITE);
-        
+
+        personalizarMenuItem(itemFavoritos, new Color(18, 25, 44), Color.WHITE);
+        personalizarMenuItem(itemNoDeseados, new Color(18, 25, 44), Color.WHITE);
+
         popupMenu.add(itemFavoritos);
         popupMenu.add(itemNoDeseados);
 
@@ -289,14 +299,13 @@ public class pnlAlbumes extends javax.swing.JPanel {
         itemNoDeseados.addActionListener(e -> {
             JOptionPane.showMessageDialog(null, "Función no disponible.");
         });
-        
-        panel.addMouseListener(new MouseAdapter(){
+
+        panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON3){
+                if (e.getButton() == MouseEvent.BUTTON3) {
                     popupMenu.show(panel, e.getX(), e.getY());
-                } 
-                else if (e.getButton() == MouseEvent.BUTTON1){
+                } else if (e.getButton() == MouseEvent.BUTTON1) {
                     //Click Derecho
                     JOptionPane.showMessageDialog(null, "Mostrar Informacion.");
                 }
@@ -305,7 +314,7 @@ public class pnlAlbumes extends javax.swing.JPanel {
 
         return panel;
     }
-    
+
     private void personalizarMenuItem(JMenuItem item, Color background, Color foreground) {
         item.setOpaque(true);
         item.setBackground(background);
@@ -313,8 +322,7 @@ public class pnlAlbumes extends javax.swing.JPanel {
         item.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         item.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
     }
-    
-    
+
     private void iniciarFlechasScroll() {
         lblFlechaArriba.setText("↑");
         lblFlechaArriba.setFont(new Font("Segoe UI", Font.BOLD, 30));
@@ -344,7 +352,9 @@ public class pnlAlbumes extends javax.swing.JPanel {
     }
 
     /**
-     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -447,5 +457,3 @@ public class pnlAlbumes extends javax.swing.JPanel {
     private javax.swing.JPanel pnl_TipoBusqueda;
     // End of variables declaration//GEN-END:variables
 }
-
-
