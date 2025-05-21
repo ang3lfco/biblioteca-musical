@@ -12,6 +12,6 @@ import java.util.List;
  * @author Oribiel
  */
 public interface IPersonaNegocio {
-    
-   void insertarPersonas(List<PersonaDTO> persona);
+    PersonaDTO getPersonaPorId(String id);
+    void insertarPersonas(List<PersonaDTO> persona);
 }

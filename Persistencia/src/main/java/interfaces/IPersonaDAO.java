@@ -12,6 +12,6 @@ import java.util.List;
  * @author Oribiel
  */
 public interface IPersonaDAO {
-    
+    Persona buscarPersonaporId(String id);
     void insertarPersonas(List<Persona> personas);
 }

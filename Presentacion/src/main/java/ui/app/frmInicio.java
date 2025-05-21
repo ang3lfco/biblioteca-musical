@@ -24,6 +24,7 @@ import ui.componentes.RoundedPanel;
 import interfaces.IArtistaNegocio;
 import interfaces.ICancionNegocio;
 import interfaces.IGeneroNegocio;
+import interfaces.IPersonaNegocio;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -49,10 +50,11 @@ public class frmInicio extends javax.swing.JFrame {
     private IArtistaNegocio artistaNegocio;
     private IGeneroNegocio generoNegocio;
     private String rutaDeImagen = "/iconos/usuario.png";
+    private IPersonaNegocio personaNegocio;
     /**
      * Creates new form frmInicio
      */
-    public frmInicio(IUsuarioNegocio usuarioNegocio, ICancionNegocio cancionNegocio, IAlbumNegocio albumNegocio, IArtistaNegocio artistaNegocio, IGeneroNegocio generoNegocio) {
+    public frmInicio(IUsuarioNegocio usuarioNegocio, ICancionNegocio cancionNegocio, IAlbumNegocio albumNegocio, IArtistaNegocio artistaNegocio, IGeneroNegocio generoNegocio, IPersonaNegocio personaNegocio) {
         setUndecorated(true);
         setBackground(new Color(0, 0, 0, 0));
         initComponents();
@@ -61,6 +63,7 @@ public class frmInicio extends javax.swing.JFrame {
         this.albumNegocio = albumNegocio;
         this.artistaNegocio = artistaNegocio;
         this.generoNegocio = generoNegocio;
+        this.personaNegocio = personaNegocio;
         
         String ruta = Sesion.getUsuarioActual().getRutaImagen();
         if (ruta != null && !ruta.isEmpty()) {
@@ -228,7 +231,7 @@ public class frmInicio extends javax.swing.JFrame {
         opcion_artistas.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 aplicarGradient(opcion_artistas, lblOpcion_artistas);
-                pnlArtistas artistas = new pnlArtistas(artistaNegocio, usuarioNegocio, generoNegocio);
+                pnlArtistas artistas = new pnlArtistas(artistaNegocio, usuarioNegocio, generoNegocio, personaNegocio);
                 pnlSeccion.removeAll();
                 pnlSeccion.setLayout(new BorderLayout());
                 pnlSeccion.add(artistas, BorderLayout.CENTER);

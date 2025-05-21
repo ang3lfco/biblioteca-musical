@@ -23,6 +23,16 @@ public class PersonaNegocio implements IPersonaNegocio {
     public PersonaNegocio(IPersonaDAO personaDAO) {
         this.personaDAO = personaDAO;
     }
+    
+    @Override
+    public PersonaDTO getPersonaPorId(String id){
+        return new PersonaDTO(
+                String.valueOf(personaDAO.buscarPersonaporId(id).getId()),
+                personaDAO.buscarPersonaporId(id).getNombre(),
+                personaDAO.buscarPersonaporId(id).getApellido()
+        );
+    }
+    
 
     @Override
     public void insertarPersonas(List<PersonaDTO> persona){
@@ -43,7 +53,7 @@ public class PersonaNegocio implements IPersonaNegocio {
         }
         return resultados;
     }
-            private Persona convertirAEntidad(PersonaDTO persona) {
+    private Persona convertirAEntidad(PersonaDTO persona) {
         if (persona == null) {
             return null;
         }

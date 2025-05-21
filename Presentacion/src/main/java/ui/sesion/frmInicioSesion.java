@@ -8,6 +8,7 @@ import daos.AlbumDAO;
 import daos.ArtistaDAO;
 import daos.CancionDAO;
 import daos.GeneroDAO;
+import daos.PersonaDAO;
 import daos.UsuarioDAO;
 import dtos.UsuarioDTO;
 import interfaces.IAlbumDAO;
@@ -35,7 +36,10 @@ import interfaces.IArtistaNegocio;
 import interfaces.ICancionNegocio;
 import interfaces.IGeneroDAO;
 import interfaces.IGeneroNegocio;
+import interfaces.IPersonaDAO;
+import interfaces.IPersonaNegocio;
 import negocio.GeneroNegocio;
+import negocio.PersonaNegocio;
 
 /**
  *
@@ -48,12 +52,14 @@ public class frmInicioSesion extends javax.swing.JFrame {
     private IAlbumDAO albumDAO = new AlbumDAO();
     private IArtistaDAO artistaDAO = new ArtistaDAO();
     private IGeneroDAO generoDAO = new GeneroDAO();
+    private IPersonaDAO personaDAO = new PersonaDAO();
     
     private ICancionNegocio cancionNegocio = new CancionNegocio(cancionDAO);
     private IUsuarioNegocio usuarioNegocio = new UsuarioNegocio(usuarioDAO);
     private IAlbumNegocio albumNegocio = new AlbumNegocio(albumDAO);
     private IArtistaNegocio artistaNegocio = new ArtistaNegocio(artistaDAO);
     private IGeneroNegocio generoNegocio = new GeneroNegocio(generoDAO);
+     private IPersonaNegocio personaNegocio = new PersonaNegocio(personaDAO);
     
     /**
      * Creates new form frmInicioSesion
@@ -133,7 +139,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
                 UsuarioDTO usuarioEnSesion = usuarioNegocio.validarSesion(usuario.getText(), contrasena.getText());
                 if(usuarioEnSesion != null){
                     Sesion.iniciarSesion(usuarioEnSesion);
-                    frmInicio inicio = new frmInicio(usuarioNegocio, cancionNegocio, albumNegocio, artistaNegocio, generoNegocio);
+                    frmInicio inicio = new frmInicio(usuarioNegocio, cancionNegocio, albumNegocio, artistaNegocio, generoNegocio, personaNegocio);
                     inicio.setVisible(true);
                     dispose();
                 }

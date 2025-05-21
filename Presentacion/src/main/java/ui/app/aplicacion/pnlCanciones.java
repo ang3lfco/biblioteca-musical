@@ -71,7 +71,11 @@ public class pnlCanciones extends javax.swing.JPanel {
         this.generoNegocio = generoNegocio;
         
         noDeseados = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
-        generosNoDeseadosIds = noDeseados.getGeneros();
+        if (noDeseados != null) {
+            generosNoDeseadosIds = noDeseados.getGeneros();
+        } else {
+            generosNoDeseadosIds = new ArrayList<>();
+        }
         
         iniciarFlechasScroll();
         jScrollPane_canciones.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);

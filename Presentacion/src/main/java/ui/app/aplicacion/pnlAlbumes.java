@@ -61,8 +61,13 @@ public class pnlAlbumes extends javax.swing.JPanel {
         this.artistaNegocio = artistaNegocio;
         this.usuarioNegocio = usuarioNegocio;
         this.generoNegocio = generoNegocio;
+        
         noDeseados = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
-        generosNoDeseadosIds = noDeseados.getGeneros();
+        if (noDeseados != null) {
+            generosNoDeseadosIds = noDeseados.getGeneros();
+        } else {
+            generosNoDeseadosIds = new ArrayList<>();
+        }
         
         iniciarFlechasScroll();
         jScrollPane_albumes.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
@@ -162,19 +167,23 @@ public class pnlAlbumes extends javax.swing.JPanel {
         panelAlbumes.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
         
         List<AlbumDTO> albumesFiltrados = new ArrayList<>();
-        
-        for (AlbumDTO album : albumes) {
-            boolean incluirAlbum = true;
-            List<String> generosAlbumActual = album.getGenerosId();
-            for (String idGenero : generosAlbumActual){
-                if (generosNoDeseadosIds.contains(idGenero)) {
-                    incluirAlbum = false;
-                    break;
+        if(generosNoDeseadosIds != null){
+            for (AlbumDTO album : albumes) {
+                boolean incluirAlbum = true;
+                List<String> generosAlbumActual = album.getGenerosId();
+                for (String idGenero : generosAlbumActual){
+                    if (generosNoDeseadosIds.contains(idGenero)) {
+                        incluirAlbum = false;
+                        break;
+                    }
+                }
+                if (incluirAlbum) {
+                    albumesFiltrados.add(album);
                 }
             }
-            if (incluirAlbum) {
-                albumesFiltrados.add(album);
-            }
+        }
+        else{
+            albumesFiltrados = albumes;
         }
         panelAlbumes.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
 

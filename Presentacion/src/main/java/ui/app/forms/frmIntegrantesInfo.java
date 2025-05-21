@@ -5,6 +5,8 @@
 package ui.app.forms;
 
 import dtos.ArtistaDTO;
+import interfaces.IArtistaNegocio;
+import interfaces.IPersonaNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -30,23 +32,24 @@ import ui.componentes.RoundedPanel;
  */
 public class frmIntegrantesInfo extends javax.swing.JFrame {
     private int xMouse, yMouse;
-    private List<Integrante> integrantes = new ArrayList<>();
+    private IArtistaNegocio artistaNegocio;
+    private List<String> integrantesIds;
+    private List<ArtistaDTO.integranteDTO> integrantes;
+    private IPersonaNegocio personaNegocio;
     private ArtistaDTO artista;
     /**
      * Creates new form frmBandaInfo
      */
-    public frmIntegrantesInfo(ArtistaDTO artista) {
+    public frmIntegrantesInfo(ArtistaDTO artista, IArtistaNegocio artistaNegocio, IPersonaNegocio personaNegocio) {
         setUndecorated(true);
         setBackground(new Color(0,0,0,0));
         initComponents();
+        this.artistaNegocio = artistaNegocio;
         this.artista = artista;
+        this.personaNegocio = personaNegocio;
+        integrantes = artista.getIntegrantes();
         jScrollPane1.setBorder(null);
-        
         setLocationRelativeTo(null);
-        integrantes.add(new Integrante("Kendall", "Schmidt", "Vocalista", LocalDate.of(2009, 1, 1), true, "/perfiles/kendall.png"));
-        integrantes.add(new Integrante("James", "Maslow", "Vocalista", LocalDate.of(2009, 1, 1), true, "/perfiles/james.png"));
-        integrantes.add(new Integrante("Carlos", "Pena Jr.", "Vocalista", LocalDate.of(2009, 1, 1), true, "/perfiles/carlos.png"));
-        integrantes.add(new Integrante("Logan", "Henderson", "Vocalista", LocalDate.of(2009, 1, 1), true, "/perfiles/logan.png"));
         
         RoundedPanel panelPrincipal = new RoundedPanel(50, new Color(18,25,44));
         panelPrincipal.setOpaque(false);
@@ -99,13 +102,13 @@ public class frmIntegrantesInfo extends javax.swing.JFrame {
         jPanel1.setLayout(new BoxLayout(jPanel1, BoxLayout.Y_AXIS));
         jPanel1.removeAll();
 
-        for (Integrante integrante : integrantes) {
+        for (ArtistaDTO.integranteDTO integrante : integrantes) {
             JPanel panel = new JPanel(new BorderLayout());
             panel.setBackground(new Color(30, 36, 60));
             panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
             panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 10));
 
-            ImageIcon icono = new ImageIcon(getClass().getResource(integrante.getImagen()));
+            ImageIcon icono = new ImageIcon(getClass().getResource("/iconos/usuario.png"));
             Image imagenAjustada = icono.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
             ImageIcon iconoAjustado = new ImageIcon(imagenAjustada);
             JLabel lblImagen = new JLabel(iconoAjustado);
@@ -117,8 +120,10 @@ public class frmIntegrantesInfo extends javax.swing.JFrame {
             imagenContenedor.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 8));
             imagenContenedor.add(lblImagen, BorderLayout.CENTER);
             panel.add(imagenContenedor, BorderLayout.WEST);
-
-            String nombreCompleto = integrante.getNombre() + " " + integrante.getApellido();
+            
+            String nombre = personaNegocio.getPersonaPorId(integrante.getPersonaId()).getNombre();
+            String apellido = personaNegocio.getPersonaPorId(integrante.getPersonaId()).getApellido();
+            String nombreCompleto = nombre + " " + apellido;
             JLabel lblNombre = new JLabel(nombreCompleto);
             lblNombre.setForeground(Color.WHITE);
             lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -141,10 +146,14 @@ public class frmIntegrantesInfo extends javax.swing.JFrame {
             contenedorCentro.add(lblImagen);
             contenedorCentro.add(textosPanel);
             panel.add(contenedorCentro, BorderLayout.CENTER);
-
-            String estado = integrante.isEstadoActivo() ? "Activo" : "Inactivo";
+            
+            boolean estaActivo = false;
+            if(integrante.getFechaSalida() == null){
+                estaActivo = true;
+            }
+            String estado = estaActivo ? "Activo" : "Inactivo";
             JLabel lblEstado = new JLabel(estado);
-            lblEstado.setForeground(integrante.isEstadoActivo() ? new Color(144, 238, 144) : Color.RED);
+            lblEstado.setForeground(estaActivo ? new Color(144, 238, 144) : Color.RED);
             lblEstado.setFont(new Font("Segoe UI", Font.PLAIN, 12));
             lblEstado.setHorizontalAlignment(SwingConstants.RIGHT);
             panel.add(lblEstado, BorderLayout.EAST);
@@ -252,7 +261,7 @@ public class frmIntegrantesInfo extends javax.swing.JFrame {
 
     private void lbl_cerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_cerrarMouseClicked
         // TODO add your handling code here:
-        System.exit(0);
+        this.dispose();
     }//GEN-LAST:event_lbl_cerrarMouseClicked
 
     private void lbl_minimizarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_minimizarMouseClicked
@@ -296,71 +305,7 @@ public class frmIntegrantesInfo extends javax.swing.JFrame {
 //        });
 //    }
     
-    public static class Integrante {
-        private String nombre;
-        private String apellido;
-        private String rol;
-        private LocalDate fechaIngreso;
-        private boolean estadoActivo;
-        private String imagen;
 
-        public Integrante(String nombre, String apellido, String rol, LocalDate fechaIngreso, boolean estadoActivo, String imagen) {
-            this.nombre = nombre;
-            this.apellido = apellido;
-            this.rol = rol;
-            this.fechaIngreso = fechaIngreso;
-            this.estadoActivo = estadoActivo;
-            this.imagen = imagen;
-        }
-
-        public String getNombre() {
-            return nombre;
-        }
-
-        public void setNombre(String nombre) {
-            this.nombre = nombre;
-        }
-
-        public String getApellido() {
-            return apellido;
-        }
-
-        public void setApellido(String apellido) {
-            this.apellido = apellido;
-        }
-
-        public String getRol() {
-            return rol;
-        }
-
-        public void setRol(String rol) {
-            this.rol = rol;
-        }
-
-        public LocalDate getFechaIngreso() {
-            return fechaIngreso;
-        }
-
-        public void setFechaIngreso(LocalDate fechaIngreso) {
-            this.fechaIngreso = fechaIngreso;
-        }
-
-        public boolean isEstadoActivo() {
-            return estadoActivo;
-        }
-
-        public void setEstadoActivo(boolean estadoActivo) {
-            this.estadoActivo = estadoActivo;
-        }
-
-        public String getImagen() {
-            return imagen;
-        }
-
-        public void setImagen(String imagen) {
-            this.imagen = imagen;
-        }
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;

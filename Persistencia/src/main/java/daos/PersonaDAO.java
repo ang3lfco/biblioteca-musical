@@ -5,10 +5,12 @@
 package daos;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 import conexion.MongoConexion;
 import entidades.Persona;
 import interfaces.IPersonaDAO;
 import java.util.List;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -22,13 +24,23 @@ public class PersonaDAO implements IPersonaDAO {
         this.coleccion = MongoConexion.getPersonaCollection();
     }
     
-        public void insertarPersonas(List<Persona> personas) {
-        if (personas != null && !personas.isEmpty()) {
-            coleccion.insertMany(personas);
-            System.out.println("Se insertaron " + personas.size() + " personas correctamente.");
-        } else {
-            System.out.println("No se inserto ningun personas.");
+    @Override
+    public Persona buscarPersonaporId(String id) {
+        try {
+            ObjectId objectId = new ObjectId(id);
+            return coleccion.find(Filters.eq("_id", objectId)).first();
+        } catch (IllegalArgumentException e) {
+            return null;
         }
+    }
+    
+    public void insertarPersonas(List<Persona> personas) {
+    if (personas != null && !personas.isEmpty()) {
+        coleccion.insertMany(personas);
+        System.out.println("Se insertaron " + personas.size() + " personas correctamente.");
+    } else {
+        System.out.println("No se inserto ningun personas.");
+    }
     }
 
 }

@@ -33,6 +33,7 @@ import ui.componentes.CustomRoundedTextField;
 import ui.componentes.RoundedComboBox;
 import interfaces.IArtistaNegocio;
 import interfaces.IGeneroNegocio;
+import interfaces.IPersonaNegocio;
 import interfaces.IUsuarioNegocio;
 import java.util.ArrayList;
 import javax.swing.event.DocumentEvent;
@@ -51,17 +52,23 @@ public class pnlArtistas extends javax.swing.JPanel {
     private IGeneroNegocio generoNegocio;
     private UsuarioDTO.NoDeseadosDTO noDeseados;
     private List<String> generosNoDeseadosIds;
+    private IPersonaNegocio personaNegocio;
     /**
      * Creates new form pnlCanciones
      */
-    public pnlArtistas(IArtistaNegocio artistaNegocio, IUsuarioNegocio usuarioNegocio, IGeneroNegocio generoNegocio) {
+    public pnlArtistas(IArtistaNegocio artistaNegocio, IUsuarioNegocio usuarioNegocio, IGeneroNegocio generoNegocio, IPersonaNegocio personaNegocio) {
         initComponents();
         this.artistaNegocio = artistaNegocio;
         this.usuarioNegocio = usuarioNegocio;
         this.generoNegocio = generoNegocio;
+        this.personaNegocio = personaNegocio;
         
         noDeseados = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
-        generosNoDeseadosIds = noDeseados.getGeneros();
+        if (noDeseados != null) {
+            generosNoDeseadosIds = noDeseados.getGeneros();
+        } else {
+            generosNoDeseadosIds = new ArrayList<>();
+        }
         
         iniciarFlechasScroll();
         jScrollPane_artistas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
@@ -246,10 +253,10 @@ public class pnlArtistas extends javax.swing.JPanel {
                 if (e.getButton() == MouseEvent.BUTTON3){
                     popupMenu.show(panel, e.getX(), e.getY());
                 } 
-                else if (e.getButton() == MouseEvent.BUTTON1){
+                else if (e.getButton() == MouseEvent.BUTTON1 && artista.getTipo().toLowerCase().equals("banda")){
                     //Click Derecho
                     JOptionPane.showMessageDialog(null, "Mostrar Información.");
-                    frmIntegrantesInfo info = new frmIntegrantesInfo(artista);
+                    frmIntegrantesInfo info = new frmIntegrantesInfo(artista, artistaNegocio, personaNegocio);
                     info.setVisible(true);
                 }
             }
