@@ -92,21 +92,21 @@ public class pnlPrincipal extends javax.swing.JPanel {
 
         buscador.getTextField().getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e) {
-                String texto = buscador.getText().trim();
+                String texto = buscador.getText().trim().toLowerCase();
                 if(!texto.isEmpty()){
                     filtrarContenido(texto);
                 }
             }
 
             public void removeUpdate(DocumentEvent e) {
-                String texto = buscador.getText().trim();
+                String texto = buscador.getText().trim().toLowerCase();
                 if(!texto.isEmpty()){
                     filtrarContenido(texto);
                 }
             }
 
             public void changedUpdate(DocumentEvent e) {
-                String texto = buscador.getText().trim();
+                String texto = buscador.getText().trim().toLowerCase();
                 if(!texto.isEmpty()){
                     filtrarContenido(texto);
                 }

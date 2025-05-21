@@ -97,24 +97,32 @@ public class pnlCanciones extends javax.swing.JPanel {
         pnlBuscador.add(buscador, BorderLayout.CENTER);
 
         buscador.getDocument().addDocumentListener(new DocumentListener() {
-            private void actualizar() {
-                String texto = buscador.getText().trim().toLowerCase();
+            private void actualizar(String texto) {
                 buscarYCargarCanciones(texto);
             }
 
             @Override
             public void insertUpdate(DocumentEvent e) {
-                actualizar();
+                String texto = buscador.getText().trim().toLowerCase();
+                if(!texto.isEmpty()){
+                    actualizar(texto);
+                }
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                actualizar();
+                String texto = buscador.getText().trim().toLowerCase();
+                if(!texto.isEmpty()){
+                    actualizar(texto);
+                }
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                actualizar();
+                String texto = buscador.getText().trim().toLowerCase();
+                if(!texto.isEmpty()){
+                    actualizar(texto);
+                }
             }
         });
 

@@ -37,12 +37,12 @@ import interfaces.IGeneroNegocio;
 import interfaces.IPersonaNegocio;
 import interfaces.IUsuarioNegocio;
 import java.util.ArrayList;
-<<<<<<< HEAD
+
 import javax.swing.SwingUtilities;
-=======
+
 import java.util.HashSet;
 import java.util.Set;
->>>>>>> e861c9880ce74b8530fa656e94b632493bcf85eb
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import ui.sesion.Sesion;
@@ -103,24 +103,32 @@ public class pnlArtistas extends javax.swing.JPanel {
         pnlBuscador.add(buscador, BorderLayout.CENTER);
         
          buscador.getDocument().addDocumentListener(new DocumentListener() {
-            private void actualizar() {
-                String texto = buscador.getText().trim().toLowerCase();
+            private void actualizar(String texto) {
                 buscarYCargarArtistas(texto);
             }
 
             @Override
             public void insertUpdate(DocumentEvent e) {
-                actualizar();
+                String texto = buscador.getText().trim().toLowerCase();
+                if(!texto.isEmpty()){
+                    actualizar(texto);
+                }
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                actualizar();
+                String texto = buscador.getText().trim().toLowerCase();
+                if(!texto.isEmpty()){
+                    actualizar(texto);
+                }
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                actualizar();
+                String texto = buscador.getText().trim().toLowerCase();
+                if(!texto.isEmpty()){
+                    actualizar(texto);
+                }
             }
         });
         

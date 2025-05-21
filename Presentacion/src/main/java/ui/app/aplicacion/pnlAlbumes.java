@@ -101,7 +101,7 @@ public class pnlAlbumes extends javax.swing.JPanel {
         campoBusqueda.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                String texto = buscador.getText().trim();
+                String texto = buscador.getText().trim().toLowerCase();
                 if(!texto.isEmpty()){
                     realizarBusqueda(texto);
                 }
@@ -109,7 +109,7 @@ public class pnlAlbumes extends javax.swing.JPanel {
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                String texto = buscador.getText().trim();
+                String texto = buscador.getText().trim().toLowerCase();
                 if(!texto.isEmpty()){
                     realizarBusqueda(texto);
                 }
@@ -117,7 +117,7 @@ public class pnlAlbumes extends javax.swing.JPanel {
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                String texto = buscador.getText().trim();
+                String texto = buscador.getText().trim().toLowerCase();
                 if(!texto.isEmpty()){
                     realizarBusqueda(texto);
                 }
