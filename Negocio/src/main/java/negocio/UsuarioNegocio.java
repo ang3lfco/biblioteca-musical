@@ -4,14 +4,17 @@
  */
 package negocio;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.bson.types.ObjectId;
+
 import dtos.UsuarioDTO;
 import encriptador.Encriptador;
 import entidades.Usuario;
 import interfaces.IUsuarioDAO;
 import interfaces.IUsuarioNegocio;
-import java.util.ArrayList;
-import java.util.List;
-import org.bson.types.ObjectId;
 
 /**
  *
@@ -79,34 +82,36 @@ public class UsuarioNegocio implements IUsuarioNegocio {
     }
     
     @Override
-    public UsuarioDTO.FavoritosDTO getFavoritos(String idUsuario){
+    public UsuarioDTO.FavoritosDTO getFavoritos(String idUsuario) {
         System.out.println("sadadsa");
-        Usuario.Favoritos Favoritos = usuarioDAO.getFavoritos(new ObjectId(idUsuario));
-        UsuarioDTO.FavoritosDTO FavoritosDTO = new UsuarioDTO.FavoritosDTO();
-        if (Favoritos == null) {
-            return null;
+        Usuario.Favoritos favoritos = usuarioDAO.getFavoritos(new ObjectId(idUsuario));
+        UsuarioDTO.FavoritosDTO favoritosDTO = new UsuarioDTO.FavoritosDTO();
+
+        if(favoritos == null){
+            return favoritosDTO;
         }
-        
+
         List<String> artistasId = new ArrayList<>();
-        for(ObjectId id : Favoritos.getArtistasId()){
+        for(ObjectId id : Optional.ofNullable(favoritos.getArtistasId()).orElse(new ArrayList<>())){
             artistasId.add(String.valueOf(id));
         }
-        FavoritosDTO.setArtistasId(artistasId);
-        
+        favoritosDTO.setArtistasId(artistasId);
+
         List<String> albumesId = new ArrayList<>();
-        for(ObjectId id : Favoritos.getAlbumesId()){
+        for (ObjectId id : Optional.ofNullable(favoritos.getAlbumesId()).orElse(new ArrayList<>())){
             albumesId.add(String.valueOf(id));
         }
-        FavoritosDTO.setAlbumesId(albumesId);
-        
+        favoritosDTO.setAlbumesId(albumesId);
+
         List<String> cancionesId = new ArrayList<>();
-        for(ObjectId id : Favoritos.getCancionesId()){
+        for (ObjectId id : Optional.ofNullable(favoritos.getCancionesId()).orElse(new ArrayList<>())){
             cancionesId.add(String.valueOf(id));
         }
-        FavoritosDTO.setCancionesId(cancionesId);
-        
-        return FavoritosDTO;
+        favoritosDTO.setCancionesId(cancionesId);
+
+        return favoritosDTO;
     }
+
     
     @Override
     public UsuarioDTO.NoDeseadosDTO getNoDeseados(String idUsuario){
