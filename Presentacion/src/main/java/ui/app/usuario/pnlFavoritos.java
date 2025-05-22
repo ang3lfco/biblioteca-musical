@@ -4,14 +4,6 @@
  */
 package ui.app.usuario;
 
-import dtos.AlbumDTO;
-import dtos.ArtistaDTO;
-import dtos.CancionDTO;
-import dtos.UsuarioDTO;
-import interfaces.IAlbumNegocio;
-import interfaces.IArtistaNegocio;
-import interfaces.ICancionNegocio;
-import interfaces.IUsuarioNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -23,7 +15,8 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -35,8 +28,16 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+
+import dtos.AlbumDTO;
+import dtos.ArtistaDTO;
+import dtos.CancionDTO;
+import dtos.UsuarioDTO;
+import interfaces.IAlbumNegocio;
+import interfaces.IArtistaNegocio;
+import interfaces.ICancionNegocio;
+import interfaces.IUsuarioNegocio;
 import ui.sesion.Sesion;
 
 /**
@@ -68,7 +69,7 @@ public class pnlFavoritos extends javax.swing.JPanel {
         this.artistaNegocio = artistaNegocio;
         
         this.favoritos = usuarioNegocio.getFavoritos(Sesion.getUsuarioActual().getId());
-        if(favoritos == null){
+        if (favoritos == null || (favoritos.getArtistasId() == null || favoritos.getArtistasId().isEmpty()) && (favoritos.getAlbumesId() == null || favoritos.getAlbumesId().isEmpty()) && (favoritos.getCancionesId() == null || favoritos.getCancionesId().isEmpty())){
             JOptionPane.showMessageDialog(null, "Sin favoritos.");
             lblFlechaArriba.setText("");
             lblFlechaAbajo.setText("");
@@ -89,10 +90,10 @@ public class pnlFavoritos extends javax.swing.JPanel {
             jPanel1_favoritos.repaint();
             return;
         }
-        artistasFavsId = favoritos.getArtistasId();
-        albumbesFavsId = favoritos.getAlbumesId();
-        cancionesFavsId = favoritos.getCancionesId();
-        
+        artistasFavsId = Optional.ofNullable(favoritos.getArtistasId()).orElse(new ArrayList<>());
+        albumbesFavsId = Optional.ofNullable(favoritos.getAlbumesId()).orElse(new ArrayList<>());
+        cancionesFavsId = Optional.ofNullable(favoritos.getCancionesId()).orElse(new ArrayList<>());
+            
         for(String s : artistasFavsId){
             artistasdtos.add(artistaNegocio.buscarArtistaporId(s));
         }
