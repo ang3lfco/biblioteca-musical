@@ -38,9 +38,8 @@ Este proyecto fue desarrollado como parte del curso de **Bases de Datos Avanzada
 - Visualización con miniaturas para una experiencia intuitiva.
 
 ### Funcionalidades adicionales
-- El contenido asociado a géneros bloqueados por el usuario no se muestra en la interfaz durante las consultas o navegación del sistema.
+- El contenido asociado a **géneros restringidos** por el usuario no se muestra en la interfaz durante las consultas o navegación del sistema.
 - Sección de **favoritos** para artistas, álbumes y canciones.
-- Lista de **géneros restringidos**: los resultados se ajustan dinámicamente y se eliminan favoritos en conflicto.
 
 ## Instrucciones de uso e instalación.
 Instala MongoDB de forma local en tu equipo y asegúrate de que esté en ejecución antes de iniciar el sistema.
