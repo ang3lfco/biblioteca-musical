@@ -42,15 +42,14 @@ Este proyecto fue desarrollado como parte del curso de **Bases de Datos Avanzada
 - Sección de **favoritos** para artistas, álbumes y canciones.
 
 ## Instrucciones de uso e instalación.
-Instala MongoDB de forma local en tu equipo y asegúrate de que esté en ejecución antes de iniciar el sistema.
+- Instala MongoDB de forma local en tu equipo y asegúrate de que esté en ejecución antes de iniciar el sistema.
 
-Clona este repositorio en tu máquina local usando el siguiente comando: git clone https://github.com/ang3lfco/instagram-clone.git.
+- Clona este repositorio en tu máquina local usando el siguiente comando: git clone https://github.com/ang3lfco/instagram-clone.git.
 
-Abre el proyecto en NetBeans o en el IDE de tu preferencia.
+- Abre el proyecto en NetBeans o en el IDE de tu preferencia.
 
-Ejecuta el archivo Presentacion.java, ubicado en el paquete por defecto del módulo Presentacion, para realizar la carga masiva inicial de datos en la base de datos.
+- Ejecuta el archivo Presentacion.java, ubicado en el paquete por defecto del módulo Presentacion, para realizar la carga masiva inicial de datos en la base de datos.
 
-Ejecuta frmInicioSesion.java para abrir la interfaz de inicio de sesión.
+- Ejecuta frmInicioSesion.java para abrir la interfaz de inicio de sesión.
 
-Regístrate como nuevo usuario, inicia sesión con tus credenciales y comienza a navegar por la aplicación.
-
+- Regístrate como nuevo usuario, inicia sesión con tus credenciales y comienza a navegar por la aplicación.
