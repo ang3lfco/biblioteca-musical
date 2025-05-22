@@ -42,7 +42,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
-import negocio.AlbumNegocio;
 import ui.componentes.RoundedComboBox;
 import ui.sesion.Sesion;
 

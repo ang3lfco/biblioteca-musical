@@ -2,14 +2,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package ui.app.aplicacion;
+package ui.app;
 
 import dtos.AlbumDTO;
 import dtos.ArtistaDTO;
-import dtos.CancionDTO;
 import dtos.UsuarioDTO;
+import dtos.UsuarioDTO.NoDeseadosDTO;
 import interfaces.IAlbumNegocio;
 import interfaces.IArtistaNegocio;
+import interfaces.IGeneroNegocio;
+import interfaces.IUsuarioNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -30,106 +32,114 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
-import ui.componentes.CustomRoundedTextField;
-import ui.componentes.RoundedComboBox;
-import interfaces.ICancionNegocio;
-import interfaces.IGeneroNegocio;
-import interfaces.IUsuarioNegocio;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import ui.componentes.CustomRoundedTextField;
+import ui.componentes.RoundedComboBox;
 import ui.sesion.Sesion;
 
 /**
  *
  * @author ang3lfco
  */
-public class pnlCanciones extends javax.swing.JPanel {
+public class pnlAlbumes extends javax.swing.JPanel {
 
-    private ICancionNegocio cancionesNegocio;
-    private IArtistaNegocio artistaNegocio;
     private IAlbumNegocio albumNegocio;
+    private IArtistaNegocio artistaNegocio;
     private IUsuarioNegocio usuarioNegocio;
-    
-    List<CancionDTO> canciones;
     private IGeneroNegocio generoNegocio;
     private UsuarioDTO.NoDeseadosDTO noDeseados;
     private List<String> generosNoDeseadosIds;
+    private List<AlbumDTO> albumes;
+    RoundedComboBox<String> combo;
+    CustomRoundedTextField buscador;
+
     /**
      * Creates new form pnlCanciones
      */
-    public pnlCanciones(ICancionNegocio cancionesNegocio, IArtistaNegocio artistaNegocio, IAlbumNegocio albumNegocio, IUsuarioNegocio usuarioNegocio, IGeneroNegocio generoNegocio) {
+    public pnlAlbumes(IAlbumNegocio albumNegocio, IArtistaNegocio artistaNegocio, IUsuarioNegocio usuarioNegocio, IGeneroNegocio generoNegocio) {
         initComponents();
-        this.cancionesNegocio = cancionesNegocio;
-        this.artistaNegocio = artistaNegocio;
         this.albumNegocio = albumNegocio;
+        this.artistaNegocio = artistaNegocio;
         this.usuarioNegocio = usuarioNegocio;
         this.generoNegocio = generoNegocio;
-        
+
         noDeseados = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
         if (noDeseados != null) {
             generosNoDeseadosIds = noDeseados.getGeneros();
         } else {
             generosNoDeseadosIds = new ArrayList<>();
         }
-        
-        SwingUtilities.invokeLater(() -> pnlCanciones.this.getRootPane().requestFocusInWindow());
-        
+
+        SwingUtilities.invokeLater(() -> pnlAlbumes.this.getRootPane().requestFocusInWindow());
+
         iniciarFlechasScroll();
-        jScrollPane_canciones.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        jScrollPane_canciones.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane_canciones.getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
-        jScrollPane_canciones.getVerticalScrollBar().setUnitIncrement(14);
+        jScrollPane_albumes.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        jScrollPane_albumes.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane_albumes.getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
+        jScrollPane_albumes.getVerticalScrollBar().setUnitIncrement(14);
 
-        jScrollPane_canciones.setViewportBorder(null);
-        jScrollPane_canciones.setBorder(null);
-        cargarCanciones();
+        jScrollPane_albumes.setViewportBorder(null);
+        jScrollPane_albumes.setBorder(null);
 
-        CustomRoundedTextField buscador = new CustomRoundedTextField("Buscar canciónes...", "/iconos/buscar.png");
+        cargarAlbumes();
+
+        String[] items = {"Nombre", "Género", "Fecha de Lanzamiento"};
+        combo = new RoundedComboBox<>(items);
+        combo.setPreferredSize(new Dimension(200, 40));
+        pnl_TipoBusqueda.setBackground(new Color(0, 0, 0, 0));
+        pnl_TipoBusqueda.setLayout(new BorderLayout());
+        pnl_TipoBusqueda.add(combo, BorderLayout.CENTER);
+
+        combo.addActionListener(e -> {
+            String texto = buscador.getText().trim().toLowerCase();
+            if (!texto.isEmpty()) {
+                realizarBusqueda(texto);
+            }
+        });
+
+        buscador = new CustomRoundedTextField("Buscar álbumes...", "/iconos/buscar.png");
         pnlBuscador.setLayout(new BorderLayout());
         pnlBuscador.setPreferredSize(new Dimension(330, 40));
         pnlBuscador.setBackground(new Color(0, 0, 0, 0));
         pnlBuscador.add(buscador, BorderLayout.CENTER);
 
-        buscador.getDocument().addDocumentListener(new DocumentListener() {
-            private void actualizar(String texto) {
-                buscarYCargarCanciones(texto);
-            }
+        JTextField campoBusqueda = buscador.getTextField();
+        campoBusqueda.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
 
             @Override
             public void insertUpdate(DocumentEvent e) {
                 String texto = buscador.getText().trim().toLowerCase();
-                if(!texto.isEmpty()){
-                    actualizar(texto);
+                if (!texto.isEmpty()) {
+                    realizarBusqueda(texto);
                 }
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 String texto = buscador.getText().trim().toLowerCase();
-                if(!texto.isEmpty()){
-                    actualizar(texto);
+                if (!texto.isEmpty()) {
+                    realizarBusqueda(texto);
                 }
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
                 String texto = buscador.getText().trim().toLowerCase();
-                if(!texto.isEmpty()){
-                    actualizar(texto);
+                if (!texto.isEmpty()) {
+                    realizarBusqueda(texto);
                 }
             }
+
         });
 
         lblFlechaArriba.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                JScrollBar barra = jScrollPane_canciones.getVerticalScrollBar();
+                JScrollBar barra = jScrollPane_albumes.getVerticalScrollBar();
                 int paso = 60;
                 barra.setValue(barra.getValue() - paso);
             }
@@ -138,104 +148,133 @@ public class pnlCanciones extends javax.swing.JPanel {
         lblFlechaAbajo.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                JScrollBar barra = jScrollPane_canciones.getVerticalScrollBar();
+                JScrollBar barra = jScrollPane_albumes.getVerticalScrollBar();
                 int paso = 60;
                 barra.setValue(barra.getValue() + paso);
             }
         });
     }
 
-    private void cargarCanciones() {
-        canciones = cancionesNegocio.obtenerTodas();
-        panelCanciones.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
+    private void realizarBusqueda(String textoOriginal) {
+        String criterio = combo.getSelectedItem().toString();
+        final String textoFinal = textoOriginal.toLowerCase().trim();
 
-        List<CancionDTO> cancionesFiltradas = new ArrayList<>();
-        
-        for (CancionDTO cancion : canciones) {
-            boolean incluirArtista = true;
-            List<String> generosCancionActual = cancion.getGenerosId();
-            for (String idGenero : generosCancionActual){
-                if (generosNoDeseadosIds.contains(idGenero)) {
-                    incluirArtista = false;
-                    break;
+        NoDeseadosDTO usuario = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
+        List<String> generosNoDeseados = (usuario != null) ? usuario.getGeneros() : new ArrayList<>();
+
+        List<AlbumDTO> resultados = albumes.stream()
+                .filter(album -> {
+                    if (album.getGenerosId().stream().anyMatch(generosNoDeseados::contains)) {
+                        return false;
+                    }
+
+                    if ("Fecha de Lanzamiento".equals(criterio)) {
+                        boolean coincideNombre = album.getNombre().toLowerCase().contains(textoFinal);
+                        boolean coincideGenero = false;
+                        try {
+                            for (String idGenero : album.getGenerosId()) {
+                                String nombreGenero = generoNegocio.buscarGeneroPorId(idGenero).getNombre();
+                                if (nombreGenero.toLowerCase().contains(textoFinal)) {
+                                    coincideGenero = true;
+                                    break;
+                                }
+                            }
+                        } catch (Exception ex) {
+                            return false;
+                        }
+                        return coincideNombre || coincideGenero;
+                    }
+
+                    switch (criterio) {
+                        case "Nombre":
+                            return album.getNombre().toLowerCase().contains(textoFinal);
+                        case "Género":
+                            try {
+                                for (String idGenero : album.getGenerosId()) {
+                                    String nombreGenero = generoNegocio.buscarGeneroPorId(idGenero).getNombre();
+                                    if (nombreGenero.toLowerCase().contains(textoFinal)) {
+                                        return true;
+                                    }
+                                }
+                            } catch (Exception ex) {
+                                return false;
+                            }
+                            return false;
+                        default:
+                            return false;
+                    }
+                })
+                .sorted((a1, a2) -> {
+                    if ("Fecha de Lanzamiento".equals(criterio)) {
+                        if (a1.getLanzamiento() == null && a2.getLanzamiento() == null) {
+                            return 0;
+                        }
+                        if (a1.getLanzamiento() == null) {
+                            return 1;
+                        }
+                        if (a2.getLanzamiento() == null) {
+                            return -1;
+                        }
+                        return a2.getLanzamiento().compareTo(a1.getLanzamiento());
+                    }
+                    return 0;
+                })
+                .toList();
+
+        mostrarResultados(resultados);
+    }
+
+    private void cargarAlbumes() {
+        albumes = albumNegocio.obtenerTodos();
+        panelAlbumes.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
+
+        List<AlbumDTO> albumesFiltrados = new ArrayList<>();
+        if (generosNoDeseadosIds != null) {
+            for (AlbumDTO album : albumes) {
+                boolean incluirAlbum = true;
+                List<String> generosAlbumActual = album.getGenerosId();
+                for (String idGenero : generosAlbumActual) {
+                    if (generosNoDeseadosIds.contains(idGenero)) {
+                        incluirAlbum = false;
+                        break;
+                    }
+                }
+                if (incluirAlbum) {
+                    albumesFiltrados.add(album);
                 }
             }
-            if (incluirArtista) {
-                cancionesFiltradas.add(cancion);
-            }
+        } else {
+            albumesFiltrados = albumes;
         }
-        panelCanciones.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
+        panelAlbumes.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
 
-        for (CancionDTO cancion : cancionesFiltradas) {
-            JPanel panel = crearPanelCancion(cancion);
-            panelCanciones.add(panel);
+        for (AlbumDTO album : albumesFiltrados) {
+            JPanel panel = crearPanelAlbum(album);
+            panelAlbumes.add(panel);
         }
 
-        panelCanciones.revalidate();
-        panelCanciones.repaint();
+        panelAlbumes.revalidate();
+        panelAlbumes.repaint();
     }
 
-    private void buscarYCargarCanciones(String texto) {
-    List<CancionDTO> resultado = new ArrayList<>();
-    Set<String> idsCancionesAgregadas = new HashSet<>();
-
-    if (texto.isEmpty()) {
-
-        resultado = cancionesNegocio.obtenerTodas();
-        for (CancionDTO c : resultado) {
-            idsCancionesAgregadas.add(c.getId());
+    private void mostrarResultados(List<AlbumDTO> resultados) {
+        panelAlbumes.removeAll();
+        for (AlbumDTO album : resultados) {
+            JPanel panel = crearPanelAlbum(album);
+            panelAlbumes.add(panel);
         }
-    } else {
-
-        List<CancionDTO> cancionesPorNombre = cancionesNegocio.buscarPorNombre(texto);
-        for (CancionDTO c : cancionesPorNombre) {
-            resultado.add(c);
-            idsCancionesAgregadas.add(c.getId());
-        }
-
-        List<ArtistaDTO> artistas = artistaNegocio.buscarPorNombre(texto);
-        for (ArtistaDTO artista : artistas) {
-            List<CancionDTO> cancionesDelArtista = cancionesNegocio.buscarPorArtistaId(artista.getId());
-            for (CancionDTO c : cancionesDelArtista) {
-                if (!idsCancionesAgregadas.contains(c.getId())) {
-                    resultado.add(c);
-                    idsCancionesAgregadas.add(c.getId());
-                }
-            }
-        }
-
-        List<CancionDTO> cancionesSinArtista = cancionesNegocio.buscarPorArtistaId("sin-artista");
-        for (CancionDTO c : cancionesSinArtista) {
-            if (!idsCancionesAgregadas.contains(c.getId())
-                    && c.getNombre().toLowerCase().contains(texto.toLowerCase())) {
-                resultado.add(c);
-                idsCancionesAgregadas.add(c.getId());
-            }
-        }
+        panelAlbumes.revalidate();
+        panelAlbumes.repaint();
     }
 
-    // Mostrar resultados en el panel
-    panelCanciones.removeAll();
-    panelCanciones.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
-
-    for (CancionDTO cancion : resultado) {
-        JPanel panel = crearPanelCancion(cancion);
-        panelCanciones.add(panel);
-    }
-
-    panelCanciones.revalidate();
-    panelCanciones.repaint();
-}
-
-
-    private JPanel crearPanelCancion(CancionDTO cancion) {
+    private JPanel crearPanelAlbum(AlbumDTO album) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.setBackground(new java.awt.Color(23, 30, 49));
 
         int imagenAncho = 0;
         try {
-            ImageIcon icono = new ImageIcon(getClass().getResource("/portadas/" + "cancion.png"));
+            ImageIcon icono = new ImageIcon(getClass().getResource(album.getRutaImagen()));
             Image imagen = icono.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
             JLabel lblImagen = new JLabel(new ImageIcon(imagen));
             lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
@@ -249,21 +288,19 @@ public class pnlCanciones extends javax.swing.JPanel {
         contenedorTexto.setLayout(new BoxLayout(contenedorTexto, BoxLayout.Y_AXIS));
         contenedorTexto.setOpaque(false);
 
-        JLabel lblNombre = new JLabel(cancion.getNombre(), SwingConstants.CENTER);
+        JLabel lblNombre = new JLabel(album.getNombre(), SwingConstants.CENTER);
         lblNombre.setForeground(Color.WHITE);
         lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblNombre.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblNombre.setPreferredSize(new Dimension(imagenAncho, lblNombre.getPreferredSize().height));
         lblNombre.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
 
-        String albumDeCancionId = cancion.getAlbumId();
-        AlbumDTO albumDeCancion = albumNegocio.buscarAlbumPorId(albumDeCancionId);
-        String artista = "";
         StringBuilder artistasLabel = new StringBuilder();
-        List<String> artistasTotalesIds = albumDeCancion.getArtistasId();
-        for (String s : artistasTotalesIds) {
-            artistasLabel.append(artistaNegocio.buscarArtistaporId(s).getNombre());
-            if (artistasTotalesIds.size() > 1) {
+        List<String> artistasDelAlbum = album.getArtistasId();
+        for (String s : artistasDelAlbum) {
+            ArtistaDTO adto = artistaNegocio.buscarArtistaporId(s);
+            artistasLabel.append(adto.getNombre());
+            if (artistasDelAlbum.size() > 1) {
                 artistasLabel.append(", ");
             }
         }
@@ -295,8 +332,8 @@ public class pnlCanciones extends javax.swing.JPanel {
         popupMenu.add(itemNoDeseados);
 
         itemFavoritos.addActionListener(e -> {
-            usuarioNegocio.insertarFavoritoCancion(Sesion.getUsuarioActual().getId(), cancion.getId());
-            JOptionPane.showMessageDialog(null, "Canción agregada a favoritos.");
+            usuarioNegocio.insertarFavoritoAlbum(Sesion.getUsuarioActual().getId(), album.getId());
+            JOptionPane.showMessageDialog(null, "Album agregado a favoritos.");
         });
         itemNoDeseados.addActionListener(e -> {
             JOptionPane.showMessageDialog(null, "Función no disponible.");
@@ -340,11 +377,11 @@ public class pnlCanciones extends javax.swing.JPanel {
         lblFlechaAbajo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblFlechaAbajo.setVisible(false);
 
-        jScrollPane_canciones.getVerticalScrollBar().addAdjustmentListener(e -> actualizarFlechasScroll());
+        jScrollPane_albumes.getVerticalScrollBar().addAdjustmentListener(e -> actualizarFlechasScroll());
     }
 
     private void actualizarFlechasScroll() {
-        JScrollBar barra = jScrollPane_canciones.getVerticalScrollBar();
+        JScrollBar barra = jScrollPane_albumes.getVerticalScrollBar();
         int max = barra.getMaximum();
         int visible = barra.getVisibleAmount();
         int value = barra.getValue();
@@ -362,30 +399,31 @@ public class pnlCanciones extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane_canciones = new javax.swing.JScrollPane();
-        panelCanciones = new javax.swing.JPanel();
+        jScrollPane_albumes = new javax.swing.JScrollPane();
+        panelAlbumes = new javax.swing.JPanel();
         lblFlechaArriba = new javax.swing.JLabel();
         lblFlechaAbajo = new javax.swing.JLabel();
         pnlBuscador = new javax.swing.JPanel();
+        pnl_TipoBusqueda = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(23, 30, 49));
 
-        jScrollPane_canciones.setBackground(new java.awt.Color(23, 30, 49));
+        jScrollPane_albumes.setBackground(new java.awt.Color(23, 30, 49));
 
-        panelCanciones.setBackground(new java.awt.Color(23, 30, 49));
+        panelAlbumes.setBackground(new java.awt.Color(23, 30, 49));
 
-        javax.swing.GroupLayout panelCancionesLayout = new javax.swing.GroupLayout(panelCanciones);
-        panelCanciones.setLayout(panelCancionesLayout);
-        panelCancionesLayout.setHorizontalGroup(
-            panelCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout panelAlbumesLayout = new javax.swing.GroupLayout(panelAlbumes);
+        panelAlbumes.setLayout(panelAlbumesLayout);
+        panelAlbumesLayout.setHorizontalGroup(
+            panelAlbumesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 604, Short.MAX_VALUE)
         );
-        panelCancionesLayout.setVerticalGroup(
-            panelCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        panelAlbumesLayout.setVerticalGroup(
+            panelAlbumesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 423, Short.MAX_VALUE)
         );
 
-        jScrollPane_canciones.setViewportView(panelCanciones);
+        jScrollPane_albumes.setViewportView(panelAlbumes);
 
         lblFlechaArriba.setText("jLabel2");
 
@@ -402,6 +440,17 @@ public class pnlCanciones extends javax.swing.JPanel {
             .addGap(0, 40, Short.MAX_VALUE)
         );
 
+        javax.swing.GroupLayout pnl_TipoBusquedaLayout = new javax.swing.GroupLayout(pnl_TipoBusqueda);
+        pnl_TipoBusqueda.setLayout(pnl_TipoBusquedaLayout);
+        pnl_TipoBusquedaLayout.setHorizontalGroup(
+            pnl_TipoBusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 200, Short.MAX_VALUE)
+        );
+        pnl_TipoBusquedaLayout.setVerticalGroup(
+            pnl_TipoBusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -411,8 +460,9 @@ public class pnlCanciones extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(pnlBuscador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(276, 276, 276))
-                    .addComponent(jScrollPane_canciones, javax.swing.GroupLayout.PREFERRED_SIZE, 606, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(76, 76, 76)
+                        .addComponent(pnl_TipoBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane_albumes, javax.swing.GroupLayout.PREFERRED_SIZE, 606, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblFlechaArriba, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -423,59 +473,26 @@ public class pnlCanciones extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(49, 49, 49)
-                .addComponent(pnlBuscador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pnlBuscador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnl_TipoBusqueda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(32, 32, 32)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblFlechaArriba, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblFlechaAbajo, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane_canciones, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane_albumes, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    public static class Cancion {
-
-        private String nombre;
-        private String album;
-        private String portada;
-
-        public Cancion(String nombre, String album, String portada) {
-            this.nombre = nombre;
-            this.album = album;
-            this.portada = portada;
-        }
-
-        public String getNombre() {
-            return nombre;
-        }
-
-        public void setNombre(String nombre) {
-            this.nombre = nombre;
-        }
-
-        public String getAlbum() {
-            return album;
-        }
-
-        public void setAlbum(String album) {
-            this.album = album;
-        }
-
-        public String getPortada() {
-            return portada;
-        }
-
-        public void setPortada(String portada) {
-            this.portada = portada;
-        }
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane_canciones;
+    private javax.swing.JScrollPane jScrollPane_albumes;
     private javax.swing.JLabel lblFlechaAbajo;
     private javax.swing.JLabel lblFlechaArriba;
-    private javax.swing.JPanel panelCanciones;
+    private javax.swing.JPanel panelAlbumes;
     private javax.swing.JPanel pnlBuscador;
+    private javax.swing.JPanel pnl_TipoBusqueda;
     // End of variables declaration//GEN-END:variables
 }

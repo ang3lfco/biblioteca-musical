@@ -2,16 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package ui.app.aplicacion;
+package ui.app;
 
-import dtos.AlbumDTO;
 import dtos.ArtistaDTO;
+import dtos.GeneroDTO;
 import dtos.UsuarioDTO;
 import dtos.UsuarioDTO.NoDeseadosDTO;
-import interfaces.IAlbumNegocio;
-import interfaces.IArtistaNegocio;
-import interfaces.IGeneroNegocio;
-import interfaces.IUsuarioNegocio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -20,7 +16,6 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -32,40 +27,53 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
+import ui.app.forms.frmIntegrantesInfo;
 import ui.componentes.CustomRoundedTextField;
 import ui.componentes.RoundedComboBox;
+import interfaces.IArtistaNegocio;
+import interfaces.IGeneroNegocio;
+import interfaces.IPersonaNegocio;
+import interfaces.IUsuarioNegocio;
+import java.util.ArrayList;
+
+import javax.swing.SwingUtilities;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import ui.sesion.Sesion;
 
 /**
  *
  * @author ang3lfco
  */
-public class pnlAlbumes extends javax.swing.JPanel {
+public class pnlArtistas extends javax.swing.JPanel {
 
-    private IAlbumNegocio albumNegocio;
     private IArtistaNegocio artistaNegocio;
     private IUsuarioNegocio usuarioNegocio;
+
+    List<ArtistaDTO> artistas;
     private IGeneroNegocio generoNegocio;
     private UsuarioDTO.NoDeseadosDTO noDeseados;
     private List<String> generosNoDeseadosIds;
-    private List<AlbumDTO> albumes;
-    RoundedComboBox<String> combo;
-    CustomRoundedTextField buscador;
+    private IPersonaNegocio personaNegocio;
+    private RoundedComboBox<String> comboBusqueda;
+    private CustomRoundedTextField buscador;
 
     /**
      * Creates new form pnlCanciones
      */
-    public pnlAlbumes(IAlbumNegocio albumNegocio, IArtistaNegocio artistaNegocio, IUsuarioNegocio usuarioNegocio, IGeneroNegocio generoNegocio) {
+    public pnlArtistas(IArtistaNegocio artistaNegocio, IUsuarioNegocio usuarioNegocio, IGeneroNegocio generoNegocio, IPersonaNegocio personaNegocio) {
         initComponents();
-        this.albumNegocio = albumNegocio;
         this.artistaNegocio = artistaNegocio;
         this.usuarioNegocio = usuarioNegocio;
         this.generoNegocio = generoNegocio;
+        this.personaNegocio = personaNegocio;
 
         noDeseados = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
         if (noDeseados != null) {
@@ -74,47 +82,41 @@ public class pnlAlbumes extends javax.swing.JPanel {
             generosNoDeseadosIds = new ArrayList<>();
         }
 
-        SwingUtilities.invokeLater(() -> pnlAlbumes.this.getRootPane().requestFocusInWindow());
+        SwingUtilities.invokeLater(() -> pnlArtistas.this.getRootPane().requestFocusInWindow());
 
         iniciarFlechasScroll();
-        jScrollPane_albumes.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        jScrollPane_albumes.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane_albumes.getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
-        jScrollPane_albumes.getVerticalScrollBar().setUnitIncrement(14);
+        jScrollPane_artistas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        jScrollPane_artistas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane_artistas.getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
+        jScrollPane_artistas.getVerticalScrollBar().setUnitIncrement(14);
 
-        jScrollPane_albumes.setViewportBorder(null);
-        jScrollPane_albumes.setBorder(null);
+        jScrollPane_artistas.setViewportBorder(null);
+        jScrollPane_artistas.setBorder(null);
+        cargarArtistas();
 
-        cargarAlbumes();
-
-        String[] items = {"Nombre", "Género", "Fecha de Lanzamiento"};
-        combo = new RoundedComboBox<>(items);
-        combo.setPreferredSize(new Dimension(200, 40));
+        String[] items = {"Nombre", "Género"};
+        comboBusqueda = new RoundedComboBox<>(items);
+        comboBusqueda.setPreferredSize(new Dimension(200, 40));
         pnl_TipoBusqueda.setBackground(new Color(0, 0, 0, 0));
         pnl_TipoBusqueda.setLayout(new BorderLayout());
-        pnl_TipoBusqueda.add(combo, BorderLayout.CENTER);
+        pnl_TipoBusqueda.add(comboBusqueda, BorderLayout.CENTER);
 
-        combo.addActionListener(e -> {
-            String texto = buscador.getText().trim().toLowerCase();
-            if (!texto.isEmpty()) {
-                realizarBusqueda(texto);
-            }
-        });
-
-        buscador = new CustomRoundedTextField("Buscar álbumes...", "/iconos/buscar.png");
+        CustomRoundedTextField buscador = new CustomRoundedTextField("Buscar artistas...", "/iconos/buscar.png");
         pnlBuscador.setLayout(new BorderLayout());
         pnlBuscador.setPreferredSize(new Dimension(330, 40));
         pnlBuscador.setBackground(new Color(0, 0, 0, 0));
         pnlBuscador.add(buscador, BorderLayout.CENTER);
 
-        JTextField campoBusqueda = buscador.getTextField();
-        campoBusqueda.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+        buscador.getDocument().addDocumentListener(new DocumentListener() {
+            private void actualizar(String texto) {
+                buscarYCargarArtistas(texto);
+            }
 
             @Override
             public void insertUpdate(DocumentEvent e) {
                 String texto = buscador.getText().trim().toLowerCase();
                 if (!texto.isEmpty()) {
-                    realizarBusqueda(texto);
+                    actualizar(texto);
                 }
             }
 
@@ -122,7 +124,7 @@ public class pnlAlbumes extends javax.swing.JPanel {
             public void removeUpdate(DocumentEvent e) {
                 String texto = buscador.getText().trim().toLowerCase();
                 if (!texto.isEmpty()) {
-                    realizarBusqueda(texto);
+                    actualizar(texto);
                 }
             }
 
@@ -130,16 +132,20 @@ public class pnlAlbumes extends javax.swing.JPanel {
             public void changedUpdate(DocumentEvent e) {
                 String texto = buscador.getText().trim().toLowerCase();
                 if (!texto.isEmpty()) {
-                    realizarBusqueda(texto);
+                    actualizar(texto);
                 }
             }
+        });
 
+        comboBusqueda.addActionListener(e -> {
+            String texto = buscador.getText().trim().toLowerCase();
+            buscarYCargarArtistas(texto);
         });
 
         lblFlechaArriba.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                JScrollBar barra = jScrollPane_albumes.getVerticalScrollBar();
+                JScrollBar barra = jScrollPane_artistas.getVerticalScrollBar();
                 int paso = 60;
                 barra.setValue(barra.getValue() - paso);
             }
@@ -148,133 +154,105 @@ public class pnlAlbumes extends javax.swing.JPanel {
         lblFlechaAbajo.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                JScrollBar barra = jScrollPane_albumes.getVerticalScrollBar();
+                JScrollBar barra = jScrollPane_artistas.getVerticalScrollBar();
                 int paso = 60;
                 barra.setValue(barra.getValue() + paso);
             }
         });
     }
 
-    private void realizarBusqueda(String textoOriginal) {
-        String criterio = combo.getSelectedItem().toString();
-        final String textoFinal = textoOriginal.toLowerCase().trim();
+    private void cargarArtistas() {
+        artistas = artistaNegocio.obtenerTodos();
+        panelArtistas.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
 
-        NoDeseadosDTO usuario = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
-        List<String> generosNoDeseados = (usuario != null) ? usuario.getGeneros() : new ArrayList<>();
+        List<ArtistaDTO> artistasFiltrados = new ArrayList<>();
 
-        List<AlbumDTO> resultados = albumes.stream()
-                .filter(album -> {
-                    if (album.getGenerosId().stream().anyMatch(generosNoDeseados::contains)) {
-                        return false;
-                    }
-
-                    if ("Fecha de Lanzamiento".equals(criterio)) {
-                        boolean coincideNombre = album.getNombre().toLowerCase().contains(textoFinal);
-                        boolean coincideGenero = false;
-                        try {
-                            for (String idGenero : album.getGenerosId()) {
-                                String nombreGenero = generoNegocio.buscarGeneroPorId(idGenero).getNombre();
-                                if (nombreGenero.toLowerCase().contains(textoFinal)) {
-                                    coincideGenero = true;
-                                    break;
-                                }
-                            }
-                        } catch (Exception ex) {
-                            return false;
-                        }
-                        return coincideNombre || coincideGenero;
-                    }
-
-                    switch (criterio) {
-                        case "Nombre":
-                            return album.getNombre().toLowerCase().contains(textoFinal);
-                        case "Género":
-                            try {
-                                for (String idGenero : album.getGenerosId()) {
-                                    String nombreGenero = generoNegocio.buscarGeneroPorId(idGenero).getNombre();
-                                    if (nombreGenero.toLowerCase().contains(textoFinal)) {
-                                        return true;
-                                    }
-                                }
-                            } catch (Exception ex) {
-                                return false;
-                            }
-                            return false;
-                        default:
-                            return false;
-                    }
-                })
-                .sorted((a1, a2) -> {
-                    if ("Fecha de Lanzamiento".equals(criterio)) {
-                        if (a1.getLanzamiento() == null && a2.getLanzamiento() == null) {
-                            return 0;
-                        }
-                        if (a1.getLanzamiento() == null) {
-                            return 1;
-                        }
-                        if (a2.getLanzamiento() == null) {
-                            return -1;
-                        }
-                        return a2.getLanzamiento().compareTo(a1.getLanzamiento());
-                    }
-                    return 0;
-                })
-                .toList();
-
-        mostrarResultados(resultados);
-    }
-
-    private void cargarAlbumes() {
-        albumes = albumNegocio.obtenerTodos();
-        panelAlbumes.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
-
-        List<AlbumDTO> albumesFiltrados = new ArrayList<>();
-        if (generosNoDeseadosIds != null) {
-            for (AlbumDTO album : albumes) {
-                boolean incluirAlbum = true;
-                List<String> generosAlbumActual = album.getGenerosId();
-                for (String idGenero : generosAlbumActual) {
-                    if (generosNoDeseadosIds.contains(idGenero)) {
-                        incluirAlbum = false;
-                        break;
-                    }
-                }
-                if (incluirAlbum) {
-                    albumesFiltrados.add(album);
+        for (ArtistaDTO artista : artistas) {
+            boolean incluirArtista = true;
+            List<String> generosArtistaActual = artista.getGenerosId();
+            for (String idGenero : generosArtistaActual) {
+                if (generosNoDeseadosIds.contains(idGenero)) {
+                    incluirArtista = false;
+                    break;
                 }
             }
+            if (incluirArtista) {
+                artistasFiltrados.add(artista);
+            }
+        }
+        panelArtistas.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
+
+        for (ArtistaDTO artista : artistasFiltrados) {
+            JPanel panel = crearPanelArtista(artista);
+            panelArtistas.add(panel);
+        }
+
+        panelArtistas.revalidate();
+        panelArtistas.repaint();
+    }
+
+    private void buscarYCargarArtistas(String texto) {
+        List<ArtistaDTO> resultado = new ArrayList<>();
+        Set<String> idsArtistasAgregadas = new HashSet<>();
+
+        if (texto.isEmpty()) {
+            resultado = artistaNegocio.obtenerTodos();
+            for (ArtistaDTO c : resultado) {
+                idsArtistasAgregadas.add(c.getId());
+            }
         } else {
-            albumesFiltrados = albumes;
-        }
-        panelAlbumes.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
+            String tipoBusqueda = comboBusqueda.getSelectedItem().toString();
 
-        for (AlbumDTO album : albumesFiltrados) {
-            JPanel panel = crearPanelAlbum(album);
-            panelAlbumes.add(panel);
+            if (tipoBusqueda.equalsIgnoreCase("Nombre")) {
+                List<ArtistaDTO> artistasPorNombre = artistaNegocio.buscarPorNombre(texto);
+                for (ArtistaDTO c : artistasPorNombre) {
+                    resultado.add(c);
+                    idsArtistasAgregadas.add(c.getId());
+                }
+            } else if (tipoBusqueda.equalsIgnoreCase("Género")) {
+                List<GeneroDTO> generos = generoNegocio.buscarPorNombre(texto);
+                for (GeneroDTO genero : generos) {
+                    List<ArtistaDTO> artistasDelGenero = artistaNegocio.buscarPorGeneroId(genero.getId());
+                    for (ArtistaDTO c : artistasDelGenero) {
+                        if (!idsArtistasAgregadas.contains(c.getId())) {
+                            resultado.add(c);
+                            idsArtistasAgregadas.add(c.getId());
+                        }
+                    }
+                }
+            }
         }
 
-        panelAlbumes.revalidate();
-        panelAlbumes.repaint();
+        // Filtrar artistas con género no deseado
+        NoDeseadosDTO usuario = usuarioNegocio.getNoDeseados(Sesion.getUsuarioActual().getId());
+        if (usuario != null) {
+            List<String> generosNoDeseados = usuario.getGeneros();
+            resultado = resultado.stream()
+                    .filter(artista -> artista.getGenerosId().stream().noneMatch(generosNoDeseados::contains))
+                    .collect(Collectors.toList());
+        }
+
+        // Mostrar en pantalla
+        panelArtistas.removeAll();
+        panelArtistas.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
+
+        for (ArtistaDTO artista : resultado) {
+            JPanel panel = crearPanelArtista(artista);
+            panelArtistas.add(panel);
+        }
+
+        panelArtistas.revalidate();
+        panelArtistas.repaint();
     }
 
-    private void mostrarResultados(List<AlbumDTO> resultados) {
-        panelAlbumes.removeAll();
-        for (AlbumDTO album : resultados) {
-            JPanel panel = crearPanelAlbum(album);
-            panelAlbumes.add(panel);
-        }
-        panelAlbumes.revalidate();
-        panelAlbumes.repaint();
-    }
-
-    private JPanel crearPanelAlbum(AlbumDTO album) {
+    private JPanel crearPanelArtista(ArtistaDTO artista) {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.setBackground(new java.awt.Color(23, 30, 49));
 
         int imagenAncho = 0;
         try {
-            ImageIcon icono = new ImageIcon(getClass().getResource(album.getRutaImagen()));
+            ImageIcon icono = new ImageIcon(getClass().getResource(artista.getRutaImagen()));
             Image imagen = icono.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
             JLabel lblImagen = new JLabel(new ImageIcon(imagen));
             lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
@@ -288,32 +266,21 @@ public class pnlAlbumes extends javax.swing.JPanel {
         contenedorTexto.setLayout(new BoxLayout(contenedorTexto, BoxLayout.Y_AXIS));
         contenedorTexto.setOpaque(false);
 
-        JLabel lblNombre = new JLabel(album.getNombre(), SwingConstants.CENTER);
+        JLabel lblNombre = new JLabel(artista.getNombre(), SwingConstants.CENTER);
         lblNombre.setForeground(Color.WHITE);
         lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 13));
         lblNombre.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblNombre.setPreferredSize(new Dimension(imagenAncho, lblNombre.getPreferredSize().height));
         lblNombre.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
 
-        StringBuilder artistasLabel = new StringBuilder();
-        List<String> artistasDelAlbum = album.getArtistasId();
-        for (String s : artistasDelAlbum) {
-            ArtistaDTO adto = artistaNegocio.buscarArtistaporId(s);
-            artistasLabel.append(adto.getNombre());
-            if (artistasDelAlbum.size() > 1) {
-                artistasLabel.append(", ");
-            }
-        }
-        String artistasTexto = artistasLabel.toString();
-
-        JLabel lblArtista = new JLabel(artistasTexto, SwingConstants.CENTER);
-        lblArtista.setForeground(Color.LIGHT_GRAY);
-        lblArtista.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblArtista.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblArtista.setBorder(BorderFactory.createEmptyBorder(0, 0, 4, 0));
+        JLabel lblGenero = new JLabel(artista.getTipo(), SwingConstants.CENTER);
+        lblGenero.setForeground(Color.LIGHT_GRAY);
+        lblGenero.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblGenero.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblGenero.setBorder(BorderFactory.createEmptyBorder(0, 0, 4, 0));
 
         contenedorTexto.add(lblNombre);
-        contenedorTexto.add(lblArtista);
+        contenedorTexto.add(lblGenero);
 
         panel.add(contenedorTexto, BorderLayout.SOUTH);
 
@@ -332,8 +299,8 @@ public class pnlAlbumes extends javax.swing.JPanel {
         popupMenu.add(itemNoDeseados);
 
         itemFavoritos.addActionListener(e -> {
-            usuarioNegocio.insertarFavoritoAlbum(Sesion.getUsuarioActual().getId(), album.getId());
-            JOptionPane.showMessageDialog(null, "Album agregado a favoritos.");
+            usuarioNegocio.insertarFavoritoArtista(Sesion.getUsuarioActual().getId(), artista.getId());
+            JOptionPane.showMessageDialog(null, "Artista agregado a favoritos.");
         });
         itemNoDeseados.addActionListener(e -> {
             JOptionPane.showMessageDialog(null, "Función no disponible.");
@@ -344,9 +311,11 @@ public class pnlAlbumes extends javax.swing.JPanel {
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON3) {
                     popupMenu.show(panel, e.getX(), e.getY());
-                } else if (e.getButton() == MouseEvent.BUTTON1) {
+                } else if (e.getButton() == MouseEvent.BUTTON1 && artista.getTipo().toLowerCase().equals("banda")) {
                     //Click Derecho
-                    JOptionPane.showMessageDialog(null, "Mostrar Informacion.");
+                    JOptionPane.showMessageDialog(null, "Mostrar Información.");
+                    frmIntegrantesInfo info = new frmIntegrantesInfo(artista, artistaNegocio, personaNegocio);
+                    info.setVisible(true);
                 }
             }
         });
@@ -377,11 +346,11 @@ public class pnlAlbumes extends javax.swing.JPanel {
         lblFlechaAbajo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblFlechaAbajo.setVisible(false);
 
-        jScrollPane_albumes.getVerticalScrollBar().addAdjustmentListener(e -> actualizarFlechasScroll());
+        jScrollPane_artistas.getVerticalScrollBar().addAdjustmentListener(e -> actualizarFlechasScroll());
     }
 
     private void actualizarFlechasScroll() {
-        JScrollBar barra = jScrollPane_albumes.getVerticalScrollBar();
+        JScrollBar barra = jScrollPane_artistas.getVerticalScrollBar();
         int max = barra.getMaximum();
         int visible = barra.getVisibleAmount();
         int value = barra.getValue();
@@ -399,8 +368,8 @@ public class pnlAlbumes extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane_albumes = new javax.swing.JScrollPane();
-        panelAlbumes = new javax.swing.JPanel();
+        jScrollPane_artistas = new javax.swing.JScrollPane();
+        panelArtistas = new javax.swing.JPanel();
         lblFlechaArriba = new javax.swing.JLabel();
         lblFlechaAbajo = new javax.swing.JLabel();
         pnlBuscador = new javax.swing.JPanel();
@@ -408,22 +377,22 @@ public class pnlAlbumes extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(23, 30, 49));
 
-        jScrollPane_albumes.setBackground(new java.awt.Color(23, 30, 49));
+        jScrollPane_artistas.setBackground(new java.awt.Color(23, 30, 49));
 
-        panelAlbumes.setBackground(new java.awt.Color(23, 30, 49));
+        panelArtistas.setBackground(new java.awt.Color(23, 30, 49));
 
-        javax.swing.GroupLayout panelAlbumesLayout = new javax.swing.GroupLayout(panelAlbumes);
-        panelAlbumes.setLayout(panelAlbumesLayout);
-        panelAlbumesLayout.setHorizontalGroup(
-            panelAlbumesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout panelArtistasLayout = new javax.swing.GroupLayout(panelArtistas);
+        panelArtistas.setLayout(panelArtistasLayout);
+        panelArtistasLayout.setHorizontalGroup(
+            panelArtistasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 604, Short.MAX_VALUE)
         );
-        panelAlbumesLayout.setVerticalGroup(
-            panelAlbumesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        panelArtistasLayout.setVerticalGroup(
+            panelArtistasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 423, Short.MAX_VALUE)
         );
 
-        jScrollPane_albumes.setViewportView(panelAlbumes);
+        jScrollPane_artistas.setViewportView(panelArtistas);
 
         lblFlechaArriba.setText("jLabel2");
 
@@ -462,7 +431,7 @@ public class pnlAlbumes extends javax.swing.JPanel {
                         .addComponent(pnlBuscador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(76, 76, 76)
                         .addComponent(pnl_TipoBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane_albumes, javax.swing.GroupLayout.PREFERRED_SIZE, 606, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane_artistas, javax.swing.GroupLayout.PREFERRED_SIZE, 606, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblFlechaArriba, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -482,16 +451,52 @@ public class pnlAlbumes extends javax.swing.JPanel {
                         .addComponent(lblFlechaArriba, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblFlechaAbajo, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane_albumes, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane_artistas, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    public static class Artista {
+
+        private String nombre;
+        private String genero;
+        private String portada;
+
+        public Artista(String nombre, String genero, String portada) {
+            this.nombre = nombre;
+            this.genero = genero;
+            this.portada = portada;
+        }
+
+        public String getNombre() {
+            return nombre;
+        }
+
+        public void setNombre(String nombre) {
+            this.nombre = nombre;
+        }
+
+        public String getGenero() {
+            return genero;
+        }
+
+        public void setGenero(String genero) {
+            this.genero = genero;
+        }
+
+        public String getPortada() {
+            return portada;
+        }
+
+        public void setPortada(String portada) {
+            this.portada = portada;
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane_albumes;
+    private javax.swing.JScrollPane jScrollPane_artistas;
     private javax.swing.JLabel lblFlechaAbajo;
     private javax.swing.JLabel lblFlechaArriba;
-    private javax.swing.JPanel panelAlbumes;
+    private javax.swing.JPanel panelArtistas;
     private javax.swing.JPanel pnlBuscador;
     private javax.swing.JPanel pnl_TipoBusqueda;
     // End of variables declaration//GEN-END:variables

@@ -37,6 +37,7 @@ import interfaces.IGeneroDAO;
 import interfaces.IGeneroNegocio;
 import interfaces.IPersonaDAO;
 import interfaces.IPersonaNegocio;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import negocio.GeneroNegocio;
 import negocio.PersonaNegocio;
@@ -173,6 +174,9 @@ public class frmInicioSesion extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        lbl_maximizar = new javax.swing.JLabel();
+        lbl_minimizar = new javax.swing.JLabel();
+        lbl_cerrar = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -227,15 +231,33 @@ public class frmInicioSesion extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Olvidaste tu contraseña?");
 
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("No tienes una cuenta?");
 
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(30, 180, 180));
         jLabel7.setText("Registrate aqui");
         jLabel7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel7.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel7MouseClicked(evt);
+            }
+        });
+
+        lbl_maximizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/expandir.png"))); // NOI18N
+
+        lbl_minimizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/minimizar.png"))); // NOI18N
+        lbl_minimizar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lbl_minimizarMouseClicked(evt);
+            }
+        });
+
+        lbl_cerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/cerrar.png"))); // NOI18N
+        lbl_cerrar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lbl_cerrarMouseClicked(evt);
             }
         });
 
@@ -256,19 +278,32 @@ public class frmInicioSesion extends javax.swing.JFrame {
                                 .addComponent(jLabel1))
                             .addComponent(pnl_usuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(pnl_contenedorLayout.createSequentialGroup()
-                        .addGap(56, 56, 56)
+                        .addGap(41, 41, 41)
                         .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(26, 26, 26)
                         .addComponent(jLabel7)
-                        .addGap(0, 51, Short.MAX_VALUE)))
+                        .addGap(0, 41, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(pnl_contenedorLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(lbl_cerrar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbl_minimizar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbl_maximizar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnl_contenedorLayout.setVerticalGroup(
             pnl_contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_contenedorLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
+                .addGap(12, 12, 12)
+                .addGroup(pnl_contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbl_maximizar)
+                    .addComponent(lbl_minimizar)
+                    .addComponent(lbl_cerrar))
+                .addGap(18, 18, 18)
                 .addComponent(jLabel2)
-                .addGap(47, 47, 47)
+                .addGap(60, 60, 60)
                 .addComponent(pnl_usuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(pnl_contrasena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -276,7 +311,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(26, 26, 26)
                 .addComponent(pnl_iniciar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 127, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
                 .addGroup(pnl_contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jLabel7))
@@ -307,6 +342,16 @@ public class frmInicioSesion extends javax.swing.JFrame {
         frmUsuarioInfo registrar = new frmUsuarioInfo(usuarioNegocio, "registrar");
         registrar.setVisible(true);
     }//GEN-LAST:event_jLabel7MouseClicked
+
+    private void lbl_minimizarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_minimizarMouseClicked
+        // TODO add your handling code here:
+        setState(JFrame.ICONIFIED);
+    }//GEN-LAST:event_lbl_minimizarMouseClicked
+
+    private void lbl_cerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_cerrarMouseClicked
+        // TODO add your handling code here:
+        System.exit(0);
+    }//GEN-LAST:event_lbl_cerrarMouseClicked
 
     /**
      * @param args the command line arguments
@@ -348,6 +393,9 @@ public class frmInicioSesion extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel lbl_cerrar;
+    private javax.swing.JLabel lbl_maximizar;
+    private javax.swing.JLabel lbl_minimizar;
     private javax.swing.JPanel pnl_contenedor;
     private javax.swing.JPanel pnl_contrasena;
     private javax.swing.JPanel pnl_iniciar;
