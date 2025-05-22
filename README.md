@@ -10,7 +10,7 @@ Este proyecto fue desarrollado como parte del curso de **Bases de Datos Avanzada
 - **Java SE 17+**
 - **Apache Maven** (gestión de dependencias)
 - **MongoDB** (base de datos NoSQL)
-- 🖼**Java Swing** (interfaz gráfica)
+- **Java Swing** (interfaz gráfica)
 - **BCrypt** (encriptación de contraseñas)
 
 ## Características principales
