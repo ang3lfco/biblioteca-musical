@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -189,51 +190,87 @@ public class pnlNoDeseados extends javax.swing.JPanel {
         AlbumDTO album;
         ArtistaDTO artista;
         CancionDTO cancion;
+
         List<AlbumDTO> albumesDTO = new ArrayList<>();
         List<ArtistaDTO> artistasDTO = new ArrayList<>();
         List<CancionDTO> cancionesDTO = new ArrayList<>();
-        List<GeneroDTO> generos = new ArrayList<>();
-        List<String> canciones = usuarioNegocio.getFavoritos(Sesion.getUsuarioActual().getId()).getCancionesId();
-        List<String> artistas = usuarioNegocio.getFavoritos(Sesion.getUsuarioActual().getId()).getArtistasId();
-        List<String> albumes = usuarioNegocio.getFavoritos(Sesion.getUsuarioActual().getId()).getAlbumesId();
 
-        for (String id : albumes) {
-            album = albumNegocio.buscarAlbumPorId(id);
-            albumesDTO.add(album);
-            if (album.getGenerosId().contains(genero)) {
-                nombres.add(album.getNombre());
-            }
-            for (String g : album.getGenerosId()) {
-                if (genero.equals(g)) {
-                    cant++;
-                }
-            }
-        }
-        for (String id : artistas) {
-            artista = artistaNegocio.buscarArtistaporId(id);
-            artistasDTO.add(artista);
-            if (artista.getGenerosId().contains(genero)) {
-                nombres.add(artista.getNombre());
-            }
-            for (String g : artista.getGenerosId()) {
-                if (genero.equals(g)) {
-                    cant++;
-                }
-            }
+        List<String> canciones = new ArrayList<>();
+        List<String> artistas = new ArrayList<>();
+        List<String> albumes = new ArrayList<>();
+
+        try{
+            canciones = Optional.ofNullable(usuarioNegocio.getFavoritos(Sesion.getUsuarioActual().getId()).getCancionesId()).orElse(new ArrayList<>());
+
+            artistas = Optional.ofNullable(usuarioNegocio.getFavoritos(Sesion.getUsuarioActual().getId()).getArtistasId()).orElse(new ArrayList<>());
+
+            albumes = Optional.ofNullable(usuarioNegocio.getFavoritos(Sesion.getUsuarioActual().getId()).getAlbumesId()).orElse(new ArrayList<>());
+        } 
+        catch(Exception e){
+            System.err.println("Error al obtener favoritos: " + e.getMessage());
+            // por defecto estan vacias y no nulas.
         }
 
-        for (String id : canciones) {
-            cancion = cancionNegocio.obtenerCancionPorId(id);
-            cancionesDTO.add(cancion);
-            if (cancion.getGenerosId().contains(genero)) {
-                nombres.add(cancion.getNombre());
-            }
-            for (String g : cancion.getGenerosId()) {
-                if (genero.equals(g)) {
-                    cant++;
+        for(String id : albumes){
+            try{
+                album = albumNegocio.buscarAlbumPorId(id);
+                if(album != null){
+                    albumesDTO.add(album);
+                    if(album.getGenerosId() != null && album.getGenerosId().contains(genero)){
+                        nombres.add(album.getNombre());
+                        for(String g : album.getGenerosId()){
+                            if(genero.equals(g)){
+                                cant++;
+                            }
+                        }
+                    }
                 }
+            } 
+            catch(Exception e){
+                System.err.println("Error con álbum ID " + id + ": " + e.getMessage());
             }
         }
+
+        for(String id : artistas){
+            try{
+                artista = artistaNegocio.buscarArtistaporId(id);
+                if (artista != null){
+                    artistasDTO.add(artista);
+                    if (artista.getGenerosId() != null && artista.getGenerosId().contains(genero)){
+                        nombres.add(artista.getNombre());
+                        for (String g : artista.getGenerosId()){
+                            if (genero.equals(g)){
+                                cant++;
+                            }
+                        }
+                    }
+                }
+            } 
+            catch(Exception e){
+                System.err.println("Error con artista ID " + id + ": " + e.getMessage());
+            }
+        }
+
+        for(String id : canciones){
+            try{
+                cancion = cancionNegocio.obtenerCancionPorId(id);
+                if(cancion != null){
+                    cancionesDTO.add(cancion);
+                    if(cancion.getGenerosId() != null && cancion.getGenerosId().contains(genero)){
+                        nombres.add(cancion.getNombre());
+                        for(String g : cancion.getGenerosId()){
+                            if(genero.equals(g)){
+                                cant++;
+                            }
+                        }
+                    }
+                }
+            } 
+            catch(Exception e){
+                System.err.println("Error con canción ID " + id + ": " + e.getMessage());
+            }
+        }
+
         mostrarNombresFavoritos(nombres);
         System.out.println(nombres.size());
         return cant;
