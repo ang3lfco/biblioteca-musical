@@ -1,4 +1,4 @@
-# Biblioteca Musical - Proyecto de Consulta y Organización Musical
+# Biblioteca Musical
 
 **Biblioteca Musical** es una aplicación de escritorio desarrollada en Java con una arquitectura en capas (Presentación, Negocio, Persistencia, Modelos.)
 Su objetivo es permitir a los usuarios **consultar y organizar** una colección musical personalizada, similar a plataformas de música comerciales. 
